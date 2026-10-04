@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Hispanoluso: Causos, Heterossemânticos, Heterogenéricos e Heterotônicos</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --causo-color: #059669;
+      --sem-color: #dc2626;
+      --gen-color: #4f46e5;
+      --ton-color: #d97706;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.05rem;
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 0 auto 1.2rem;
+    }
+
+    .badge-bar {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.4rem 1.2rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    .controls-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-wrapper input:focus {
+      border-color: var(--primary-hover);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tab-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      padding: 0 0.25rem;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      width: fit-content;
+    }
+
+    .tag-causo { background: #dcfce7; color: #166534; }
+    .tag-heterosemantico { background: #fee2e2; color: #991b1b; }
+    .tag-heterogenerico { background: #e0e7ff; color: #3730a3; }
+    .tag-heterotonico { background: #fef3c7; color: #92400e; }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 750;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .box-comparison {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      padding: 0.6rem 0.8rem;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 0.75rem;
+      font-size: 0.93rem;
+    }
+
+    .card-desc {
+      font-size: 0.92rem;
+      color: #334155;
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .card-example {
+      background: #fffbeb;
+      border: 1px dashed #fcd34d;
+      border-radius: 6px;
+      padding: 0.6rem;
+      font-size: 0.88rem;
+      color: #78350f;
+      font-style: italic;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      background: white;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Manual e Índice Integrado Hispanoluso</h1>
+    <p>Compilação completa de <strong>Causos e Anedotas</strong>, <strong>Falsos Amigos (Heterossemânticos)</strong>, <strong>Heterogenéricos</strong> e <strong>Heterotônicos</strong>.</p>
+    <div class="badge-bar">Obras de Claudio Budnikar &bull; Comunicações Espanhol &harr; Português</div>
+  </header>
+
+  <div class="container">
+    <div class="controls-panel">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por palavra, significado, causo ou lição...">
+      </div>
+      <div class="tabs" id="tabContainer"></div>
+    </div>
+
+    <div class="info-bar">
+      <span id="counter">Carregando registros...</span>
+      <span>Base Integral Bilingue</span>
+    </div>
+
+    <div class="grid-container" id="grid"></div>
+  </div>
+
+  <footer>
+    Manual Unificado Hispanoluso &bull; Edições 2020 e 2025 de Claudio Budnikar.
+  </footer>
+
+  <script>
+    const DATA = [
+      // ==================== CAUSOS REAIS (2025) ====================
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "01. O argentino e a ratazana",
+        pt: "Ratazana (roedor de grande porte)",
+        es: "Rata sana (rato saudável / sadio)",
+        desc: "Um funcionário argentino recém-chegado ao Brasil encontra uma ratazana morta numa dependência da fábrica e avisa ao chefe: 'Tem uma rata morta nos fundos...'. O chefe pergunta: 'Uma ratazana?'. O argentino responde revoltado: 'Eu falei que ela está MORTA! Como ela poderia estar sana?'.",
+        ex: "Lição: No espanhol coloquial, Z e S têm som similar (seseo). 'Ratazana' soa exatamente como 'rata sana' (rato são/saudável)."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "02. O preço da corrida",
+        pt: "Corrida (viagem de táxi / trajeto)",
+        es: "Coger / Cogida (gíria sexual na América Latina)",
+        desc: "Uma turista brasileira na Argentina perguntou ao taxista: 'Quanto custa a corrida?'. O motorista, ofendido, respondeu indignado: '¡Esto es un taxi, no una casa de sexo!'.",
+        ex: "Lição: A pronúncia carioca/brasileira do 'RR' soa como a letra J ou G em espanhol. 'Corrida' vira 'cogida', que é gíria para relações sexuais. A viagem em táxi chama-se 'el viaje' ou 'la carrera'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "03. Mudança do próprio nome",
+        pt: "Claudio pronunciado com chiado [Clautchio]",
+        es: "Claudio com pronúncia dental suave",
+        desc: "Claudio relata a resistência de mais de 50 anos em ser chamado de 'Clautchio' no Brasil, enquanto seu filho Germán virou 'Sherman'. Nas filas e portarias perdia 5 minutos até aceitar que no Brasil seu nome é 'Clautchio' e sua nacionalidade é 'Argent-CHINO'.",
+        ex: "Lição: O português brasileiro palatiza D e T diante de [i]. O espanhol mantém a articulação dental pura e seca."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "04. A letra 'I fantasma'",
+        pt: "USP / Fiat / Ford (consoantes mudas)",
+        es: "USPI / Fiati / Fordi (audição hispânica)",
+        desc: "Colega hispânico pede ajuda para pesquisar a USP na internet. O brasileiro diz 'Coloca USP'. O colega pesquisa e diz 'No sale nada con USPI'. O brasileiro jura que não falou a letra 'I', mas para ouvidos hispânicos consoantes finais sem 'i' soam secas.",
+        ex: "Lição: Brasileiros inserem um [i] de apoio em consoantes finais (Help vira Helpi; Fiat vira Fiati). No espanhol as consoantes finais morrem secas."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "05. Alto não é Auto",
+        pt: "Alto (estatura / elevação) vs. Auto (carro)",
+        es: "Auto (carro / automóvel) vs. Alto",
+        desc: "No Brasil, 'alto' e 'auto' soam iguais porque o L final vira U. Ao ouvir 'auto en la montaña', o brasileiro pensa em alguém no alto da serra, mas no espanhol significa um automóvel na montanha.",
+        ex: "Lição: Em espanhol a letra L nunca vira 'U'; a ponta da língua deve tocar o céu da boca."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "06. Coche não é Kosher",
+        pt: "Coche (carruagem) vs. Carro",
+        es: "Coche [cotche] (carro) vs. Kosher",
+        desc: "Brasileiro na Espanha diz 'Voy a buscar mi coshe'. O amigo espanhol pergunta: '¡No sabía que tú profesas la religión judaica!'. Confundiu 'coche' com 'kosher' (alimento permitido pelas leis judaicas).",
+        ex: "Lição: O dígrafo CH em espanhol pronuncia-se sempre oclusivo [TCH] (como em 'tchau'), nunca brando [SH]."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "07. Gostei bastante do seu trabalho",
+        pt: "Bastante = Muito (excelente)",
+        es: "Bastante = O mínimo necessário / sofrível",
+        desc: "Desenvolvedora brasileira recebeu mensagem de cliente argentino: 'Su trabajo me ha parecido BASTANTE bueno'. Ela comemorou achando que ele amou, mas o cliente quis dizer que estava apenas aceitável.",
+        ex: "Lição: No Brasil 'bastante' é sinônimo de muito. No espanhol rioplatense é atenuador de cortesia para expressar que cumpre apenas os requisitos mínimos."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "08. Não tire suas análises (Raio-X)",
+        pt: "Tirar foto / Tirar raio-X (fazer exame)",
+        es: "Tirar (jogar fora / descartar no lixo)",
+        desc: "Paciente brasileiro diz ao médico espanhol: 'Yo tiré mi raio-X'. O médico, assustado, pergunta: '¿Por qué la tiró antes de que yo la examinara?'.",
+        ex: "Lição: Para fotos e exames em espanhol usa-se 'sacar' (saqué una foto, saqué un rayo X). 'Tirar' significa jogar no lixo ou arremessar."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "09. Ganhei um filho",
+        pt: "Ganhar filho (dar à luz / ter bebê)",
+        es: "Ganar (restrito a apostas e competições)",
+        desc: "Mulheres brasileiras costumam traduzir 'ganhei um filho' como 'gané un hijo'. Para ouvidos hispânicos parece que o bebê foi ganho numa rifa ou sorteio.",
+        ex: "Lição: Em espanhol só se usa 'ganar' quando há disputa ou sorteio. O correto é: 'Tuve un hijo' e 'Recibí un regalo'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "10. Madres com filhos?",
+        pt: "Madre (freira) vs. Mãe (genitora)",
+        es: "Madre (mãe) vs. Monja (freira)",
+        desc: "Brasileiros em países hispânicos veem notícias sobre o 'Día de la Madre' e presentes dos filhos e perguntam surpresos se na Argentina as freiras podem ter filhos.",
+        ex: "Lição: Em espanhol, 'madre' é a mãe de família e 'padre' é o pai. Religiosos são chamados de 'monja', 'cura' ou 'sacerdote'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "11. Surdos ou canhotos?",
+        pt: "Surdo (sem audição) vs. Canhoto",
+        es: "Zurdo (canhoto) vs. Sordo (sem audição)",
+        desc: "Colega gaúcha lê biografia de Paul McCartney em espanhol e afirma emocionada: 'Fiquei pasma de saber que o Paul era surdo igualzinho ao Beethoven!'. O livro dizia: 'el famoso bajista zurdo de los Beatles...'.",
+        ex: "Lição: 'Zurdo' em espanhol é canhoto. Quem não ouve chama-se 'sordo'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "12. Adoro seu corpinho",
+        pt: "Corpinho (diminutivo de corpo)",
+        es: "Corpiño (sutiã / lingerie feminina)",
+        desc: "Maria Espanha pergunta a João Brasil o que ele mais gosta nela: 'Teu corpinho!'. Maria pensa assustada: '¿Mi corpiño? ¿Será que João es travesti?'.",
+        ex: "Lição: Em português 'nh' soa como 'ñ'. 'Corpinho' soa como 'corpiño' (sutiã na Argentina). O diminutivo de corpo em espanhol é 'cuerpito'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "13. Tem traído?",
+        pt: "Traído (infiel / traidor)",
+        es: "Traído (particípio de trazer / trazer consigo)",
+        desc: "No cartório civil espanhol a funcionária pergunta ao brasileiro: '¿Ha traído usted a su mujer?'. O homem, culpado, responde: 'Sim senhora, muitas vezes'.",
+        ex: "Lição: 'Traído' em espanhol vem do verbo 'traer' (trazer). Quem comete ou sofre infidelidade é 'traicionado'."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "14. Brigando com os colegas",
+        pt: "Faz como você quiser vs. É você quem sabe",
+        es: "Hacé como quieras vs. Vos sabrás",
+        desc: "O autor respondia cordialmente 'Faz como você quiser'. Após 10 anos uma colega brasileira estourou dizendo que ele era grosso e que devia dizer 'É você quem sabe'.",
+        ex: "Lição: Em espanhol, 'Hacé como quieras' é amável e prestável, enquanto 'Vos sabrás' soa seco e ríspido. No português o sentido de polidez é o oposto!"
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "15. O Saco no avião",
+        pt: "Saco (bolsa / embalagem plástica / termo vulgar)",
+        es: "Saco (paletó / casaco de terno)",
+        desc: "Passageiro argentino em voo para o Brasil pergunta ao comissário brasileiro: '¿Dónde coloco mi SACO?'. O comissário, contrariado, responde: 'Deixa entre tuas pernas, lá fica perfeito!'.",
+        ex: "Lição: No Rio da Prata, 'saco' é o blazer ou casaco de terno masculino."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "16. A igreja tombada",
+        pt: "Tombada (patrimônio histórico tombado)",
+        es: "Tumbada (derrubada / demolida no chão)",
+        desc: "Guia de turismo brasileira diz em espanhol que a igreja foi 'tombada pelo município'. O turista argentino lamenta achando que o prédio histórico foi demolido pela prefeitura.",
+        ex: "Lição: 'Tombada' no Brasil é patrimônio preservado. Em espanhol remete ao verbo 'tumbar' (derrubar / deitar abaixo)."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "17. O isqueiro amarelo",
+        pt: "Amarelo (cor)",
+        es: "Amarillo [pronúncia com dígrafo LL]",
+        desc: "O autor pediu na banca um isqueiro 'amarillo' [amarilho]. O atendente apontou todas as cores até finalmente entender: 'Caramba, você queria o amarelo!'.",
+        ex: "Lição: Pequenas diferenças na articulação do dígrafo LL causam bloqueios na comunicação rápida cotidiana."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "18. O picolé de preço variável",
+        pt: "Picolé (sorvete de palito)",
+        es: "Helado de palito / Sotaque estrangeiro",
+        desc: "O autor pede um picolé com sotaque espanhol na praia e custa R$ 5,00. Cinco minutos depois, sua filha sem sotaque compra o mesmo por R$ 2,00.",
+        ex: "Lição: O sotaque estrangeiro gera julgamento socioeconômico automático e precificação para turistas."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "19. O bom dia para a recepcionista",
+        pt: "Bom dia (saudação matinal)",
+        es: "Buenos días / Curva melódica",
+        desc: "Todos os dias às 7h o autor chegava e dizia 'Bom dia'. A recepcionista sempre respondia: 'Desculpa, eu não compreendo o senhor'.",
+        ex: "Lição: A curva melódica e entonação do espanhol desconcertam quem espera a cadência padrão de fala matinal."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "20. De onde você é?",
+        pt: "Identificação cultural no elevador",
+        es: "Linguagem corporal e postura",
+        desc: "No elevador se o autor falava bom dia, oi ou ficava em silêncio absoluto, sempre perguntavam de onde ele era. Ao questionar como sabiam mesmo calado, responderam: 'Aqui as pessoas não são tão caladas'.",
+        ex: "Lição: A linguagem corporal, postura e atitude denunciam a cultura de origem tanto quanto o vocabulário."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "21. Desligando na cara",
+        pt: "Desligar o telefone / Objetividade",
+        es: "Uso do imperativo sem rodeios",
+        desc: "No emprego diziam para o autor não atender o telefone por ser muito direto. Mas quando ligavam de televendas, passavam a ligação para ele desligar rápido.",
+        ex: "Lição: No espanhol o estilo comunicativo direto e o uso de imperativos não são vistos como grosseria."
+      },
+      {
+        cat: "causo",
+        catName: "Causo Real",
+        term: "22. Entra! Se fala para os cachorros",
+        pt: "Convite indireto: 'Pode entrar, por favor'",
+        es: "Imperativo: '¡Entrá! / ¡Pasá!'",
+        desc: "Ao estudar para o exame de proficiência CELPE-BRAS, orientou-se os hispanofalantes a não usar imperativos em português, pois 'Entra!' soa como ordem para animais.",
+        ex: "Lição: Em espanhol '¡Pasá, entrá!' é convite acolhedor; em português brasileiro prefere-se fórmulas indiretas de cortesia."
+      },
+
+      // ==================== HETEROSSEMÂNTICOS (FALSOS AMIGOS) ====================
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "A GENTE vs. LA GENTE",
+        pt: "A gente (nós / primeira pessoa do plural)",
+        es: "La gente (as pessoas / terceiros / os outros)",
+        desc: "No português brasileiro coloquial, 'a gente' substitui 'nós'. Em espanhol, 'la gente' é estritamente coletivo de terceira pessoa e exclui o próprio falante.",
+        ex: "*Nos vamos -> A gente vai embora | *La gente es mala -> Os outros são maus e comentam."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "A MARRETA vs. AMARRETA",
+        pt: "A marreta (martelo grande / maça)",
+        es: "Amarreta (pessoa avarenta / sovina / tacanha)",
+        desc: "Em espanhol (especialmente no Rio da Prata), 'amarreta' é quem tem apego excessivo a dinheiro e recusa-se a gastar.",
+        ex: "*No seas amarreta y préstame la maza -> Não seja tacanha e me empresta a marreta."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "A VISTA vs. AVISTA",
+        pt: "A vista (pagamento imediato no ato)",
+        es: "Avista (enxerga de longe / avistar)",
+        desc: "Para pagar à vista em espanhol diga 'al contado'. 'Avista' é apenas a forma conjugada do verbo avistar.",
+        ex: "*¿Puedo pagar al contado? -> Posso pagar a vista?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ACEITAR vs. ACEITAR",
+        pt: "Aceitar (anuir / aprovar / concordar)",
+        es: "Aceitar (lubrificar com óleo / azeitar)",
+        desc: "Grafia idêntica, mas em espanhol deriva de 'aceite' (óleo), significando lubrificar máquinas e motores.",
+        ex: "*Voy a aceptar aceitar el motor -> Vou aceitar colocar óleo no motor."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ACORDAR vs. ACORDAR",
+        pt: "Acordar (despertar do sono)",
+        es: "Acordar (lembrar-se ou entrar em acordo)",
+        desc: "'Acordarse' em espanhol é lembrar-se. Para o ato de despertar pela manhã use 'despertarse'.",
+        ex: "*No me voy a acordar de despertarme temprano -> Não vou me lembrar de acordar cedo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ALAGADO vs. ALARGADO",
+        pt: "Alagado (inundado / coberto por água)",
+        es: "Alargado (comprido / esticado)",
+        desc: "Alagado diz-se 'inundado'. 'Alargado' refere-se ao formato esticado ou comprido de um objeto.",
+        ex: "*El camino alargado está inundado -> O caminho alongado está alagado."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ALEIJADO vs. ALEJADO",
+        pt: "Aleijado (pessoa com deficiência física motora)",
+        es: "Alejado (afastado / distante / longe)",
+        desc: "'Alejado' é o particípio do verbo afastar (alejar). Para deficiência física motora diz-se 'discapacitado'.",
+        ex: "*Él fue un discapacitado de un pueblo alejado -> Ele foi um aleijado de um povoado distante."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ANO vs. ANO",
+        pt: "Ano (período de 365 dias)",
+        es: "Ano (orifício anatômico anal)",
+        desc: "Atenção com a letra 'ñ': o ciclo de 365 dias escreve-se 'año'. Sem o til ('ano') é o termo anatômico.",
+        ex: "*Hace un año me revisaron el ano -> Faz um ano que examinaram meu ânus."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "APELIDO vs. APELLIDO",
+        pt: "Apelido (alcunha / codinome informal)",
+        es: "Apellido (sobrenome de família oficial)",
+        desc: "Um dos erros mais comuns: 'apellido' em espanhol é o seu sobrenome oficial de família. Apelido informal é 'apodo'.",
+        ex: "*Mi apellido es Ferreira y mi apodo es Pepe -> Meu sobrenome é Ferreira e meu apelido é Pepe."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "APURAR vs. APURAR",
+        pt: "Apurar (investigar / averiguar / checar)",
+        es: "Apurar (apressar / dar pressa)",
+        desc: "Em espanhol, 'apurarse' significa acelerar o passo ou ter pressa. Averiguar diz-se 'revisar'.",
+        ex: "*Me voy a apurar para revisar tranquilo -> Vou me apressar para apurar com calma."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ARANDELA vs. ARANDELA",
+        pt: "Arandela (luminária de parede)",
+        es: "Arandela (arruela de parafuso)",
+        desc: "No espanhol, 'arandela' é a peça circular metálica furada usada sob porcas e parafusos mecânicos.",
+        ex: "*Cayó una arandela de la luminaria de pared -> Caiu uma arruela da arandela de parede."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ARROCHO vs. ARROYO",
+        pt: "Arrocho (aperto / pressão / coerção)",
+        es: "Arroyo (córrego / pequeno riacho)",
+        desc: "'Arroyo' em espanhol é um pequeno curso de água natural.",
+        ex: "*Sufrió un apriete a orillas del arroyo -> Sofreu um arrocho às margens do córrego."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ATACADO vs. ATACADO",
+        pt: "Atacado (venda no atacado / comércio atacadista)",
+        es: "Atacado (agredido / vítima de agressão)",
+        desc: "Para compras comerciais em grandes lotes use 'comercio mayorista' ou 'al por mayor'.",
+        ex: "*Fue atacado en el comercio mayorista -> Foi agredido no comércio atacadista."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BABOSA vs. BABOSA",
+        pt: "Babosa (planta medicinal / aloe vera)",
+        es: "Babosa (lesma de jardim)",
+        desc: "A planta medicinal em espanhol é conhecida como 'aloe vera'. A palavra 'babosa' refere-se ao molusco terrestre.",
+        ex: "*Había una babosa en la planta de aloe vera -> Havia uma lesma na planta de babosa."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BALCÃO vs. BALCÓN",
+        pt: "Balcão (mostrador de loja ou bar)",
+        es: "Balcón (sacada externa / varanda de prédio)",
+        desc: "Se você pedir para ir ao balcón de um restaurante, entenderão que quer sentar na sacada externa.",
+        ex: "*Desde el mostrador veía el balcón -> Do balcão ele via a sacada de sua casa."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BARRAR vs. BAJAR",
+        pt: "Barrar (impedir / bloquear passagem)",
+        es: "Bajar (descer / abaixar)",
+        desc: "Pela pronúncia do 'rr' gutural soar próximo ao 'j' em espanhol, barrar soa como baixar (bajar).",
+        ex: "*Voy a impedir que lo deje bajar -> Vou barrar que o deixe descer."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BASTANTE vs. BASTANTE",
+        pt: "Bastante (muito / enorme quantidade)",
+        es: "Bastante (razoável / o mínimo aceitável)",
+        desc: "Em espanhol funciona frequentemente como atenuador de cortesia para expressar que algo é apenas sofrível ou regular.",
+        ex: "*Su presentación fue bastante buena -> Sua apresentação foi razoável / sofrível."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BECA vs. BECA",
+        pt: "Beca (toga acadêmica de formatura)",
+        es: "Beca (bolsa de estudos / auxílio financeiro)",
+        desc: "Ao pedir uma 'beca' numa universidade hispânica, concorre-se a uma bolsa de estudos.",
+        ex: "*Lleve su toga al acto de asignación de beca -> Leve sua beca à entrega da bolsa de estudos."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BENGALA vs. BENGALA",
+        pt: "Bengala (bastão de apoio para caminhar)",
+        es: "Bengala (sinalizador luminoso / foguete de fogo)",
+        desc: "O suporte que apoia idosos para caminhar diz-se 'bastón'. 'Bengala' é sinalizador pirotécnico.",
+        ex: "*Su bastón podía disparar una bengala -> Seu bastão de apoio podia disparar um sinalizador."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BILHÃO vs. BILLÓN",
+        pt: "Bilhão (1.000.000.000)",
+        es: "Billón (1.000.000.000.000 / um trilhão)",
+        desc: "Diferença de escala: 1 bilhão no Brasil traduz-se como 'mil millones' em espanhol. 'Un billón' no espanhol equivale a 1 trilhão.",
+        ex: "*Pérdidas por mil millones de dólares, menos que un billón -> Perdas por um bilhão de dólares, menos que um trilhão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BOÇAL vs. BOZAL",
+        pt: "Boçal (grosseiro / estúpido / ignorante)",
+        es: "Bozal (focinheira de cães)",
+        desc: "Em espanhol, 'bozal' é a proteção colocada no focinho de animais para impedir mordidas.",
+        ex: "*Es tan bocón que pienso en ponerle un bozal -> É tão boçal que penso em colocar nele uma focinheira."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BORRACHA vs. BORRACHA",
+        pt: "Borracha (material de apagar / látex)",
+        es: "Borracha (mulher embriagada / bêbada)",
+        desc: "Para apagar escrita a lápis em espanhol peça 'una goma'. 'Borracha' significa alcoolizada.",
+        ex: "*Estaba tan borracha que se comió la goma -> Estava tão bêbada que comeu a borracha de apagar."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BORRAR vs. BORRAR",
+        pt: "Borrar (manchar / sujar / borrar papel)",
+        es: "Borrar (apagar / deletar traços e textos)",
+        desc: "Em espanhol, 'borrar' significa remover traços, limpar anotações ou apagar arquivos do computador.",
+        ex: "*Si vas a manchar después deberás borrar -> Se você borrar (sujar), depois terá de apagar."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BREGA vs. BREGA",
+        pt: "Brega (cafona / de mau gosto)",
+        es: "Brega (lida / labuta diária / luta)",
+        desc: "O verbo 'bregar' em espanhol é trabalhar duro ou lutar com persistência contra dificuldades.",
+        ex: "*Él brega por no ser tan cursi -> Ele luta para não ser tão cafona (brega)."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "BRINCAR vs. BRINCAR",
+        pt: "Brincar (jogar / divertir-se)",
+        es: "Brincar (pular / dar saltos)",
+        desc: "Brincadeiras infantis traduzem-se como 'jugar'. Em espanhol 'brincar' significa saltar ou pular.",
+        ex: "*¿Vamos a jugar a brincar alto? -> Vamos brincar de pular alto?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CACHO vs. CACHO",
+        pt: "Cacho (cacho de cabelo / cacho de uvas)",
+        es: "Cacho (pedaço / porção de algo)",
+        desc: "No espanhol coloquial, 'un cacho' é um pedaço cortado de pão, queijo ou qualquer objeto.",
+        ex: "*Me sacó un cacho del rulo -> Tirou-me um pedaço do cacho de cabelo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CACHORRO vs. CACHORRO",
+        pt: "Cachorro (cão em qualquer idade)",
+        es: "Cachorro (filhote recém-nascido de mamífero)",
+        desc: "Um cão adulto em espanhol é 'perro'. 'Cachorro' aplica-se exclusivamente a filhotes pequenos.",
+        ex: "*Un cachorro es un perro joven -> Um filhote é um cão jovem."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CAMAROTE vs. CAMAROTE",
+        pt: "Camarote (área vip / frisa de teatro)",
+        es: "Camarote (cabine de navio)",
+        desc: "A área reservada em shows ou teatros é 'el palco'. Em espanhol 'camarote' é o quarto em navios.",
+        ex: "*Del palco se veía un camarote del barco -> Do camarote de teatro via-se uma cabine do navio."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CANAS vs. CANAS",
+        pt: "Canas (hastes de cana-de-açúcar)",
+        es: "Canas (cabelos brancos / grisalhos)",
+        desc: "Cabelos brancos chamam-se 'canas'. A planta de açúcar escreve-se 'caña' com 'ñ'.",
+        ex: "*Entre las cañas apareció una cabeza llena de canas -> Entre as canas apareceu uma cabeça cheia de cabelos brancos."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CARRETA vs. CARRETA",
+        pt: "Carreta (carreta de caminhão de carga)",
+        es: "Carreta (charrete rústica de tração animal)",
+        desc: "O reboque pesado de carga é 'acoplado' ou 'remolque'. 'Carreta' em espanhol é carroça com cavalos ou bois.",
+        ex: "*El acoplado del camión golpeó una carreta -> A carreta do caminhão atingiu uma charrete de tração animal."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CARTÃO vs. CARTÓN",
+        pt: "Cartão (cartão magnético / de visita)",
+        es: "Cartón (papelão de caixas)",
+        desc: "Cartão bancário diz-se 'tarjeta'. 'Cartón' refere-se ao papelão corrugado de embalagem.",
+        ex: "*La tarjeta es de cartón -> O cartão de crédito é feito de papelão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CENA vs. CENA",
+        pt: "Cena (escena teatral / de filme)",
+        es: "Cena (ceia / refeição noturna)",
+        desc: "'Cena' em espanhol é o jantar da noite. A tomada teatral ou cinematográfica é 'la escena'.",
+        ex: "*Una escena de una cena -> Uma cena de um jantar."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CHOCAR vs. CHOCAR",
+        pt: "Chocar (empollar ovos no ninho)",
+        es: "Chocar (bater veículos / colidir)",
+        desc: "Para pássaros aquecendo ovos usa-se 'empollar'. Em espanhol 'chocar' é colisão física violenta.",
+        ex: "*Puede empollar los huevos sin chocar los coches -> Pode chocar os ovos sem bater os carros."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CHULO vs. CHULO",
+        pt: "Chulo (grosseiro / desbocado)",
+        es: "Chulo (bonito / legal / arrumado [Espanha])",
+        desc: "Na Espanha, dizer que uma roupa ou lugar é 'muy chulo' significa que é muito bonito, moderno ou legal.",
+        ex: "*Es bonito pero algo grosero -> É bonito, mas veste uma roupa legal (chula)."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CHURRASCO vs. CHURRASCO",
+        pt: "Churrasco (assado completo de carnes)",
+        es: "Churrasco (bife fino grelhado / bisteca)",
+        desc: "O churrasco social em grelha é 'el asado'. Em espanhol 'churrasco' é apenas um corte fino de bife na chapa.",
+        ex: "*Hice un churrasco en el asado -> Fiz uma bisteca no churrasco completo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "COELHO vs. CUELLO",
+        pt: "Coelho (animal de orelhas longas)",
+        es: "Cuello (pescoço anatômico)",
+        desc: "O animal roedor chama-se 'conejo'. 'Cuello' é a articulação anatômica entre cabeça e corpo.",
+        ex: "*El conejo tiene el cuello largo -> O coelho tem o pescoço comprido."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "COMÍCIO vs. COMICIO",
+        pt: "Comício (concentração popular política)",
+        es: "Comicio (eleições nas urnas / sufrágio)",
+        desc: "O ato político com discursos no palanque chama-se 'mitin'. 'Comicios' em espanhol são as eleições em si.",
+        ex: "*Hay un mitin por el próximo comicio -> Há um comício de campanha para as próximas eleições."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CONTESTAR vs. CONTESTAR",
+        pt: "Contestar (impugnar / refutar / reclamar)",
+        es: "Contestar (responder perguntas ou chamadas)",
+        desc: "Em espanhol 'contestar' é responder a alguém. Para discordar ou impugnar use 'refutar' ou 'reclamar'.",
+        ex: "*Voy a reclamar por su forma de contestar -> Vou contestar a sua maneira de responder."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "COQUE vs. COQUE",
+        pt: "Coque (penteado esférico preso)",
+        es: "Coque (carvão mineral refinado)",
+        desc: "O penteado de cabelo preso chama-se 'rodete'. 'Coque' em espanhol é combustível fóssil sólido.",
+        ex: "*Tiene un rodete oscuro como el coque -> Usa um coque de cabelo tão escuro quanto o carvão de coque."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "COPO vs. COPO",
+        pt: "Copo (recipiente para beber líquidos)",
+        es: "Copo (floco de neve / tufo de algodão)",
+        desc: "Para beber água peça 'un vaso de agua'. Se pedir 'un copo', o atendente pensará em um floco de neve.",
+        ex: "*Un vaso de agua por favor -> Por favor, um copo de água."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "COZIDO vs. COSIDO",
+        pt: "Cozido (preparado com água fervente)",
+        es: "Cosido (costurado com linha e agulha)",
+        desc: "Alimento cozido em água ou molho escreve-se 'cocido' ou 'guiso'. 'Cosido' com 's' refere-se à costura de tecidos.",
+        ex: "*Un guiso con carne rellena cosida -> Um cozido com carne recheada costurada com linha."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CRIANÇA vs. CRIANZA",
+        pt: "Criança (infante de pouca idade)",
+        es: "Crianza (educação / ato de criar os filhos)",
+        desc: "Criança em espanhol é 'niño' ou 'niña'. 'Crianza' é o processo formativo de criação e cuidados.",
+        ex: "*Para un niño es importante la crianza -> Para uma criança é importante a criação recebida."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "CUECA vs. CUECA",
+        pt: "Cueca (roupa íntima masculina)",
+        es: "Cueca (dança folclórica chilena)",
+        desc: "A peça íntima masculina em espanhol chama-se 'calzoncillo'. A 'cueca' é o baile tradicional do Chile.",
+        ex: "*Bailó una cueca en calzoncillos -> Dançou a cueca folclórica em trajes de cueca."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "DESENVOLVER vs. DESENVOLVER",
+        pt: "Desenvolver (progredir / criar projetos)",
+        es: "Desenvolver (desembrulhar pacotes e fitas)",
+        desc: "Evoluir projetos é 'desarrollar'. 'Desenvolver' em espanhol é retirar embrulhos de um presente.",
+        ex: "*Al desenvolver el paquete encontré un modelo para desarrollar -> Ao desembrulhar o pacote encontrei um modelo para desenvolver."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "DESPIDO vs. DESPIDO",
+        pt: "Despido (desvestido / sem roupa)",
+        es: "Despido (demissão de trabalho)",
+        desc: "Estar sem roupa diz-se 'desnudo'. No espanhol 'el despido' é a demissão formal de um empregado.",
+        ex: "*Lo encontraron desvestido y hubo un despido -> Encontraram-no despido e houve uma demissão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "DEVAGAR vs. DIVAGAR",
+        pt: "Devagar (sem pressa / lentamente)",
+        es: "Divagar (devanear / delirar pensamentos)",
+        desc: "Lentamente diz-se 'despacio'. 'Divagar' significa afastar-se do assunto com pensamentos soltos.",
+        ex: "*Caminando despacio, dejando la mente divagar -> Caminhando devagar, deixando a mente divagar em devaneios."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "DOCE vs. DOCE",
+        pt: "Doce (alimento açucarado / sobremesa)",
+        es: "Doce (numeral 12)",
+        desc: "Alimento doce diz-se 'dulce'. A palavra idêntica 'doce' em espanhol representa o numeral doze (12).",
+        ex: "*El dulce cuesta doce dólares -> O doce custa doze dólares."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "EMBARAÇADA vs. EMBARAZADA",
+        pt: "Embaraçada (envergonhada / sem jeito)",
+        es: "Embarazada (grávida / gestante)",
+        desc: "Estar confusa ou com vergonha é 'avergonzada'. Dizer 'estoy embarazada' anuncia uma gestação de bebê!",
+        ex: "*Estaba avergonzada de mostrarse embarazada -> Estava embaraçada de mostrar-se grávida."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ENCOSTA vs. ENCUESTA",
+        pt: "Encosta (declive / encosta de serra)",
+        es: "Encuesta (pesquisa de opinião / enquete)",
+        desc: "O declive montanhoso chama-se 'ladera'. 'Encuesta' é a pesquisa estatística com questionário.",
+        ex: "*Una encuesta en la ladera -> Uma pesquisa de opinião na encosta da serra."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ENGRAÇADO vs. ENGRASADO",
+        pt: "Engraçado (divertido / cômico)",
+        es: "Engrasado (coberto de óleo ou graxa mecânica)",
+        desc: "Divertido diz-se 'gracioso'. Em espanhol, 'engrasado' significa besuntado de graxa pesada.",
+        ex: "*Fue muy divertido verlo todo engrasado -> Foi muito engraçado vê-lo todo engraxado."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ÉS vs. ES",
+        pt: "És (2ª pessoa - tu és)",
+        es: "Es (3ª pessoa - ele é / você é)",
+        desc: "No espanhol 'tú eres' corresponde ao português 'tu és'. A forma 'es' no castelhano aplica-se a 'él/ella/usted'.",
+        ex: "*Tú eres fuerte y él es tranquilo -> Tu és forte e ele é tranquilo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESCOVA vs. ESCOBA",
+        pt: "Escova (escova de dentes / de cabelo)",
+        es: "Escoba (vassoura de varrer chão)",
+        desc: "Para dentes e cabelos usa-se 'cepillo'. 'Escoba' em espanhol é a vassoura doméstica de limpeza.",
+        ex: "*La que está con la escoba se peinó con cepillo -> Aquela com a vassoura escovou o cabelo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESCRITÓRIO vs. ESCRITORIO",
+        pt: "Escritório (sala comercial de trabalho)",
+        es: "Escritorio (escrivaninha / mesa com gavetas)",
+        desc: "O imóvel comercial é 'la oficina'. O móvel de madeira onde se apoia o teclado é 'el escritorio'.",
+        ex: "*El escritorio de la oficina -> A escrivaninha do escritório."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESQUISITA vs. EXQUISITA",
+        pt: "Esquisita (estranha / bizarra / fora do comum)",
+        es: "Exquisita (deliciosa / saborosa / primorosa)",
+        desc: "Dizer que uma refeição está 'exquisita' é o maior elogio de sabor que se pode fazer ao cozinheiro.",
+        ex: "*Es una comida rara, pero está exquisita -> É uma comida esquisita, mas é deliciosa."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESTAFA vs. ESTAFA",
+        pt: "Estafa (exaustão física e nervosa)",
+        es: "Estafa (golpe / fraude financeira criminosa)",
+        desc: "Estar estafado de trabalhar é 'estar agotado'. Em espanhol, 'estafa' é um golpe criminoso de extorsão.",
+        ex: "*La estafa me dejó agotado -> O golpe financeiro deixou-me estafado mentalmente."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESTOFADO vs. ESTOFADO",
+        pt: "Estofado (revestimento de sofá / espuma)",
+        es: "Estofado (guisado cozido de carne com legumes)",
+        desc: "Revestir bancos é 'tapizar'. O 'estofado' na culinária é uma clássica carne ensopada com batatas.",
+        ex: "*El tapizado se manchó con el estofado -> O estofado do sofá manchou-se com o ensopado de carne."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ESTUFA vs. ESTUFA",
+        pt: "Estufa (viveiro envidraçado de plantas)",
+        es: "Estufa (aquecedor de ambiente doméstico)",
+        desc: "O viveiro botânico chama-se 'invernadero'. 'Estufa' em espanhol é o aquecedor elétrico ou a gás.",
+        ex: "*La estufa del invernadero está muy fuerte -> O aquecedor da estufa de plantas está muito quente."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "FECHADO vs. FECHADO",
+        pt: "Fechado (cerrado / sem abertura)",
+        es: "Fechado (com data carimbada / datado)",
+        desc: "Porta fechada é 'cerrada'. 'Fechado' deriva de 'fecha' (data de calendário): documento datado.",
+        ex: "*El sobre cerrado está fechado -> O envelope fechado está datado."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "FIRMAR vs. FIRMAR",
+        pt: "Firmar (apoiar com firmeza / assegurar)",
+        es: "Firmar (assinar documentos com assinatura)",
+        desc: "Assinar um contrato diz-se 'firmar'. Para firmar o passo com firmeza use 'afirmar' ou 'apoyar'.",
+        ex: "*Para asegurar su posición es mejor firmar aquí -> Para firmar sua posição é melhor assinar aqui."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "FRACO vs. FLACO",
+        pt: "Fraco (debilitado / sem forças)",
+        es: "Flaco (magro de compleição física)",
+        desc: "Sem vigor físico diz-se 'débil'. No espanhol 'flaco' refere-se unicamente ao corpo magro.",
+        ex: "*Está débil porque está muy flaco -> Está fraco porque está muito magro."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "FRANJA vs. FRANJA",
+        pt: "Franja (corte de cabelo na testa)",
+        es: "Franja (faixa colorida / tira delimitada)",
+        desc: "Cabelo sobre a testa é 'flequillo'. 'Franja' em espanhol é uma faixa territorial (ex: Franja de Gaza).",
+        ex: "*El flequillo parece una franja de color -> A franja de cabelo parece uma faixa geométrica."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GALEGO vs. GALLEGO",
+        pt: "Galego (pessoa loira de olhos claros)",
+        es: "Gallego (natural da Galícia / Espanha)",
+        desc: "No Nordeste do Brasil chama-se loiros de galegos. Em espanhol 'gallego' é unicamente quem nasce na Galícia.",
+        ex: "*El rubio es gallego -> O loiro é natural da Galícia."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GALERA vs. GALERA",
+        pt: "Galera (turma de amigos / multidão)",
+        es: "Galera (cartola de mágico / navio antigo a remos)",
+        desc: "Em espanhol 'galera' é a cartola formal ou a embarcação histórica movida a remos.",
+        ex: "*En nuestro grupo solo uno usa galera -> Na nossa galera só um usa cartola na cabeça."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GARRAFA vs. GARRAFA",
+        pt: "Garrafa (recipiente de vidro para bebidas)",
+        es: "Garrafa (botijão de gás comprimido)",
+        desc: "Garrafa de água ou vinho diz-se 'botella'. No Rio da Prata, 'garrafa' é o botijão de gás de cozinha.",
+        ex: "*Una botella de vino y una garrafa de gas -> Uma garrafa de vinho e um botijão de gás."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GARROTE vs. GARROTE",
+        pt: "Garrote (torniquete médico de primeiros socorros)",
+        es: "Garrote (porrete pesado de madeira / clava)",
+        desc: "A compressão de vasos sanguíneos diz-se 'torniquete'. Em espanhol 'garrote' é um pedaço de pau grosso.",
+        ex: "*Lo golpearon con un garrote y le pusieron un torniquete -> Bateram-lhe com um porrete e puseram um garrote médico."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GOMA vs. GOMA",
+        pt: "Goma (amido de engomar camisas)",
+        es: "Goma (borracha de apagar / pneu)",
+        desc: "Engomar roupas é 'almidonar'. Em espanhol 'goma' é a borracha de apagar traços de grafite.",
+        ex: "*La camisa con almidón quedó dura como una goma -> A camisa com goma ficou dura como borracha."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "GROSSO vs. GROSO",
+        pt: "Grosso (mal-educado / áspero)",
+        es: "Groso (gênio / craque / pessoa formidável)",
+        desc: "No Rio da Prata, chamar alguém de 'groso' é um grande elogio de reconhecimento e admiração.",
+        ex: "*Es un poco grosero pero igual es un groso en el fútbol -> É um pouco mal-educado, mas é um craque de bola."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "HOJE vs. OYE",
+        pt: "Hoje (dia atual)",
+        es: "Oye (imperativo do verbo ouvir / escuta tu)",
+        desc: "Pela pronúncia idêntica, 'oye' soa como 'hoje'. 'Oye' significa escute ou ouça.",
+        ex: "*¡Oye! Hoy es un gran día -> Escuta! Hoje é um grande dia."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ILUDIR vs. ELUDIR",
+        pt: "Iludir (enganar falsamente)",
+        es: "Eludir (esquivar-se / evitar dificuldades)",
+        desc: "'Eludir' em espanhol significa desviar-se habilmente de um obstáculo ou golpe.",
+        ex: "*No me voy a engañar; no podré eludir el problema -> Não vou me iludir; não poderei evitar o problema."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "JANTA vs. LLANTA",
+        pt: "Janta (refeição noturna)",
+        es: "Llanta (calota / aro de pneu de carro)",
+        desc: "O 'll' argentino com som chiado faz 'llanta' soar acusticamente como janta.",
+        ex: "*Iba a una cena y perdí una llanta del coche -> Ia para um jantar e perdi uma calota do pneu."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "LADRA vs. LADRA",
+        pt: "Ladra (ladra / mulher que furta)",
+        es: "Ladra (late o cão)",
+        desc: "A criminosa é 'ladrona'. 'Ladra' em espanhol é a conjugação do verbo latir canino.",
+        ex: "*El perro le ladra a la ladrona -> O cachorro late para a ladra."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "LAPISEIRA vs. LAPICERA",
+        pt: "Lapiseira (instrumento com grafites finos)",
+        es: "Lapicera (caneta esferográfica comum)",
+        desc: "No espanhol rioplatense, 'lapicera' é a caneta esferográfica. A lapiseira diz-se 'portaminas'.",
+        ex: "*No escribas con portaminas, hazlo con lapicera -> Não escreva de lapiseira, faça de caneta."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "LARGO vs. LARGO",
+        pt: "Largo (amplo em largura)",
+        es: "Largo (comprido em comprimento linear)",
+        desc: "'Largo' em espanhol é comprimento longitudinal. O que é espaçoso em largura diz-se 'ancho'.",
+        ex: "*El puente es más largo que ancho -> A ponte é mais comprida que larga."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "LATIR vs. LATIR",
+        pt: "Latir (latido de cães)",
+        es: "Latir (pulsar rítmico do coração)",
+        desc: "O latido canino é 'ladrar'. Em espanhol 'latir' é o bater das batidas cardíacas.",
+        ex: "*El perro va a ladrar y tu corazón va a latir fuerte -> O cão vai latir e seu coração vai bater forte."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "LUSTRE vs. LUSTRE",
+        pt: "Lustre (luminária suspensa de cristais)",
+        es: "Lustre (polimento / brilho acetinado)",
+        desc: "O lustre de teto chama-se 'araña'. 'Lustre' em espanhol é o brilho obtido após encerar.",
+        ex: "*La araña del techo necesita un lustre -> O lustre do teto precisa de um polimento."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MALA vs. MALA",
+        pt: "Mala (bagagem de viagem)",
+        es: "Mala (mulher má / ruim)",
+        desc: "A mala de roupas é 'maleta'. 'Mala' em espanhol é o feminino do adjetivo mau ('malo').",
+        ex: "*La maleta de la mujer mala -> A mala da mulher má."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MANCO vs. MANCO",
+        pt: "Manco (que manca das pernas / coxo)",
+        es: "Manco (sem um braço ou sem uma mão)",
+        desc: "Quem manca de uma das pernas é 'cojo' ou 'rengo'. Em espanhol 'manco' é quem perdeu braço ou mão.",
+        ex: "*Aparte de cojo, es manco -> Além de manco de perna, não tem uma mão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MÁS vs. MÁS",
+        pt: "Más (feminino plural de má)",
+        es: "Más (advérbio de quantidade / mais)",
+        desc: "'Más' com acento gráfico em espanhol é o advérbio de adição correspondente a 'mais'.",
+        ex: "*Más malas noticias -> Mais más notícias."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MERCEARIA vs. MERCERÍA",
+        pt: "Mercearia (venda de secos e molhados)",
+        es: "Mercería (armarinho de aviamentos e botões)",
+        desc: "Para alimentos procura-se um 'almacén'. A 'mercería' vende linhas, agulhas e fechos.",
+        ex: "*Hay un almacén de comida y una mercería de costura -> Há uma mercearia e um armarinho de aviamentos."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MOLE vs. MOLE",
+        pt: "Mole (macio / suave / flácido)",
+        es: "Mole (estrutura colossal de grande volume)",
+        desc: "Consistência macia diz-se 'blando'. Uma 'mole' em espanhol é uma construção gigantesca.",
+        ex: "*Una mole de arena blanda -> Um volume gigantesco de areia mole."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "MORRO vs. MORRO",
+        pt: "Morro (colina / monte de terra)",
+        es: "Morro (focinho de animais)",
+        desc: "A colina de terra é 'cerro'. 'Morro' no espanhol refere-se à ponta do focinho de porcos e cães.",
+        ex: "*El morro del perro que vive en el cerro -> O focinho do cão que mora no morro."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "NINHO vs. NIÑO",
+        pt: "Ninho (abrigo de pássaros com ovos)",
+        es: "Niño (garoto / menino de pouca idade)",
+        desc: "O ninho das aves é 'nido'. 'Niño' com 'ñ' é a criança do gênero masculino.",
+        ex: "*El niño tiene un nido -> O garoto tem um ninho."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "OFICINA vs. OFICINA",
+        pt: "Oficina (taller mecânico de reparos)",
+        es: "Oficina (escritório administrativo / sala comercial)",
+        desc: "Para consertar o carro vá a um 'taller'. A 'oficina' é a sala comercial com mesas e arquivos.",
+        ex: "*El taller tiene una oficina -> A oficina mecânica tem um escritório."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "OI vs. HOY",
+        pt: "Oi (saudação informal / olá)",
+        es: "Hoy (dia presente / hoje)",
+        desc: "Pela semelhança sonora, o cumprimento 'oi' pode soar como 'hoy' (o dia de hoje).",
+        ex: "*¡Hola! ¿Qué día es hoy? -> Oi! Que dia é hoje?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "OLHA vs. OLLA",
+        pt: "Olha (verbo olhar / mirar)",
+        es: "Olla (panela / caçarola de cozinha)",
+        desc: "A caçarola de metal para cozinhar diz-se 'olla'. O ato de prestar atenção visual é 'mirar'.",
+        ex: "*Mira lo que hay en la olla -> Olha o que tem na panela."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "OSSO vs. OSO",
+        pt: "Osso (estrutura do esqueleto)",
+        es: "Oso (mamífero carnívoro urso)",
+        desc: "A peça rígida do corpo diz-se 'hueso'. 'Oso' com um 's' é o animal selvagem.",
+        ex: "*Un hueso de oso -> Um osso de urso."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PADRE vs. PADRE",
+        pt: "Padre (sacerdote / cura eclesiástico)",
+        es: "Padre (pai de família)",
+        desc: "Em espanhol 'padre' é o genitor paterno. O sacerdote religioso chama-se 'el cura'.",
+        ex: "*El cura me mandó a hablar con mi padre -> O padre mandou-me conversar com meu pai."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PALCO vs. PALCO",
+        pt: "Palco (tablado elevado de artistas)",
+        es: "Palco (camarote de teatro / tribuna)",
+        desc: "O tablado onde atuam atores chama-se 'escenario'. 'Palco' em espanhol é o camarote reservado.",
+        ex: "*Desde el palco del teatro veían el escenario -> Do camarote do teatro viam o palco de apresentação."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PAPELÃO vs. PAPELÓN",
+        pt: "Papelão (material grosso de caixas)",
+        es: "Papelón (vergonha / mico / vexame público)",
+        desc: "'Hacer un papelón' é passar por vergonha diante de todos. O material de caixas é 'cartón'.",
+        ex: "*Fue un papelón salir de la caja de cartón -> Foi um vexame vê-lo sair da caixa de papelão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PATENTE vs. PATENTE",
+        pt: "Patente (posto militar)",
+        es: "Patente (placa de automóvel)",
+        desc: "A placa com números e letras dos carros chama-se 'patente' na Argentina e Uruguai.",
+        ex: "*La patente del coche de un militar de alto grado -> A placa do carro de um militar de alta patente."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PEGADA vs. PEGADA",
+        pt: "Pegada (rastro de pisada no chão)",
+        es: "Pegada (grudada com adesivo / colada)",
+        desc: "O rastro do pé na terra é 'huella'. 'Pegada' no espanhol é o particípio feminino de colar.",
+        ex: "*Me quedé pegada en el barro y dejé una huella -> Fiquei colada no barro e deixei uma pegada."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PELADA vs. PELADA",
+        pt: "Pelada (desnuda / sem roupa)",
+        es: "Pelada (calva / mulher sem cabelo)",
+        desc: "Estar despida é 'desnuda'. Em espanhol, quem não tem fios de cabelo na cabeça diz-se 'pelado' ou 'pelada'.",
+        ex: "*La mujer desnuda era pelada -> A mulher despida era calva."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PICHAR vs. PISHAR",
+        pt: "Pichar (grafitar paredes urbanas)",
+        es: "Pishar (urinar / urinar na rua - calão)",
+        desc: "Grafitar paredes urbanas é 'grafitar'. No calão argentino, 'pishar' é fazer xixi.",
+        ex: "*El muro grafitado está mojado de orina -> O muro pichado está mijado."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PIPA vs. PIPA",
+        pt: "Pipa (brinquedo voador de papel / cometa)",
+        es: "Pipa (cachimbo de tabaco / semente de girassol)",
+        desc: "O brinquedo empinado no vento diz-se 'cometa' ou 'barrilete'. Em espanhol 'pipa' é cachimbo.",
+        ex: "*El barrilete tiene la forma de una pipa -> A pipa de papel tem o formato de um cachimbo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PISCA vs. PIZCA",
+        pt: "Pisca (pisca-pisca de carro / piscar de olhos)",
+        es: "Pizca (pitada ínfima / porção minúscula)",
+        desc: "'Una pizca de sal' é uma porção mínima segurada na ponta dos dedos. Piscar olhos é 'guiñar'.",
+        ex: "*Coloca una pizca de sal y me guiña un ojo -> Coloca uma pitada de sal e pisca o olho para mim."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "POENTE vs. PUENTE",
+        pt: "Poente (oeste / onde o sol se põe)",
+        es: "Puente (ponte de travessia)",
+        desc: "Onde o sol se põe é 'el poniente'. A construção arquitetônica sobre rios chama-se 'el puente'.",
+        ex: "*Una foto del puente con el sol poniente -> Uma foto da ponte com o sol poente ao fundo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "POLVO vs. POLVO",
+        pt: "Polvo (molusco marinho com tentáculos)",
+        es: "Polvo (pó / poeira fina sobre superfícies)",
+        desc: "O fruto do mar é 'pulpo'. A palavra 'polvo' em espanhol significa poeira acumulada em móveis.",
+        ex: "*El dibujo del pulpo está lleno de polvo -> O desenho do polvo está cheio de pó."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "POIS NÃO vs. PUES NO",
+        pt: "Pois não! (com certeza / em que posso ajudar?)",
+        es: "Pues no (claro que não / de jeito nenhum)",
+        desc: "No Brasil é cumprimento solícito. Em espanhol, 'pues no' expressa recusa taxativa e negativa.",
+        ex: "*Sí, señor vs. Pues no, no tenemos eso -> Pois não, claro que sim vs. Pois não temos nada disso."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PRATICAR vs. PLATICAR",
+        pt: "Praticar (exercitar / treinar esportes)",
+        es: "Platicar (conversar / bater papo)",
+        desc: "No México e América Central, 'platicar' é bater papo descontraído entre amigos.",
+        ex: "*Vamos a practicar cómo platicar -> Vamos treinar como conversar descontraído."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PRESUNTO vs. PRESUNTO",
+        pt: "Presunto (fatiado curado de porco)",
+        es: "Presunto (suposto / suspeito legal)",
+        desc: "Para a comida peça 'jamón'. Nos tribunais julga-se o 'presunto culpable'.",
+        ex: "*El presunto ladrón del jamón -> O suposto ladrão do presunto."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PROLIXO vs. PROLIJO",
+        pt: "Prolixo (que fala demais / confuso)",
+        es: "Prolijo (meticuloso / caprichoso / arrumado)",
+        desc: "Dizer em espanhol que o trabalho é 'muy prolijo' é um elogio de que a pessoa é asseada e detalhista.",
+        ex: "*Estaba prolijo pero al hablar era muy confuso -> Estava muito arrumado, mas ao falar era prolixo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "PROPINA vs. PROPINA",
+        pt: "Propina (suborno ilegal / corrupção)",
+        es: "Propina (gorjeta dada ao garçom)",
+        desc: "Deixar uma 'propina' ao garçom é gratificação pelo serviço prestado. Suborno ilegal é 'coima'.",
+        ex: "*Le dio una propina al mozo -> Deu uma gorjeta ao garçom."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "QUEDA vs. QUEDA",
+        pt: "Queda (tombo / queda física)",
+        es: "Queda (fica [verbo quedar-se])",
+        desc: "'¿Dónde queda el hotel?' significa 'Onde fica o hotel?'. O tombo no chão chama-se 'caída'.",
+        ex: "*¿Dónde queda la caída de agua? -> Onde fica a queda-d'água?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "QUESITO vs. QUESITO",
+        pt: "Quesito (item de avaliação / critério)",
+        es: "Quesito (pedacinho de queijo)",
+        desc: "Em espanhol, um 'quesito' é o diminutivo de queijo. O critério avaliativo é 'requisito'.",
+        ex: "*El requisito previo es donar un trozo de queso -> O quesito prévio é doar um queijinho."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RACHA vs. RACHA",
+        pt: "Racha (corrida de carros clandestina)",
+        es: "Racha (sequência contínua de sorte ou azar)",
+        desc: "'Una buena racha' em espanhol é uma fase contínua de acontecimentos felizes e sucesso.",
+        ex: "*Tuvimos una buena racha en la competición -> Tivemos uma sequência de ótimos resultados na competição."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RALO vs. RALO",
+        pt: "Ralo (grelha de escoamento no chão)",
+        es: "Ralo (escasso / pouco denso)",
+        desc: "O ralo do banheiro diz-se 'rejilla'. Em espanhol, 'pelo ralo' é o cabelo escasso e ralo.",
+        ex: "*Hay pelos en la rejilla porque su cabello es ralo -> Há fios de cabelo no ralo porque o cabelo dele é ralo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RAPAZ vs. RAPAZ",
+        pt: "Rapaz (rapaz / jovem moço)",
+        es: "Rapaz (ave de rapina / inclinado ao roubo)",
+        desc: "Chamar alguém de 'rapaz' em espanhol é acusá-lo de larápio ou ave de presa. O jovem é 'muchacho'.",
+        ex: "*Ese muchacho tiene conducta rapaz -> Aquele rapaz comporta-se como um larápio."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RASCUNHO vs. RASGUÑO",
+        pt: "Rascunho (esboço inicial de documento)",
+        es: "Rasguño (arranhão na pele)",
+        desc: "O esboço preliminar é 'borrador'. 'Rasguño' é a escoriação causada pelas unhas de um gato.",
+        ex: "*El borrador del texto tiene un rasguño -> O rascunho do relatório tem um arranhão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RATO vs. RATO",
+        pt: "Rato (roedor pequeno)",
+        es: "Rato (espaço curto de tempo)",
+        desc: "'Esperame un rato' quer dizer 'espere-me um momento'. O roedor é 'el ratón' ou 'la rata'.",
+        ex: "*Hace un rato vi una rata -> Há pouco tempo vi um rato."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RECORRER vs. RECORRER",
+        pt: "Recorrer (apelar na justiça / reclamar)",
+        es: "Recorrer (percorrer caminhos e estradas)",
+        desc: "Em espanhol, 'recorrer' é transitar distâncias. A apelação jurídica diz-se 'apelar'.",
+        ex: "*Voy a reclamar por tener que recorrer tanto camino -> Vou recorrer por ter de percorrer tanta distância."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "REMELA vs. GEMELA",
+        pt: "Remela (secreção ocular matinal)",
+        es: "Gemela (irmã gêmea idêntica)",
+        desc: "A secreção seca nos olhos ao acordar diz-se 'lagaña'. 'Gemela' é a irmã gêmea.",
+        ex: "*Mi hermana gemela tiene una lagaña en su ojo -> Minha irmã gêmea está com uma remela no olho."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RISCO vs. RISCO",
+        pt: "Risco (perigo / ameaça)",
+        es: "Risco (penhasco escarpado / despenhadeiro)",
+        desc: "Correr perigo em espanhol é 'correr riesgo'. 'Risco' é o penhasco rochoso vertical na montanha.",
+        ex: "*Es un riesgo subir a ese risco -> É um risco grande escalar esse penhasco íngreme."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ROMBO vs. ROMBO",
+        pt: "Rombo (abertura violenta / prejuízo)",
+        es: "Rombo (figura geométrica do losango)",
+        desc: "Em espanhol, 'rombo' é o losango geométrico. Um rombo aberto em muros diz-se 'agujero'.",
+        ex: "*El rombo tiene un agujero en el centro -> O losango tem um rombo no centro."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "RUIVA vs. RUBIA",
+        pt: "Ruiva (cabelos avermelhados)",
+        es: "Rubia (mulher de cabelos loiros)",
+        desc: "Mulher de cabelos loiros em espanhol é 'rubia'. Quem tem cabelos ruivos chama-se 'pelirroja'.",
+        ex: "*La rubia y la pelirroja salieron juntas -> A loira e a ruiva saíram juntas."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SALADA vs. SALADA",
+        pt: "Salada (prato de verduras cruas)",
+        es: "Salada (comida com excesso de sal)",
+        desc: "O prato de verduras chama-se 'ensalada'. Dizer que a comida está 'salada' significa que está muito salgada.",
+        ex: "*Una ensalada muy salada -> Uma salada muito salgada."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SALTO vs. SALTO",
+        pt: "Salto (salto alto de calçados)",
+        es: "Salto (pulo para cima / salto)",
+        desc: "A parte traseira elevada de calçados femininos é 'taco'. 'Salto' no espanhol é o pulo.",
+        ex: "*Dio un salto y rompió el taco del zapato -> Deu um pulo e quebrou o salto do sapato."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SENHA vs. SEÑA",
+        pt: "Senha (código secreto / password)",
+        es: "Seña (gesto físico com a mão / aceno)",
+        desc: "A chave secreta de bancos e sistemas diz-se 'contraseña'. 'Hacer una seña' é gesticular.",
+        ex: "*Me hizo una seña para que escriba la contraseña -> Fez-me um sinal para que eu digitasse a senha."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SETA vs. SETA",
+        pt: "Seta (flecha indicativa de direção)",
+        es: "Seta (cogumelo comestível)",
+        desc: "A indicação direcional de placas é 'flecha'. Na Espanha, 'seta' é o fungo comestível (cogumelo).",
+        ex: "*La flecha en el cartel indica dónde está la seta -> A seta no cartaz indica onde está o cogumelo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SOBREMESA vs. SOBREMESA",
+        pt: "Sobremesa (prato doce pós-refeição)",
+        es: "Sobremesa (conversa amigável à mesa após comer)",
+        desc: "O doce servido chama-se 'postre'. A 'sobremesa' é o costume social de continuar conversando à mesa.",
+        ex: "*Tuvimos una linda sobremesa después del postre -> Tivemos uma linda conversa após a sobremesa."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SOBRENOME vs. SOBRENOMBRE",
+        pt: "Sobrenome (nome de família oficial)",
+        es: "Sobrenombre (apelido popular / alcunha)",
+        desc: "'Sobrenombre' em espanhol é o apelido. O sobrenome oficial de família chama-se 'apellido'.",
+        ex: "*Mi apellido es Ferreira y mi sobrenombre es Pepe -> Meu sobrenome é Ferreira e meu apelido é Pepe."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SOLA vs. SOLA",
+        pt: "Sola (sola de sapato)",
+        es: "Sola (mulher solitária / sem companhia)",
+        desc: "A borracha sob o calçado é 'suela'. Em espanhol 'estar sola' significa estar desacompanhada.",
+        ex: "*La suela de su zapato tiene una sola pieza -> A sola do sapato dela tem uma única peça."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SORVETE vs. SORBETE",
+        pt: "Sorvete (sobremesa gelada de massa)",
+        es: "Sorbete (canudinho plástico de refrigerante)",
+        desc: "O doce congelado chama-se 'helado'. No Rio da Prata, 'sorbete' é o canudinho para beber refrigerantes.",
+        ex: "*Bebió el refresco con un sorbete y comió helado -> Bebeu o refrigerante de canudinho e tomou sorvete."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SÓTÃO vs. SÓTANO",
+        pt: "Sótão (compartimento no teto)",
+        es: "Sótano (porão subterrâneo)",
+        desc: "Sentidos inversos: 'sótano' fica embaixo da terra (porão). Sob o telhado fica o 'altillo'.",
+        ex: "*Abajo está el sótano y arriba el altillo -> Embaixo fica o porão e no alto fica o sótão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SUCESSO vs. SUCESO",
+        pt: "Sucesso (triunfo / êxito consagrado)",
+        es: "Suceso (acontecimento / fato / evento)",
+        desc: "Vitória profissional diz-se 'tener éxito'. Em espanhol um 'suceso' é apenas um acontecimento policial ou notícia.",
+        ex: "*El suceso policial no impidió el éxito del festival -> A ocorrência policial não impediu o sucesso do festival."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SUJA vs. SUYA",
+        pt: "Suja (encardida / com sujeira)",
+        es: "Suya (pronome possessivo dela / de você)",
+        desc: "Coisa encardida escreve-se 'sucia'. A palavra 'suya' é o pronome possessivo.",
+        ex: "*La suya está sucia -> A sua roupa está suja."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SUMA vs. SUMA",
+        pt: "Suma (desapareça daqui)",
+        es: "Suma (operação matemática de somar)",
+        desc: "Desaparecer diz-se '¡desaparezca!'. Em espanhol 'suma' é a conta aritmética de somar valores.",
+        ex: "*Mejor que desaparezca antes de hacer la suma -> Melhor que você suma antes de fazermos a soma dos valores."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "SUMIDO vs. SUMIDO",
+        pt: "Sumido (desaparecido / ausente)",
+        es: "Sumido (afundado em sofrimento / mergulhado)",
+        desc: "Estar sumido sem dar notícias é 'estar desaparecido'. 'Estar sumido en el dolor' é afundado na dor.",
+        ex: "*Está sumido en el dolor desde que su perro se ha perdido -> Está afundado na dor desde que seu cão sumiu."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TALHER vs. TALLER",
+        pt: "Talher (garfo, faca e colher)",
+        es: "Taller (oficina mecânica ou estúdio de arte)",
+        desc: "Peças de mesa são 'cubiertos'. Pedir talheres em espanhol soa como a palavra 'taller' (oficina mecânica).",
+        ex: "*¿Hay cubiertos en el taller? -> Há talheres na oficina?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TARADO vs. TARADO",
+        pt: "Tarado (depravado sexual)",
+        es: "Tarado (bobo / com tara ou defeito leve)",
+        desc: "Em espanhol 'tarado' é uma ofensa leve equivalente a palerma, tonto ou desajeitado.",
+        ex: "*Es un poco tonto y medio tarado -> É um pouco bobo e meio desastrado."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TARJETA vs. TARJETA",
+        pt: "Tarjeta (faixa estreita de plástico)",
+        es: "Tarjeta (cartão bancário de crédito / débito)",
+        desc: "Em espanhol, 'tarjeta' é o cartão de crédito, débito ou visitas.",
+        ex: "*Pagué la cuenta con tarjeta de débito -> Paguei a conta com cartão de débito."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TELA vs. TELA",
+        pt: "Tela (visor de celular ou monitor)",
+        es: "Tela (tecido têxtil de algodão / pano)",
+        desc: "O monitor eletrônico chama-se 'pantalla'. Em espanhol 'tela' é tecido têxtil de roupa.",
+        ex: "*La pantalla del monitor está limpia, pero la tela está sucia -> A tela do monitor está limpa, mas o tecido está sujo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TÊNIS vs. TENIS",
+        pt: "Tênis (calçado esportivo nos pés)",
+        es: "Tenis (esporte com raquetes)",
+        desc: "O calçado esportivo chama-se 'zapatillas'. Em espanhol 'tenis' refere-se ao jogo de tênis.",
+        ex: "*Usa zapatillas para jugar al tenis -> Calça tênis para jogar tênis."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TENTAR vs. TENTAR",
+        pt: "Tentar (experimentar / fazer tentativa)",
+        es: "Tentar (instigar o demônio / induzir ao pecado)",
+        desc: "Fazer uma tentativa em espanhol é 'intentar'. O verbo 'tentar' carrega forte sentido de seduzir para o pecado.",
+        ex: "*Voy a intentar no tentar al destino -> Vou tentar não instigar o destino."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TIRAR vs. TIRAR",
+        pt: "Tirar (tirar fotos / raio-X / retirar)",
+        es: "Tirar (jogar no lixo / arremessar fora)",
+        desc: "Para tirar foto ou radiografia usa-se 'sacar'. 'Tirar' em espanhol significa jogar objetos no cesto de lixo.",
+        ex: "*Voy a sacar una foto al tirar la basura -> Vou tirar uma foto ao jogar fora o lixo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TOCAIA vs. TOCAYA",
+        pt: "Tocaia (emboscada planejada)",
+        es: "Tocaya (xará feminina / com mesmo nome)",
+        desc: "Duas pessoas com o mesmo nome de batismo chamam-se de 'tocayas' (xarás).",
+        ex: "*Mi tocaya me preparó una emboscada -> A minha xará preparou uma tocaia para mim."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TORCIDA vs. TORCIDA",
+        pt: "Torcida (hinchada / fãs no estádio)",
+        es: "Torcida (torta / revirada / inclinada)",
+        desc: "Os torcedores de futebol são 'la hinchada'. No espanhol 'torcida' significa torta ou encurvada.",
+        ex: "*La hinchada festejaba junto a la torre torcida -> A torcida comemorava junto à torre torta."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TORTO vs. TUERTO",
+        pt: "Torto (desalinhado / curvo)",
+        es: "Tuerto (caolho / cego de um olho)",
+        desc: "Desalinhado é 'torcido'. Em espanhol 'tuerto' é a pessoa desprovida da visão de um dos olhos.",
+        ex: "*El hombre tuerto tenía la nariz torcida -> O homem caolho tinha o nariz torto."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TRAÍDO vs. TRAÍDO",
+        pt: "Traído (vítima de traição)",
+        es: "Traído (particípio do verbo traer / trazido)",
+        desc: "'Traído' em espanhol é apenas o particípio de trazer. A vítima de deslealdade é 'traicionado'.",
+        ex: "*¿Has traído al amigo traicionado? -> Você trouxe o amigo traído?"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TROMBA vs. TROMBA",
+        pt: "Tromba (nariz longo do elefante)",
+        es: "Tromba (redemoinho de tempestade no mar)",
+        desc: "O focinho alongado do elefante é 'trompa'. 'Tromba marina' em espanhol é o redemoinho no mar.",
+        ex: "*Una tromba marina destruyó la playa -> Uma tromba-d'água destruiu o litoral."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "TUFO vs. TUFO",
+        pt: "Tufo (porção solta de cabelos)",
+        es: "Tufo (cheiro ruim / mau cheiro)",
+        desc: "No espanhol, dizer que algo 'tiene tufo' significa que exala cheiro ruim ou bafo desagradável.",
+        ex: "*¡Qué tufo sale de ese manojo de pelos quemados! -> Que cheiro ruim sai desse tufo de cabelos queimados!"
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VAGA vs. VAGA",
+        pt: "Vaga (vaga de trabalho / emprego)",
+        es: "Vaga (mulher preguiçosa / ociosa)",
+        desc: "O posto aberto é 'vacante' ou 'puesto'. 'Vaga' em espanhol é a pessoa que não quer trabalhar.",
+        ex: "*Hay una vacante libre, pero ella es muy vaga -> Há uma vaga aberta, mas ela é muito preguiçosa."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VARANDA vs. BARANDA",
+        pt: "Varanda (sacada de prédio / terraço)",
+        es: "Baranda (corrimão de escada / parapeito)",
+        desc: "O apoio de mãos em escadas é 'baranda'. A sacada com vista panorâmica é 'el balcón'.",
+        ex: "*Apóyate en la baranda del balcón -> Apoie-se no corrimão da varanda."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VASO vs. VASO",
+        pt: "Vaso (recipiente de flores e plantas)",
+        es: "Vaso (copo de vidro para água)",
+        desc: "Onde se bebe água é 'el vaso'. O objeto com terra para flores chama-se 'florero' ou 'maceta'.",
+        ex: "*Un florero en la mesa y un vaso en la mano -> Um vaso na mesa e um copo na mão."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VASSOURA vs. BASURA",
+        pt: "Vassoura (instrumento de cerdas para varrer)",
+        es: "Basura (lixo / detritos descartados)",
+        desc: "Para varrer o chão usa-se 'la escoba'. 'La basura' em espanhol é o refugo ou lixo.",
+        ex: "*Una escoba para barrer la basura -> Uma vassoura para varrer o lixo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VEDAR vs. VEDAR",
+        pt: "Vedar (impermeabilizar contra vazamentos)",
+        es: "Vedar (proibir / vetar legalmente)",
+        desc: "Aplicar silicone é 'sellar'. 'Vedar' em espanhol significa proibir ou interditar o acesso.",
+        ex: "*Van a prohibir usar materiales que no sellan bien -> Vão vedar (proibir) o que não veda (impermeabiliza)."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VELHO vs. VELLO",
+        pt: "Velho (idoso / pessoa de muita idade)",
+        es: "Vello (pelo fino e curto corporal)",
+        desc: "Pelos dos braços e peito chamam-se 'vello' (com 'v' e 'll'). O idoso escreve-se 'viejo'.",
+        ex: "*El viejo tiene vellos blancos en los brazos -> O velho tem pelos brancos nos braços."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VENDA vs. VENDA",
+        pt: "Venda (comércio / transação de vender)",
+        es: "Venda (atadura médica / faixa de curativo)",
+        desc: "A transação comercial é 'la venta'. Em espanhol 'la venda' é a faixa de curativo de ferimentos.",
+        ex: "*Es una venta de vendas médicas -> É uma venda comercial de ataduras de curativo."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VEREADOR vs. VAREADOR",
+        pt: "Vereador (membro da câmara municipal)",
+        es: "Vareador (treinador / passeador de cavalos)",
+        desc: "O parlamentar municipal diz-se 'concejal'. No hipismo, 'vareador' é o profissional que exercita cavalos.",
+        ex: "*El concejal contrataba a un buen vareador -> O vereador contratava um bom passeador de cavalos."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VEREDA vs. VEREDA",
+        pt: "Vereda (trilha estreita / atalho na mata)",
+        es: "Vereda (calçada de pedestre urbana)",
+        desc: "Na Argentina e Uruguai, o passeio público onde as pessoas caminham nas ruas chama-se 'la vereda'.",
+        ex: "*Hay un sendero en el campo y una vereda en la ciudad -> Há uma vereda na mata e uma calçada na cidade."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "VERME vs. VERME",
+        pt: "Verme (parasita / lombriga)",
+        es: "Verme (ver a mim mesmo / enxergar-se)",
+        desc: "'Verme' no espanhol é a junção do verbo ver com o pronome reflexivo me: 'ver-se no espelho'.",
+        ex: "*No quiero verme como a un gusano arrastrado -> Não quero me olhar como se eu fosse um verme."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "XINGAR vs. CHINGAR",
+        pt: "Xingar (ofender com palavrões)",
+        es: "Chingar (falhar / errar / sentido sexual no México)",
+        desc: "Proferir ofensas em espanhol é 'insultar'. 'Chingar' no México possui múltiplos sentidos fortes.",
+        ex: "*El fallar es una posibilidad, no me insultes -> O errar é uma possibilidade, não me xingue."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ZANGA vs. ZANJA",
+        pt: "Zanga (raiva / aborrecimento)",
+        es: "Zanja (vala aberta no solo / valeta)",
+        desc: "O sentimento de irritação é 'enojo'. Cavar uma 'zanja' em espanhol é abrir uma vala no terreno.",
+        ex: "*Había tanto enojo que todo terminó en una zanja -> Havia tanta zanga que tudo terminou caindo numa valeta."
+      },
+      {
+        cat: "heterosemantico",
+        catName: "Heterossemântico",
+        term: "ZINCO vs. CINCO",
+        pt: "Zinco (metal químico)",
+        es: "Cinco (numeral 5)",
+        desc: "Onde o Z tem pronúncia seseada idêntica a S e C, 'zinc' soa auditivamente igual ao numeral cinco.",
+        ex: "*Cinco chapas de zinc -> Cinco chapas de zinco."
+      },
+
+      // ==================== HETEROGENÉRICOS ====================
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A VIAGEM vs. EL VIAJE (-AGEM -> -AJE)",
+        pt: "Português: A viagem (Feminino)",
+        es: "Espanhol: El viaje (Masculino)",
+        desc: "Regra geral: quase todas as palavras terminadas em -AGEM (femininas no Brasil) viram masculinas em espanhol terminadas em -AJE: el mensaje, el paisaje, el equipaje, el porcentaje, el coraje.",
+        ex: "*El viaje fue largo y el paisaje hermoso -> A viagem foi longa e a paisagem bonita."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A ARMAZENAGEM vs. EL ALMACENAJE",
+        pt: "Português: A armazenagem (Feminino)",
+        es: "Espanhol: El almacenaje (Masculino)",
+        desc: "Segue a regra de terminações em -agem mudando para gênero masculino com -aje.",
+        ex: "*El almacenaje seguro -> A armazenagem segura."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A ANÁLISE vs. EL ANÁLISIS",
+        pt: "Português: A análise (Feminino)",
+        es: "Espanhol: El análisis (Masculino)",
+        desc: "Em espanhol usa-se sempre no masculino: 'el análisis clínico' ou 'el análisis de datos'.",
+        ex: "*El análisis fue detallado -> A análise foi detalhada."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A ÁRVORE vs. EL ÁRBOL",
+        pt: "Português: A árvore (Feminino)",
+        es: "Espanhol: El árbol (Masculino)",
+        desc: "Substantivo vegetal feminino no português que passa a ser masculino no espanhol. Use o artigo 'el'.",
+        ex: "*El árbol verde -> A árvore verde."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A COR vs. EL COLOR",
+        pt: "Português: A cor (Feminino)",
+        es: "Espanhol: El color (Masculino)",
+        desc: "Palavras terminadas em -OR costumam ser masculinas no espanhol: el color, el dolor, el sabor.",
+        ex: "*¿Cuál es tu color favorito? -> Qual é a sua cor favorita?"
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A CORAGEM vs. EL CORAJE",
+        pt: "Português: A coragem (Feminino)",
+        es: "Espanhol: El coraje (Masculino)",
+        desc: "No espanhol é um substantivo masculino acompanhado do artigo 'el'.",
+        ex: "*Mostró mucho coraje -> Demonstrou muita coragem."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A DOR vs. EL DOLOR",
+        pt: "Português: A dor (Feminino)",
+        es: "Espanhol: El dolor (Masculino)",
+        desc: "Em espanhol diz-se 'el dolor de cabeza' (e nunca 'la dolor').",
+        ex: "*Siento un dolor fuerte -> Sinto uma dor forte."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A BAGAGEM vs. EL EQUIPAJE",
+        pt: "Português: A bagagem (Feminino)",
+        es: "Espanhol: El equipaje (Masculino)",
+        desc: "As malas e bolsas de viagem recebem concordância masculina no castelhano.",
+        ex: "*Perdí el equipaje en el aeropuerto -> Perdi a bagagem no aeroporto."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A EQUIPE vs. EL EQUIPO",
+        pt: "Português: A equipe (Feminino)",
+        es: "Espanhol: El equipo (Masculino)",
+        desc: "Tanto para time esportivo quanto para grupo de trabalho, em espanhol é sempre 'el equipo'.",
+        ex: "*El equipo ganó el partido -> A equipe venceu a partida."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A MENSAGEM vs. EL MENSAJE",
+        pt: "Português: A mensagem (Feminino)",
+        es: "Espanhol: El mensaje (Masculino)",
+        desc: "Recados enviados por telefone ou carta são masculinos em espanhol: 'el mensaje de texto'.",
+        ex: "*Recibí tu mensaje -> Recebi sua mensagem."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A ORIGEM vs. EL ORIGEN",
+        pt: "Português: A origem (Feminino)",
+        es: "Espanhol: El origen (Masculino)",
+        desc: "O ponto de nascimento ou princípio de algo exige artigo masculino em espanhol.",
+        ex: "*El origen de las palabras -> A origem das palavras."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A PAISAGEM vs. EL PAISAJE",
+        pt: "Português: A paisagem (Feminino)",
+        es: "Espanhol: El paisaje (Masculino)",
+        desc: "A vista panorâmica natural é masculina: 'un paisaje hermoso'.",
+        ex: "*El paisaje de la sierra -> A paisagem da serra."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "A PONTE vs. EL PUENTE",
+        pt: "Português: A ponte (Feminino)",
+        es: "Espanhol: El puente (Masculino)",
+        desc: "A estrutura de passagem é masculina em espanhol: 'el puente colgante'.",
+        ex: "*Cruzamos el puente -> Cruzamos a ponte."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O LEITE vs. LA LECHE",
+        pt: "Português: O leite (Masculino)",
+        es: "Espanhol: La leche (Feminino)",
+        desc: "Muitos alimentos básicos sofrem inversão: em espanhol o leite é substantivo feminino.",
+        ex: "*La leche está fría -> O leite está frio."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O ALARME vs. LA ALARMA",
+        pt: "Português: O alarme (Masculino)",
+        es: "Espanhol: La alarma (Feminino)",
+        desc: "O aviso sonoro de alerta ou despertador de relógio é feminino em espanhol.",
+        ex: "*Sonó la alarma a las siete -> O alarme tocou às sete."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O COSTUME vs. LA COSTUMBRE",
+        pt: "Português: O costume (Masculino)",
+        es: "Espanhol: La costumbre (Feminino)",
+        desc: "Palavras em -UME no português (o legume, o cume) viram femininas em -UMBRE no espanhol: la costumbre, la legumbre, la cumbre.",
+        ex: "*Es una buena costumbre -> É um bom costume."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O MEL vs. LA MIEL",
+        pt: "Português: O mel (Masculino)",
+        es: "Espanhol: La miel (Feminino)",
+        desc: "O alimento produzido pelas abelhas requer artigo feminino em castelhano.",
+        ex: "*La miel es dulce y pura -> O mel é doce e puro."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O NARIZ vs. LA NARIZ",
+        pt: "Português: O nariz (Masculino)",
+        es: "Espanhol: La nariz (Feminino)",
+        desc: "Parte anatômica que se torna feminina em espanhol: 'la nariz respingona'.",
+        ex: "*Me duele la nariz -> Dói-me o nariz."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O PESADELO vs. LA PESADILLA",
+        pt: "Português: O pesadelo (Masculino)",
+        es: "Espanhol: La pesadilla (Feminino)",
+        desc: "Sonhos ruins e opressivos tornam-se femininos com o sufixo '-illa'.",
+        ex: "*Tuve una pesadilla terrible -> Tive um pesadelo horrível."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O SAL vs. LA SAL",
+        pt: "Português: O sal (Masculino)",
+        es: "Espanhol: La sal (Feminino)",
+        desc: "O condimento básico da culinária exige artigo feminino em espanhol.",
+        ex: "*Por favor, pasa la sal -> Por favor, passe o sal."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O SANGUE vs. LA SANGRE",
+        pt: "Português: O sangue (Masculino)",
+        es: "Espanhol: La sangre (Feminino)",
+        desc: "O fluido corporal é palavra feminina no espanhol: 'la sangre roja'.",
+        ex: "*El análisis de sangre -> O exame de sangue."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O SINAL vs. LA SEÑAL",
+        pt: "Português: O sinal (Masculino)",
+        es: "Espanhol: La料 señal (Feminino)",
+        desc: "Seja um sinal de trânsito ou sinal de telefone, em espanhol usa-se 'la señal'.",
+        ex: "*Una buena señal -> Um bom sinal."
+      },
+      {
+        cat: "heterogenerico",
+        catName: "Heterogenérico",
+        term: "O SORRISO vs. LA SONRISA",
+        pt: "Português: O sorriso (Masculino)",
+        es: "Espanhol: La sonrisa (Feminino)",
+        desc: "Expressão facial que exige concordância feminina no castelhano.",
+        ex: "*Una hermosa sonrisa -> Um lindo sorriso."
+      },
+
+      // ==================== HETEROTÔNICOS ====================
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ACADEMIA vs. ACADEMIA",
+        pt: "Português: A-ca-de-mi-a (Hiato tônico final)",
+        es: "Espanhol: A-ca-de-mia (Paroxítona, força no 'de')",
+        desc: "No espanhol o 'ia' forma ditongo fechado, concentrando a força na sílaba anterior: /aca-DE-mia/.",
+        ex: "Academia no Brasil vs. Aca[de]mia no espanhol."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ÁLCOOL vs. ALCOHOL",
+        pt: "Português: Ál-co-ol (Proparoxítona)",
+        es: "Espanhol: Al-co-hol (Paroxítona, tônica no 'co')",
+        desc: "No espanhol a sílaba tônica recai sobre o meio da palavra: /al-CO-ol/.",
+        ex: "Álcool vs. Al[co]hol."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ALERGIA vs. ALERGIA",
+        pt: "Português: A-ler-gi-a (Hiato tônico final)",
+        es: "Espanhol: A-ler-gia (Paroxítona, força no 'ler')",
+        desc: "Ditongo fechado no final: a sílaba forte é o 'ler' (/a-LER-gia/).",
+        ex: "Alergia vs. A[ler]gia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ALGUÉM vs. ALGUIEN",
+        pt: "Português: Al-guém (Oxítona)",
+        es: "Espanhol: Al-guien (Paroxítona, força no 'al')",
+        desc: "No espanhol a força vai para o início da palavra: /AL-guien/.",
+        ex: "Alguém vs. [Al]guien."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ATMOSFERA vs. ATMÓSFERA",
+        pt: "Português: At-mos-fe-ra (Paroxítona)",
+        es: "Espanhol: At-mós-fe-ra (Proparoxítona com acento)",
+        desc: "No espanhol a palavra leva acento gráfico na antepenúltima sílaba: /at-MÓS-fe-ra/.",
+        ex: "Atmosfera vs. At[mó]sfera."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "BUROCRACIA vs. BUROCRACIA",
+        pt: "Português: Bu-ro-cra-ci-a (Hiato final)",
+        es: "Espanhol: Bu-ro-cra-cia (Paroxítona, força no 'cra')",
+        desc: "Sufixos '-cracia' em espanhol têm tonicidade na sílaba 'cra': /buro-CRA-cia/, /demo-CRA-cia/.",
+        ex: "Burocracia vs. Buro[cra]cia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "CÉREBRO vs. CEREBRO",
+        pt: "Português: Cé-re-bro (Proparoxítona)",
+        es: "Espanhol: Ce-re-bro (Paroxítona, força no 're')",
+        desc: "Em espanhol não tem acento na primeira sílaba: /ce-RE-bro/.",
+        ex: "Cérebro vs. Ce[re]bro."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "COQUETEL vs. CÓCTEL",
+        pt: "Português: Co-que-tel (Oxítona)",
+        es: "Espanhol: Cóc-tel (Paroxítona com tilde no 'cóc')",
+        desc: "A bebida tem a acentuação na primeira sílaba em castelhano: /CÓC-tel/.",
+        ex: "Coquetel vs. [Cóc]tel."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "DIPLOMACIA vs. DIPLOMACIA",
+        pt: "Português: Di-plo-ma-ci-a (Hiato final)",
+        es: "Espanhol: Di-plo-ma-cia (Paroxítona, força no 'ma')",
+        desc: "A sílaba forte recai sobre 'ma': /di-plo-MA-cia/.",
+        ex: "Diplomacia vs. Diplo[ma]cia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ELITE vs. ÉLITE",
+        pt: "Português: E-li-te (Paroxítona)",
+        es: "Espanhol: É-li-te (Proparoxítona com tilde)",
+        desc: "Na norma culta espanhola é proparoxítona acentuada na primeira vogal: /É-li-te/.",
+        ex: "Elite vs. [É]lite."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ELOGIO vs. ELOGIO",
+        pt: "Português: E-lo-gi-o (Hiato final)",
+        es: "Espanhol: E-lo-gio (Paroxítona, força no 'lo')",
+        desc: "A terminação 'gio' em espanhol forma ditongo e puxa a tônica para trás: /e-LO-gio/.",
+        ex: "Elogio vs. E[lo]gio."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "EPIDEMIA vs. EPIDEMIA",
+        pt: "Português: E-pi-de-mi-a (Hiato final)",
+        es: "Espanhol: E-pi-de-mia (Paroxítona, força no 'de')",
+        desc: "A força vocal recai sobre a sílaba 'de': /epi-DE-mia/.",
+        ex: "Epidemia vs. Epi[de]mia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "EUFORIA vs. EUFORIA",
+        pt: "Português: Eu-fo-ri-a (Hiato final)",
+        es: "Espanhol: Eu-fo-ria (Paroxítona, força no 'fo')",
+        desc: "Ditongo fechado final com sílaba tônica em 'fo': /eu-FO-ria/.",
+        ex: "Euforia vs. Eu[fo]ria."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "FOBIA vs. FOBIA",
+        pt: "Português: Fo-bi-a (Hiato final)",
+        es: "Espanhol: Fo-bia (Paroxítona, força no 'fo')",
+        desc: "Ao contrário do português onde a força fica no 'i', em espanhol a tônica fica no 'fo': /FO-bia/.",
+        ex: "Fobia vs. [Fo]bia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "GAÚCHO vs. GAUCHO",
+        pt: "Português: Ga-ú-cho (Hiato com acento)",
+        es: "Espanhol: Gau-cho (Ditongo, paroxítona)",
+        desc: "Em espanhol forma-se ditongo com força na primeira sílaba: /GAU-cho/.",
+        ex: "Gaúcho vs. [Gau]cho."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "HERÓI vs. HÉROE",
+        pt: "Português: He-rói (Oxítona)",
+        es: "Espanhol: Hé-ro-e (Proparoxítona com tilde no 'hé')",
+        desc: "No castelhano o acento recua para a primeira sílaba: /HÉ-ro-e/.",
+        ex: "Herói vs. [Hé]roe."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "ÍMÃ vs. IMÁN",
+        pt: "Português: Í-mã (Paroxítona)",
+        es: "Espanhol: I-mán (Oxítona com acento)",
+        desc: "O objeto magnético em espanhol é oxítono: /i-MÁN/.",
+        ex: "Ímã vs. I[mán]."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "IMBECIL vs. IMBÉCIL",
+        pt: "Português: Im-be-cil (Oxítona)",
+        es: "Espanhol: Im-bé-cil (Paroxítona com tilde)",
+        desc: "Em espanhol a palavra leva acento na sílaba central: /im-BÉ-cil/.",
+        ex: "Imbecil vs. Im[bé]cil."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "LIMITE vs. LÍMITE",
+        pt: "Português: Li-mi-te (Paroxítona)",
+        es: "Espanhol: Lí-mi-te (Proparoxítona com tilde)",
+        desc: "Em espanhol leva acento na antepenúltima sílaba: /LÍ-mi-te/.",
+        ex: "Limite vs. [Lí]mite."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "MAGIA vs. MAGIA",
+        pt: "Português: Ma-gi-a (Hiato tônico final)",
+        es: "Espanhol: Ma-gia (Paroxítona, força no 'ma')",
+        desc: "A palavra em espanhol concentra a força na primeira sílaba: /MA-gia/.",
+        ex: "Magia vs. [Ma]gia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "METRÔ vs. METRO",
+        pt: "Português: Me-trô (Oxítona)",
+        es: "Espanhol: Me-tro (Paroxítona, força no 'me')",
+        desc: "O transporte subterrâneo em espanhol tem a força na primeira sílaba: /ME-tro/.",
+        ex: "Metrô vs. [Me]tro."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "NÍVEL vs. NIVEL",
+        pt: "Português: Ní-vel (Paroxítona)",
+        es: "Espanhol: Ni-vel (Oxítona terminada em L)",
+        desc: "Palavra oxítona no castelhano: /ni-VEL/.",
+        ex: "Nível vs. Ni[vel]."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "NOSTALGIA vs. NOSTALGIA",
+        pt: "Português: Nos-tal-gi-a (Hiato final)",
+        es: "Espanhol: Nos-tal-gia (Paroxítona, força no 'tal')",
+        desc: "Em espanhol o ditongo puxa a força para a sílaba central: /nos-TAL-gia/.",
+        ex: "Nostalgia vs. Nos[tal]gia."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "OXIGÊNIO vs. OXÍGENO",
+        pt: "Português: O-xi-gê-ni-o (Acento circunflexo no 'gê')",
+        es: "Espanhol: O-xí-ge-no (Acento agudo no 'xí')",
+        desc: "Em espanhol o acento tônico recua uma sílaba: /oc-SÍ-ge-no/.",
+        ex: "Oxigênio vs. O[xí]geno."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "PÂNTANO vs. PANTANO",
+        pt: "Português: Pân-ta-no (Proparoxítona)",
+        es: "Espanhol: Pan-ta-no (Paroxítona, força no 'ta')",
+        desc: "Em espanhol é paroxítona e não leva acento gráfico: /pan-TA-no/.",
+        ex: "Pântano vs. Pan[ta]no."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "PARALISIA vs. PARÁLISIS",
+        pt: "Português: Pa-ra-li-si-a (Paroxítona)",
+        es: "Espanhol: Pa-rá-li-sis (Proparoxítona com acento)",
+        desc: "No castelhano o termo termina em 'sis' e leva acento tônico recuado: /pa-RÁ-li-sis/.",
+        ex: "Paralisia vs. Pa[rá]lisis."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "POLÍCIA vs. POLICÍA",
+        pt: "Português: Po-lí-cia (Paroxítona)",
+        es: "Espanhol: Po-li-cí-a (Hiato tônico com tilde no 'í')",
+        desc: "Em espanhol o acento na letra 'í' quebra o ditongo: /po-li-CÍ-a/.",
+        ex: "Polícia vs. Poli[cí]a."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "PROTÓTIPO vs. PROTOTIPO",
+        pt: "Português: Pro-tó-ti-po (Proparoxítona)",
+        es: "Espanhol: Pro-to-ti-po (Paroxítona, força no 'ti')",
+        desc: "Em espanhol não há acento e a tônica recai sobre a penúltima sílaba: /proto-TI-po/.",
+        ex: "Protótipo vs. Proto[ti]po."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "RUBRICA vs. RÚBRICA",
+        pt: "Português: Ru-bri-ca (Paroxítona, força no 'bri')",
+        es: "Espanhol: Rú-bri-ca (Proparoxítona com tilde no 'rú')",
+        desc: "Enquanto no Brasil o correto culto é /ru-BRI-ca/, no espanhol a palavra leva acento na primeira sílaba: /RÚ-bri-ca/.",
+        ex: "Rubrica vs. [Rú]brica."
+      },
+      {
+        cat: "heterotonico",
+        catName: "Heterotônico",
+        term: "TELEFONE vs. TELÉFONO",
+        pt: "Português: Te-le-fo-ne (Paroxítona)",
+        es: "Espanhol: Te-lé-fo-no (Proparoxítona com tilde)",
+        desc: "No espanhol é proparoxítona com tilde: /te-LÉ-fo-no/.",
+        ex: "Telefone vs. Te[lé]fono."
+      }
+    ];
+
+    let activeCategory = 'all';
+    let query = '';
+
+    const tabsConfig = [
+      { id: 'all', label: 'Todos os Registros' },
+      { id: 'causo', label: 'Causos e Anedotas' },
+      { id: 'heterosemantico', label: 'Falsos Amigos' },
+      { id: 'heterogenerico', label: 'Heterogenéricos' },
+      { id: 'heterotonico', label: 'Heterotônicos' }
+    ];
+
+    function renderTabs() {
+      const container = document.getElementById('tabContainer');
+      container.innerHTML = tabsConfig.map(t => {
+        const count = t.id === 'all' ? DATA.length : DATA.filter(d => d.cat === t.id).length;
+        const active = activeCategory === t.id ? 'active' : '';
+        return `<button class="tab-btn ${active}" onclick="setTab('${t.id}')">${t.label} (${count})</button>`;
+      }).join('');
+    }
+
+    function setTab(tabId) {
+      activeCategory = tabId;
+      renderTabs();
+      filterGrid();
+    }
+
+    function filterGrid() {
+      const q = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      const filtered = DATA.filter(item => {
+        if (activeCategory !== 'all' && item.cat !== activeCategory) return false;
+        if (!q) return true;
+        const corpus = (item.term + " " + item.pt + " " + item.es + " " + item.desc + " " + item.ex).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return corpus.includes(q);
+      });
+
+      document.getElementById('counter').innerText = `Exibindo ${filtered.length} de ${DATA.length} entradas integradas`;
+
+      const grid = document.getElementById('grid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>Nenhuma correspondência encontrada</h3>
+            <p>Tente buscar com outra palavra em português ou espanhol.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="card-item">
+          <div>
+            <span class="tag tag-${item.cat}">${item.catName}</span>
+            <div class="card-title">${escapeHtml(item.term)}</div>
+            <div class="box-comparison">
+              <div>🇧🇷 <strong>${escapeHtml(item.pt)}</strong></div>
+              <div style="margin-top:0.25rem;">🇪🇸 <strong>${escapeHtml(item.es)}</strong></div>
+            </div>
+            <div class="card-desc">${escapeHtml(item.desc)}</div>
+          </div>
+          ${item.ex ? `<div class="card-example">💡 ${escapeHtml(item.ex)}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+      query = e.target.value;
+      filterGrid();
+    });
+
+    renderTabs();
+    filterGrid();
+  </script>
+</body>
+</html>
