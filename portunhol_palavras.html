@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manual Hispanoluso: Textos, Portunhol, Registros e Pronúncia em Áudio</title>
+  <title>Manual Hispanoluso: Textos, Portunhol e Registros Integrados</title>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -147,27 +147,6 @@
       padding: 0 0.25rem;
     }
 
-    /* Botão de áudio / pronúncia */
-    .audio-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.05rem;
-      margin-left: 0.4rem;
-      vertical-align: middle;
-      opacity: 0.7;
-      transition: transform 0.15s, opacity 0.15s;
-      padding: 0.1rem 0.25rem;
-      border-radius: 4px;
-    }
-
-    .audio-btn:hover {
-      opacity: 1;
-      transform: scale(1.2);
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    /* Seção de Textos e Poemas no topo */
     .article-section {
       display: flex;
       flex-direction: column;
@@ -231,7 +210,6 @@
       margin: 1.25rem 0;
     }
 
-    /* Container do Poema */
     .poem-container {
       background: #fdfbf7;
       border: 1px solid #fed7aa;
@@ -247,33 +225,13 @@
       border-bottom-color: #ffedd5;
     }
 
-    .poem-stanza-wrapper {
-      position: relative;
-      margin-bottom: 1.4rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
     .poem-stanza {
+      margin-bottom: 1.4rem;
       color: #292524;
       font-size: 1.05rem;
       padding: 0.5rem;
       border-radius: 6px;
-      flex-grow: 1;
       transition: background-color 0.2s;
-    }
-
-    /* Palavras clicáveis para áudio no poema */
-    .poem-stanza .clickable-word {
-      cursor: pointer;
-      border-bottom: 1px dotted rgba(0,0,0,0.3);
-      transition: background-color 0.15s, border-bottom 0.15s;
-    }
-
-    .poem-stanza .clickable-word:hover {
-      background-color: rgba(2, 132, 199, 0.15);
-      border-bottom: 1px solid currentColor;
     }
 
     .poem-stanza .es-word {
@@ -357,13 +315,6 @@
       font-size: 0.93rem;
     }
 
-    .lang-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.25rem;
-    }
-
     .card-desc {
       font-size: 0.92rem;
       color: #334155;
@@ -405,7 +356,7 @@
 
   <header>
     <h1>Manual e Índice Integrado Hispanoluso</h1>
-    <p>Ensaios Culturais sobre o Portunhol, Fonética Comparada, Poema e Catálogo Integral com Pronúncia por Voz.</p>
+    <p>Ensaios Culturais sobre o Portunhol, Fonética Comparada, Poema e Catálogo Integral de Registros Lexicais.</p>
     <div class="badge-bar">Obras de Claudio Budnikar &bull; Comunicações Espanhol &harr; Português</div>
   </header>
 
@@ -445,90 +396,6 @@
   </footer>
 
   <script>
-    // ==========================================
-    // SÍNTESE DE VOZ (Web Speech API)
-    // ==========================================
-    /*
-	function speakText(text, lang) {
-      if (!('speechSynthesis' in window)) {
-        alert("Seu navegador não suporta reprodução de áudio via síntese de voz.");
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-
-      
-      let cleanText = text.replace(/\(.*?\)/g, '').replace(/[\*💡🇧🇷🇪🇸]/g, '').trim();
-
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = lang; 
-      utterance.rate = 0.95; 
-
-      
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        const matchingVoice = voices.find(v => v.lang === lang || v.lang.startsWith(lang.slice(0, 2)));
-        if (matchingVoice) utterance.voice = matchingVoice;
-      }
-
-      window.speechSynthesis.speak(utterance);
-    }
-
-    
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-    }
-	*/
-	
-	// Função reforçada compatível com Firefox, Chrome e Edge
-function speakText(text, targetLang) {
-  if (!('speechSynthesis' in window)) {
-    alert("Seu navegador não suporta reprodução de áudio via síntese de voz.");
-    return;
-  }
-
-  window.speechSynthesis.cancel(); // Interrompe áudios em andamento
-
-  // Limpeza de símbolos e explicações entre parênteses
-  let cleanText = text.replace(/\(.*?\)/g, '').replace(/[\*💡🇧🇷🇪🇸]/g, '').trim();
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-
-  // Normaliza o prefixo do idioma (ex: 'es' ou 'pt')
-  const langPrefix = targetLang.slice(0, 2).toLowerCase();
-  utterance.lang = targetLang;
-
-  const voices = window.speechSynthesis.getVoices();
-
-  if (voices.length > 0) {
-    // 1. Procura correspondência exata (ex: 'es-ES', 'es-MX', 'pt-BR')
-    let selectedVoice = voices.find(v => v.lang.toLowerCase() === targetLang.toLowerCase());
-
-    // 2. Se não encontrar a exata, busca qualquer voz que comece com o mesmo idioma (ex: qualquer 'es')
-    if (!selectedVoice) {
-      selectedVoice = voices.find(v => v.lang.toLowerCase().startsWith(langPrefix));
-    }
-
-    // 3. Fallback adicional para o Firefox: procura pelo nome da voz contendo "Spanish" ou "Espanhol"
-    if (!selectedVoice && langPrefix === 'es') {
-      selectedVoice = voices.find(v => /spanish|español|espanhol/i.test(v.name));
-    }
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-      utterance.lang = selectedVoice.lang; // Alinha o idioma da utterance com a voz encontrada
-    }
-  }
-
-  utterance.rate = 0.95;
-  window.speechSynthesis.speak(utterance);
-}
-	
-	
-	
-	
-
     const DATABASE = {
       textos: {
         portunhol: {
@@ -568,17 +435,17 @@ function speakText(text, targetLang) {
         },
         poema: {
           titulo: "Anexo 4: Poema Portunhol",
-          nota: "* Original em espanhol de autor desconhecido. Tradução, correções e estrofes inseridas por Claudio Budnikar. Clique em cada palavra destacada ou no ícone para ouvir a pronúncia.",
+          nota: "* Original em espanhol de autor desconhecido. Tradução, correções e estrofes inseridas por Claudio Budnikar.",
           estrofes: [
-            "Crença muito comum é<br>neste Brasil cristiano<br>que o idioma castelhano<br>se assemelha ao português.<br>E imediatamente vamos ver<br>que em verdade são parecidos...<br>por exemplo; noz é <span class=\"es-word clickable-word\" onclick=\"speakText('nuez', 'es-ES')\" title=\"Clique para ouvir espanhol\">nuez</span>,<br>fome é <span class=\"es-word clickable-word\" onclick=\"speakText('hambre', 'es-ES')\" title=\"Clique para ouvir espanhol\">hambre</span> e bode é <span class=\"es-word clickable-word\" onclick=\"speakText('chivo', 'es-ES')\" title=\"Clique para ouvir espanhol\">chivo</span>.",
-            "E não pensem que é piada<br>que eu nem tiro nem coloco,<br>chamamos pomba à <span class=\"es-word clickable-word\" onclick=\"speakText('paloma', 'es-ES')\" title=\"Clique para ouvir espanhol\">paloma</span><br>e eles <span class=\"es-word clickable-word\" onclick=\"speakText('laucha', 'es-ES')\" title=\"Clique para ouvir espanhol\">laucha</span> ao camondongo.<br>Nojo é <span class=\"es-word clickable-word\" onclick=\"speakText('asco', 'es-ES')\" title=\"Clique para ouvir espanhol\">asco</span>, frango é <span class=\"es-word clickable-word\" onclick=\"speakText('pollo', 'es-ES')\" title=\"Clique para ouvir espanhol\">pollo</span><br>e um <span class=\"es-word clickable-word\" onclick=\"speakText('erizo', 'es-ES')\" title=\"Clique para ouvir espanhol\">erizo</span> é um ouriço<br>e como a <span class=\"pt-cognato clickable-word\" onclick=\"speakText('salsa', 'pt-BR')\" title=\"Clique para ouvir português\">salsa</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('molho', 'pt-BR')\">molho</span><br>é batina a <span class=\"es-word clickable-word\" onclick=\"speakText('sotana', 'es-ES')\" title=\"Clique para ouvir espanhol\">sotana</span>.",
-            "Um losango lá é um <span class=\"pt-cognato clickable-word\" onclick=\"speakText('rombo', 'pt-BR')\" title=\"Clique para ouvir português\">rombo</span><br>e un <span class=\"es-word clickable-word\" onclick=\"speakText('rombo', 'es-ES')\" title=\"Clique para ouvir espanhol\">rombo</span> é um <span class=\"es-word clickable-word\" onclick=\"speakText('agujero', 'es-ES')\" title=\"Clique para ouvir espanhol\">agujero</span>,<br>un degenerado é um <span class=\"pt-cognato clickable-word\" onclick=\"speakText('tarado', 'pt-BR')\" title=\"Clique para ouvir português\">tarado</span><br>e um <span class=\"es-word clickable-word\" onclick=\"speakText('tarado', 'es-ES')\" title=\"Clique para ouvir espanhol\">tarado</span> é um bobo.<br>Os <span class=\"es-word clickable-word\" onclick=\"speakText('codos', 'es-ES')\" title=\"Clique para ouvir espanhol\">codos</span> são os cotovelos<br>e os joelhos as <span class=\"es-word clickable-word\" onclick=\"speakText('rodillas', 'es-ES')\" title=\"Clique para ouvir espanhol\">rodillas</span>,<br>os <span class=\"es-word clickable-word\" onclick=\"speakText('tobillos', 'es-ES')\" title=\"Clique para ouvir espanhol\">tobillos</span> tornozelos,<br>e omeletes as <span class=\"es-word clickable-word\" onclick=\"speakText('tortillas', 'es-ES')\" title=\"Clique para ouvir espanhol\">tortillas</span>.",
-            "E são cadeiras as <span class=\"es-word clickable-word\" onclick=\"speakText('sillas', 'es-ES')\" title=\"Clique para ouvir espanhol\">sillas</span><br>e novelos os <span class=\"es-word clickable-word\" onclick=\"speakText('ovillos', 'es-ES')\" title=\"Clique para ouvir espanhol\">ovillos</span>,<br>miçangas as <span class=\"es-word clickable-word\" onclick=\"speakText('mostacillas', 'es-ES')\" title=\"Clique para ouvir espanhol\">mostacillas</span><br>e parafusos os <span class=\"es-word clickable-word\" onclick=\"speakText('tornillos', 'es-ES')\" title=\"Clique para ouvir espanhol\">tornillos</span>.<br>A bala é <span class=\"es-word clickable-word\" onclick=\"speakText('caramelo', 'es-ES')\" title=\"Clique para ouvir espanhol\">caramelo</span>,<br>chumbo é <span class=\"es-word clickable-word\" onclick=\"speakText('plomo', 'es-ES')\" title=\"Clique para ouvir espanhol\">plomo</span> e <span class=\"es-word clickable-word\" onclick=\"speakText('té', 'es-ES')\" title=\"Clique para ouvir espanhol\">té</span> é o chá,<br>um <span class=\"es-word clickable-word\" onclick=\"speakText('camello', 'es-ES')\" title=\"Clique para ouvir espanhol\">camello</span> é um camelo<br>e uma <span class=\"es-word clickable-word\" onclick=\"speakText('rana', 'es-ES')\" title=\"Clique para ouvir espanhol\">rana</span> é uma rã.",
-            "Abóboras são <span class=\"es-word clickable-word\" onclick=\"speakText('zapallos', 'es-ES')\" title=\"Clique para ouvir espanhol\">zapallos</span><br>e pêssegos <span class=\"es-word clickable-word\" onclick=\"speakText('duraznos', 'es-ES')\" title=\"Clique para ouvir espanhol\">duraznos</span>,<br>eu é <span class=\"es-word clickable-word\" onclick=\"speakText('yo', 'es-ES')\" title=\"Clique para ouvir espanhol\">yo</span>, os galos, <span class=\"es-word clickable-word\" onclick=\"speakText('gallos', 'es-ES')\" title=\"Clique para ouvir espanhol\">gallos</span><br>e as <span class=\"es-word clickable-word\" onclick=\"speakText('frutillas', 'es-ES')\" title=\"Clique para ouvir espanhol\">frutillas</span> são morangos.<br>Meu assombro eu não oculto<br>e perante todos eu me desculpo:<br><span class=\"es-word clickable-word\" onclick=\"speakText('taco', 'es-ES')\" title=\"Clique para ouvir espanhol\">taco</span> é <span class=\"pt-cognato clickable-word\" onclick=\"speakText('salto', 'pt-BR')\" title=\"Clique para ouvir português\">salto</span>, <span class=\"pt-cognato clickable-word\" onclick=\"speakText('salto', 'pt-BR')\" title=\"Clique para ouvir português\">salto</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('pulo', 'pt-BR')\">pulo</span>,<br><span class=\"pt-cognato clickable-word\" onclick=\"speakText('pó', 'pt-BR')\" title=\"Clique para ouvir português\">pó</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('polvo', 'es-ES')\" title=\"Clique para ouvir espanhol\">polvo</span> e <span class=\"pt-cognato clickable-word\" onclick=\"speakText('polvo', 'pt-BR')\" title=\"Clique para ouvir português\">polvo</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('pulpo', 'es-ES')\" title=\"Clique para ouvir espanhol\">pulpo</span>.",
-            "Servilleta é guardanapo,<br><span class=\"es-word clickable-word\" onclick=\"speakText('mesa de luz', 'es-ES')\" title=\"Clique para ouvir espanhol\">mesa de luz</span>, criado-mudo,<br>emplasto é <span class=\"es-word clickable-word\" onclick=\"speakText('esparadrapo', 'es-ES')\" title=\"Clique para ouvir espanhol\">esparadrapo</span><br>e um gago é um <span class=\"es-word clickable-word\" onclick=\"speakText('tartamudo', 'es-ES')\" title=\"Clique para ouvir espanhol\">tartamudo</span>.<br>Uma <span class=\"es-word clickable-word\" onclick=\"speakText('deuda', 'es-ES')\" title=\"Clique para ouvir espanhol\">deuda</span> é uma dívida,<br>um <span class=\"es-word clickable-word\" onclick=\"speakText('arroyuelo', 'es-ES')\" title=\"Clique para ouvir espanhol\">arroyuelo</span> é um córrego,<br>uma <span class=\"es-word clickable-word\" onclick=\"speakText('duda', 'es-ES')\" title=\"Clique para ouvir espanhol\">duda</span> é uma dúvida<br>e um <span class=\"es-word clickable-word\" onclick=\"speakText('canónigo', 'es-ES')\" title=\"Clique para ouvir espanhol\">canónigo</span> é um cônego.",
-            "O <span class=\"es-word clickable-word\" onclick=\"speakText('mondongo', 'es-ES')\" title=\"Clique para ouvir espanhol\">mondongo</span> é o bucho<br>e capa é o <span class=\"es-word clickable-word\" onclick=\"speakText('matambre', 'es-ES')\" title=\"Clique para ouvir espanhol\">matambre</span>,<br>calafrios são <span class=\"es-word clickable-word\" onclick=\"speakText('chuchos', 'es-ES')\" title=\"Clique para ouvir espanhol\">chuchos</span><br>e frios são os <span class=\"es-word clickable-word\" onclick=\"speakText('fiambres', 'es-ES')\" title=\"Clique para ouvir espanhol\">fiambres</span>.<br>O <span class=\"es-word clickable-word\" onclick=\"speakText('verdugo', 'es-ES')\" title=\"Clique para ouvir espanhol\">verdugo</span> é o algoz,<br>a espingarda é <span class=\"es-word clickable-word\" onclick=\"speakText('escopeta', 'es-ES')\" title=\"Clique para ouvir espanhol\">escopeta</span>,<br>el <span class=\"es-word clickable-word\" onclick=\"speakText('anzuelo', 'es-ES')\" title=\"Clique para ouvir espanhol\">anzuelo</span> é o anzol<br>e <span class=\"pt-cognato clickable-word\" onclick=\"speakText('propina', 'pt-BR')\" title=\"Clique para ouvir português\">propina</span> é a <span class=\"es-word clickable-word\" onclick=\"speakText('gorjeta', 'pt-BR')\">gorjeta</span>.",
-            "Luciernaga é vagalume<br>e guizo é <span class=\"es-word clickable-word\" onclick=\"speakText('cascabel', 'es-ES')\" title=\"Clique para ouvir espanhol\">cascabel</span>,<br><span class=\"es-word clickable-word\" onclick=\"speakText('desnudo', 'es-ES')\" title=\"Clique para ouvir espanhol\">desnudo</span> é nu, <span class=\"es-word clickable-word\" onclick=\"speakText('celos', 'es-ES')\" title=\"Clique para ouvir espanhol\">celos</span> ciúme<br>e <span class=\"es-word clickable-word\" onclick=\"speakText('gobelino', 'es-ES')\" title=\"Clique para ouvir espanhol\">gobelino</span> o painel.<br>Penas são <span class=\"es-word clickable-word\" onclick=\"speakText('plumas', 'es-ES')\" title=\"Clique para ouvir espanhol\">plumas</span>,<br>caneta é <span class=\"pt-cognato clickable-word\" onclick=\"speakText('lapicera', 'pt-BR')\" title=\"Clique para ouvir português\">lapicera</span>,<br>canivete é <span class=\"es-word clickable-word\" onclick=\"speakText('cortaplumas', 'es-ES')\" title=\"Clique para ouvir espanhol\">cortaplumas</span><br>e salmoura é <span class=\"es-word clickable-word\" onclick=\"speakText('salmuera', 'es-ES')\" title=\"Clique para ouvir espanhol\">salmuera</span>.",
-            "Floco é <span class=\"pt-cognato clickable-word\" onclick=\"speakText('copo', 'pt-BR')\" title=\"Clique para ouvir português\">copo</span>, e <span class=\"pt-cognato clickable-word\" onclick=\"speakText('copo', 'pt-BR')\" title=\"Clique para ouvir português\">copo</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('vaso', 'es-ES')\" title=\"Clique para ouvir espanhol\">vaso</span>,<br><span class=\"pt-cognato clickable-word\" onclick=\"speakText('vaso', 'pt-BR')\" title=\"Clique para ouvir português\">vaso</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('jarrón', 'es-ES')\" title=\"Clique para ouvir espanhol\">jarrón</span>, sino é <span class=\"es-word clickable-word\" onclick=\"speakText('sina', 'pt-BR')\">sina</span>,<br>cravo é <span class=\"es-word clickable-word\" onclick=\"speakText('clavel', 'es-ES')\" title=\"Clique para ouvir espanhol\">clavel</span>, <span class=\"es-word clickable-word\" onclick=\"speakText('acero', 'es-ES')\" title=\"Clique para ouvir espanhol\">acero</span> aço<br>e <span class=\"pt-cognato clickable-word\" onclick=\"speakText('copa', 'pt-BR')\" title=\"Clique para ouvir português\">copa</span> <span class=\"es-word clickable-word\" onclick=\"speakText('antecocina', 'es-ES')\" title=\"Clique para ouvir espanhol\">antecocina</span>.<br><span class=\"es-word clickable-word\" onclick=\"speakText('clueca', 'es-ES')\" title=\"Clique para ouvir espanhol\">Clueca</span> é choca,<br><span class=\"pt-cognato clickable-word\" onclick=\"speakText('pântano', 'pt-BR')\" title=\"Clique para ouvir português\">pântano</span> é <span class=\"es-word clickable-word\" onclick=\"speakText('pantano', 'es-ES')\" title=\"Clique para ouvir espanhol\">pantano</span>,<br>o <span class=\"es-word clickable-word\" onclick=\"speakText('taladro', 'es-ES')\" title=\"Clique para ouvir espanhol\">taladro</span> é broca<br>e o corrimão <span class=\"es-word clickable-word\" onclick=\"speakText('pasamano', 'es-ES')\" title=\"Clique para ouvir espanhol\">pasamano</span>.",
+            "Crença muito comum é<br>neste Brasil cristiano<br>que o idioma castelhano<br>se assemelha ao português.<br>E imediatamente vamos ver<br>que em verdade são parecidos...<br>por exemplo; noz é <span class=\"es-word\">nuez</span>,<br>fome é <span class=\"es-word\">hambre</span> e bode é <span class=\"es-word\">chivo</span>.",
+            "E não pensem que é piada<br>que eu nem tiro nem coloco,<br>chamamos pomba à <span class=\"es-word\">paloma</span><br>e eles <span class=\"es-word\">laucha</span> ao camondongo.<br>Nojo é <span class=\"es-word\">asco</span>, frango é <span class=\"es-word\">pollo</span><br>e um <span class=\"es-word\">erizo</span> é um ouriço<br>e como a <span class=\"pt-cognato\">salsa</span> é <span class=\"es-word\">molho</span><br>é batina a <span class=\"es-word\">sotana</span>.",
+            "Um losango lá é um <span class=\"pt-cognato\">rombo</span><br>e un <span class=\"es-word\">rombo</span> é um <span class=\"es-word\">agujero</span>,<br>un degenerado é um <span class=\"pt-cognato\">tarado</span><br>e um <span class=\"es-word\">tarado</span> é um bobo.<br>Os <span class=\"es-word\">codos</span> são os cotovelos<br>e os joelhos as <span class=\"es-word\">rodillas</span>,<br>os <span class=\"es-word\">tobillos</span> tornozelos,<br>e omeletes as <span class=\"es-word\">tortillas</span>.",
+            "E são cadeiras as <span class=\"es-word\">sillas</span><br>e novelos os <span class=\"es-word\">ovillos</span>,<br>miçangas as <span class=\"es-word\">mostacillas</span><br>e parafusos os <span class=\"es-word\">tornillos</span>.<br>A bala é <span class=\"es-word\">caramelo</span>,<br>chumbo é <span class=\"es-word\">plomo</span> e <span class=\"es-word\">té</span> é o chá,<br>um <span class=\"es-word\">camello</span> é um camelo<br>e uma <span class=\"es-word\">rana</span> é uma rã.",
+            "Abóboras são <span class=\"es-word\">zapallos</span><br>e pêssegos <span class=\"es-word\">duraznos</span>,<br>eu é <span class=\"es-word\">yo</span>, os galos, <span class=\"es-word\">gallos</span><br>e as <span class=\"es-word\">frutillas</span> são morangos.<br>Meu assombro eu não oculto<br>e perante todos eu me desculpo:<br><span class=\"es-word\">taco</span> é <span class=\"pt-cognato\">salto</span>, <span class=\"pt-cognato\">salto</span> é <span class=\"es-word\">pulo</span>,<br><span class=\"pt-cognato\">pó</span> é <span class=\"es-word\">polvo</span> e <span class=\"pt-cognato\">polvo</span> é <span class=\"es-word\">pulpo</span>.",
+            "Servilleta é guardanapo,<br><span class=\"es-word\">mesa de luz</span>, criado-mudo,<br>emplasto é <span class=\"es-word\">esparadrapo</span><br>e um gago é um <span class=\"es-word\">tartamudo</span>.<br>Uma <span class=\"es-word\">deuda</span> é uma dívida,<br>um <span class=\"es-word\">arroyuelo</span> é um córrego,<br>uma <span class=\"es-word\">duda</span> é uma dúvida<br>e um <span class=\"es-word\">canónigo</span> é um cônego.",
+            "O <span class=\"es-word\">mondongo</span> é o bucho<br>e capa é o <span class=\"es-word\">matambre</span>,<br>calafrios são <span class=\"es-word\">chuchos</span><br>e frios são os <span class=\"es-word\">fiambres</span>.<br>O <span class=\"es-word\">verdugo</span> é o algoz,<br>a espingarda é <span class=\"es-word\">escopeta</span>,<br>el <span class=\"es-word\">anzuelo</span> é o anzol<br>e <span class=\"pt-cognato\">propina</span> é a <span class=\"es-word\">gorjeta</span>.",
+            "Luciernaga é vagalume<br>e guizo é <span class=\"es-word\">cascabel</span>,<br><span class=\"es-word\">desnudo</span> é nu, <span class=\"es-word\">celos</span> ciúme<br>e <span class=\"es-word\">gobelino</span> o painel.<br>Penas são <span class=\"es-word\">plumas</span>,<br>caneta é <span class=\"pt-cognato\">lapicera</span>,<br>canivete é <span class=\"es-word\">cortaplumas</span><br>e salmoura é <span class=\"es-word\">salmuera</span>.",
+            "Floco é <span class=\"pt-cognato\">copo</span>, e <span class=\"pt-cognato\">copo</span> é <span class=\"es-word\">vaso</span>,<br><span class=\"pt-cognato\">vaso</span> é <span class=\"es-word\">jarrón</span>, sino é <span class=\"es-word\">sina</span>,<br>cravo é <span class=\"es-word\">clavel</span>, <span class=\"es-word\">acero</span> aço<br>e <span class=\"pt-cognato\">copa</span> <span class=\"es-word\">antecocina</span>.<br><span class=\"es-word\">Clueca</span> é choca,<br><span class=\"pt-cognato\">pântano</span> é <span class=\"es-word\">pantano</span>,<br>o <span class=\"es-word\">taladro</span> é broca<br>e o corrimão <span class=\"es-word\">pasamano</span>.",
             "Sim gente, podem ver!<br>o idioma castelhano<br>se parece ao português,<br>como o chinês ao italiano<br>e como o russo ao japonês..."
           ]
         }
@@ -596,7 +463,7 @@ function speakText(text, targetLang) {
         { cat: "causo", catName: "Causo Real", term: "10. Madres com filhos?", pt: "Madre (freira) vs. Mãe (genitora)", es: "Madre (mãe) vs. Monja (freira)", desc: "Brasileiros em países hispânicos veem notícias sobre o 'Día de la Madre' e presentes dos filhos e perguntam surpresos se na Argentina as freiras podem ter filhos.", ex: "Lição: Em espanhol, 'madre' é a mãe de família e 'padre' é o pai. Religiosos são chamados de 'monja', 'cura' ou 'sacerdote'." },
         { cat: "causo", catName: "Causo Real", term: "11. Surdos ou canhotos?", pt: "Surdo (sem audição) vs. Canhoto", es: "Zurdo (canhoto) vs. Sordo (sem audição)", desc: "Colega gaúcha lê biografia de Paul McCartney em espanhol e afirma emocionada: 'Fiquei pasma de saber que o Paul era surdo igualzinho ao Beethoven!'. O livro dizia: 'el famoso bajista zurdo de los Beatles...'.", ex: "Lição: 'Zurdo' em espanhol é canhoto. Quem não ouve chama-se 'sordo'." },
         { cat: "causo", catName: "Causo Real", term: "12. Adoro seu corpinho", pt: "Corpinho (diminutivo de corpo)", es: "Corpiño (sutiã / lingerie feminina)", desc: "Maria Espanha pergunta a João Brasil o que ele mais gosta nela: 'Teu corpinho!'. Maria pensa assustada: '¿Mi corpiño? ¿Será que João es travesti?'.", ex: "Lição: Em português 'nh' soa como 'ñ'. 'Corpinho' soa como 'corpiño' (sutiã na Argentina). O diminutivo de corpo em espanhol é 'cuerpito'." },
-        { cat: "causo", catName: "Causo Real", term: "13. Tem traído?", pt: "Traído (infiel / traidor)", es: "Traído (particípio de trazer / trazer consigo)", desc: "No cartório civil espanhol a funcionária pergunta ao brasileiro: '¿Ha traído usted a su mujer?'. O homem, culpado, responde: 'Sim senhora, muitas vezes'.", ex: "Lição: 'Traído' em espanhol vem do verbo 'traer' (trazer). Quem comete ou sofre infidelidade é 'traicionado'." },
+        { cat: "causo", catName: "Causo Real", term: "13. Tem traído?", pt: "Traído (infiel / traidor)", es: "Traído (particípio de trazer / trazer consigo)", desc: "No cartório civil espanhol a funcionária pergunta ao brasileiro: '¿Ha traído usted a su mulher?'. O homem, culpado, responde: 'Sim senhora, muitas vezes'.", ex: "Lição: 'Traído' em espanhol vem do verbo 'traer' (trazer). Quem comete ou sofre infidelidade é 'traicionado'." },
         { cat: "causo", catName: "Causo Real", term: "14. Brigando com os colegas", pt: "Faz como você quiser vs. É você quem sabe", es: "Hacé como quieras vs. Vos sabrás", desc: "O autor respondia cordialmente 'Faz como você quiser'. Após 10 anos uma colega brasileira estourou dizendo que ele era grosso e que devia dizer 'É você quem sabe'.", ex: "Lição: Em espanhol, 'Hacé como quieras' é amável e prestável, enquanto 'Vos sabrás' soa seco e ríspido. No português o sentido de polidez é o oposto!" },
         { cat: "causo", catName: "Causo Real", term: "15. O Saco no avião", pt: "Saco (bolsa / embalagem plástica / termo vulgar)", es: "Saco (paletó / casaco de terno)", desc: "Passageiro argentino em voo para o Brasil pergunta ao comissário brasileiro: '¿Dónde coloco mi SACO?'. O comissário, contrariado, responde: 'Deixa entre tuas pernas, lá fica perfeito!'.", ex: "Lição: No Rio da Prata, 'saco' é o blazer ou casaco de terno masculino." },
         { cat: "causo", catName: "Causo Real", term: "16. A igreja tombada", pt: "Tombada (patrimônio histórico tombado)", es: "Tumbada (derrubada / demolida no chão)", desc: "Guia de turismo brasileira diz em espanhol que a igreja foi 'tombada pelo município'. O turista argentino lamenta achando que o prédio histórico foi demolido pela prefeitura.", ex: "Lição: 'Tombada' no Brasil é patrimônio preservado. Em espanhol remete ao verbo 'tumbar' (derrubar / deitar abaixo)." },
@@ -672,7 +539,7 @@ function speakText(text, targetLang) {
         { cat: "heterosemantico", catName: "Heterossemântico", term: "GALEGO vs. GALLEGO", pt: "Galego (pessoa loira de olhos claros)", es: "Gallego (natural da Galícia / Espanha)", desc: "No Nordeste do Brasil chama-se loiros de galegos. Em espanhol 'gallego' é unicamente quem nasce na Galícia.", ex: "*El rubio es gallego -> O loiro é natural da Galícia." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "GALERA vs. GALERA", pt: "Galera (turma de amigos / multidão)", es: "Galera (cartola de mágico / navio antigo a remos)", desc: "Em espanhol 'galera' é a cartola formal ou a embarcação histórica movida a remos.", ex: "*En nuestro grupo solo uno usa galera -> Na nossa galera só um usa cartola na cabeça." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "GARRAFA vs. GARRAFA", pt: "Garrafa (recipiente de vidro para bebidas)", es: "Garrafa (botijão de gás comprimido)", desc: "Garrafa de água ou vinho diz-se 'botella'. No Rio da Prata, 'garrafa' é o botijão de gás de cozinha.", ex: "*Una botella de vino y una garrafa de gas -> Uma garrafa de vinho e um botijão de gás." },
-        { cat: "heterosemantico", catName: "Heterossemântico", term: "GARROTE vs. GARROTE", pt: "Garrote (torniquete médico de primeiros socorros)", es: "Garrote (porrete pesado de madeira / clava)", desc: "A compressão de vasos sanguíneos diz-se 'torniquete'. Em espanhol 'garrote' é um pedaço de pau grosso.", ex: "*Lo golpearon con un garrote y le pusieron un torniquete -> Bateram-lhe com um porrete e puseram um garrote médico." },
+        { cat: "heterosemantico", catName: "Heterossemântico", term: "GARROTE vs. GARROTE", pt: "Garrote (torniquete médico de primeiros socorros)", es: "Garrote (porrete pesado de madeira / clava)", desc: "A compressão de vasos sanguíneos diz-se 'torniquete'. Em espanhol 'garrote' é um pedaço de pau grosso.", ex: "*Lo golpearon com um garrote y le pusieron un torniquete -> Bateram-lhe com um porrete e puseram um garrote médico." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "GOMA vs. GOMA", pt: "Goma (amido de engomar camisas)", es: "Goma (borracha de apagar / pneu)", desc: "Engomar roupas é 'almidonar'. Em espanhol 'goma' é a borracha de apagar traços de grafite.", ex: "*La camisa con almidón quedó dura como uma goma -> A camisa com goma ficou dura como borracha." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "GROSSO vs. GROSO", pt: "Grosso (mal-educado / áspero)", es: "Groso (gênio / craque / pessoa formidável)", desc: "No Rio da Prata, chamar alguém de 'groso' é um grande elogio de reconhecimento e admiração.", ex: "*Es un poco grosero pero igual es un groso en el fútbol -> É um pouco mal-educado, mas é um craque de bola." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "HOJE vs. OYE", pt: "Hoje (dia atual)", es: "Oye (imperativo do verbo ouvir / escuta tu)", desc: "Pela pronúncia idêntica, 'oye' soa como 'hoje'. 'Oye' significa escute ou ouça.", ex: "*¡Oye! Hoy es un gran día -> Escuta! Hoje é um grande dia." },
@@ -704,7 +571,7 @@ function speakText(text, targetLang) {
         { cat: "heterosemantico", catName: "Heterossemântico", term: "PIPA vs. PIPA", pt: "Pipa (brinquedo voador de papel / cometa)", es: "Pipa (cachimbo de tabaco / semente de girassol)", desc: "O brinquedo empinado no vento diz-se 'cometa' ou 'barrilete'. Em espanhol 'pipa' é cachimbo.", ex: "*El barrilete tiene la forma de una pipa -> A pipa de papel tem o formato de um cachimbo." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "PISCA vs. PIZCA", pt: "Pisca (pisca-pisca de carro / piscar de olhos)", es: "Pizca (pitada ínfima / porção minúscula)", desc: "'Una pizca de sal' é uma porção mínima segurada na ponta dos dedos. Piscar olhos é 'guiñar'.", ex: "*Coloca una pizca de sal y me guiña un ojo -> Coloca uma pitada de sal e pisca o olho para mim." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "POENTE vs. PUENTE", pt: "Poente (oeste / onde o sol se põe)", es: "Puente (ponte de travessia)", desc: "Onde o sol se põe é 'el poniente'. A construção arquitetônica sobre rios chama-se 'el puente'.", ex: "*Una foto del puente con el sol poniente -> Uma foto da ponte com o sol poente ao fundo." },
-        { cat: "heterosemantico", catName: "Heterossemântico", term: "POLVO vs. POLVO", pt: "Polvo (molusco marinho com tentáculos)", es: "Polvo (pó / poeira fina sobre superfícies)", desc: "O fruto do mar é 'pulpo'. A palavra 'polvo' em espanhol significa poeira acumulada em móveis.", ex: "*El dibujo del pulpo está lleno de polvo -> O desenho do polvo está cheio de pó." },
+        { cat: "heterosemantico", catName: "Heterossemântico", term: "POLVO vs. POLVO", pt: "Polvo (molusco marinho com tentáculos)", es: "Polvo (pó / poeira fina sobre superfícies)", desc: "O fruto do mar é 'pulpo'. A palavra 'polvo' em espanhol significa poeira acumulada em móveis.", ex: "*El desenho del pulpo está lleno de polvo -> O desenho do polvo está cheio de pó." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "POIS NÃO vs. PUES NO", pt: "Pois não! (com certeza / em que posso ajudar?)", es: "Pues no (claro que não / de jeito nenhum)", desc: "No Brasil é cumprimento solícito. Em espanhol, 'pues no' expressa recusa taxativa e negativa.", ex: "*Sí, señor vs. Pues no, no tenemos eso -> Pois não, claro que sim vs. Pois não temos nada disso." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "PRATICAR vs. PLATICAR", pt: "Praticar (exercitar / treinar esportes)", es: "Platicar (conversar / bater papo)", desc: "No México e América Central, 'platicar' é bater papo descontraído entre amigos.", ex: "*Vamos a practicar cómo platicar -> Vamos treinar como conversar descontraído." },
         { cat: "heterosemantico", catName: "Heterossemântico", term: "PRESUNTO vs. PRESUNTO", pt: "Presunto (fatiado curado de porco)", es: "Presunto (suposto / suspeito legal)", desc: "Para a comida peça 'jamón'. Nos tribunais julga-se o 'presunto culpable'.", ex: "*El presunto ladrón del jamón -> O suposto ladrão do presunto." },
@@ -884,12 +751,7 @@ function speakText(text, targetLang) {
         <article class="article-card poem-container" id="art-poema">
           <h2>${escapeHtml(T.poema.titulo)}</h2>
           <div id="stanzasContainer">
-            ${T.poema.estrofes.map(e => `
-              <div class="poem-stanza-wrapper">
-                <div class="poem-stanza">${e}</div>
-                <button class="audio-btn" title="Ouvir estrofe em português brasileiro" onclick="speakText('${e.replace(/<[^>]*>/g, ' ').replace(/'/g, "\\'")}', 'pt-BR')">🔊</button>
-              </div>
-            `).join('')}
+            ${T.poema.estrofes.map(e => `<div class="poem-stanza">${e}</div>`).join('')}
           </div>
           <div class="poem-note">${escapeHtml(T.poema.nota)}</div>
         </article>
@@ -948,14 +810,13 @@ function speakText(text, targetLang) {
         }
 
         if (artPoema) {
-          const wrappers = artPoema.querySelectorAll('.poem-stanza-wrapper');
+          const stanzas = artPoema.querySelectorAll('.poem-stanza');
           let matchedStanzas = 0;
 
-          wrappers.forEach(wrapper => {
-            const stanza = wrapper.querySelector('.poem-stanza');
+          stanzas.forEach(stanza => {
             const stanzaText = normalizeText(stanza.innerText);
             if (!q || stanzaText.includes(q)) {
-              wrapper.style.display = 'flex';
+              stanza.style.display = 'block';
               if (q) {
                 stanza.style.backgroundColor = '#fef3c7';
                 matchedStanzas++;
@@ -963,7 +824,7 @@ function speakText(text, targetLang) {
                 stanza.style.backgroundColor = 'transparent';
               }
             } else {
-              wrapper.style.display = 'none';
+              stanza.style.display = 'none';
             }
           });
 
@@ -1005,32 +866,20 @@ function speakText(text, targetLang) {
             </div>
           `;
         } else {
-          grid.innerHTML = filteredCards.map(item => {
-            // Escapa aspas para chamada da função de voz
-            const ptSafe = item.pt.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-            const esSafe = item.es.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-
-            return `
-              <div class="card-item">
-                <div>
-                  <span class="tag tag-${item.cat}">${item.catName}</span>
-                  <div class="card-title">${escapeHtml(item.term)}</div>
-                  <div class="box-comparison">
-                    <div class="lang-row">
-                      <span>🇧🇷 <strong>${escapeHtml(item.pt)}</strong></span>
-                      <button class="audio-btn" title="Ouvir em português brasileiro" onclick="speakText('${ptSafe}', 'pt-BR')">🔊</button>
-                    </div>
-                    <div class="lang-row">
-                      <span>🇪🇸 <strong>${escapeHtml(item.es)}</strong></span>
-                      <button class="audio-btn" title="Ouvir em espanhol" onclick="speakText('${esSafe}', 'es-ES')">🔊</button>
-                    </div>
-                  </div>
-                  <div class="card-desc">${escapeHtml(item.desc)}</div>
+          grid.innerHTML = filteredCards.map(item => `
+            <div class="card-item">
+              <div>
+                <span class="tag tag-${item.cat}">${item.catName}</span>
+                <div class="card-title">${escapeHtml(item.term)}</div>
+                <div class="box-comparison">
+                  <div>🇧🇷 <strong>${escapeHtml(item.pt)}</strong></div>
+                  <div style="margin-top:0.25rem;">🇪🇸 <strong>${escapeHtml(item.es)}</strong></div>
                 </div>
-                ${item.ex ? `<div class="card-example">💡 ${escapeHtml(item.ex)}</div>` : ''}
+                <div class="card-desc">${escapeHtml(item.desc)}</div>
               </div>
-            `;
-          }).join('');
+              ${item.ex ? `<div class="card-example">💡 ${escapeHtml(item.ex)}</div>` : ''}
+            </div>
+          `).join('');
         }
       }
 
