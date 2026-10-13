@@ -448,22 +448,23 @@
     // ==========================================
     // SÍNTESE DE VOZ (Web Speech API)
     // ==========================================
-    function speakText(text, lang) {
+    /*
+	function speakText(text, lang) {
       if (!('speechSynthesis' in window)) {
         alert("Seu navegador não suporta reprodução de áudio via síntese de voz.");
         return;
       }
 
-      window.speechSynthesis.cancel(); // interrompe falas anteriores
+      window.speechSynthesis.cancel();
 
-      // Limpa pontuações desnecessárias ou parênteses explicativos da fala
+      
       let cleanText = text.replace(/\(.*?\)/g, '').replace(/[\*💡🇧🇷🇪🇸]/g, '').trim();
 
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = lang; // 'pt-BR' ou 'es-ES' / 'es-AR'
-      utterance.rate = 0.95; // velocidade ligeiramente moderada para clareza
+      utterance.lang = lang; 
+      utterance.rate = 0.95; 
 
-      // Tenta associar a voz nativa ideal disponível no sistema operacional
+      
       const voices = window.speechSynthesis.getVoices();
       if (voices.length > 0) {
         const matchingVoice = voices.find(v => v.lang === lang || v.lang.startsWith(lang.slice(0, 2)));
@@ -473,12 +474,60 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    // Carrega vozes caso o navegador as carregue assincronamente
+    
     if ('speechSynthesis' in window) {
       window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
       };
     }
+	*/
+	
+	// Função reforçada compatível com Firefox, Chrome e Edge
+function speakText(text, targetLang) {
+  if (!('speechSynthesis' in window)) {
+    alert("Seu navegador não suporta reprodução de áudio via síntese de voz.");
+    return;
+  }
+
+  window.speechSynthesis.cancel(); // Interrompe áudios em andamento
+
+  // Limpeza de símbolos e explicações entre parênteses
+  let cleanText = text.replace(/\(.*?\)/g, '').replace(/[\*💡🇧🇷🇪🇸]/g, '').trim();
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+
+  // Normaliza o prefixo do idioma (ex: 'es' ou 'pt')
+  const langPrefix = targetLang.slice(0, 2).toLowerCase();
+  utterance.lang = targetLang;
+
+  const voices = window.speechSynthesis.getVoices();
+
+  if (voices.length > 0) {
+    // 1. Procura correspondência exata (ex: 'es-ES', 'es-MX', 'pt-BR')
+    let selectedVoice = voices.find(v => v.lang.toLowerCase() === targetLang.toLowerCase());
+
+    // 2. Se não encontrar a exata, busca qualquer voz que comece com o mesmo idioma (ex: qualquer 'es')
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang.toLowerCase().startsWith(langPrefix));
+    }
+
+    // 3. Fallback adicional para o Firefox: procura pelo nome da voz contendo "Spanish" ou "Espanhol"
+    if (!selectedVoice && langPrefix === 'es') {
+      selectedVoice = voices.find(v => /spanish|español|espanhol/i.test(v.name));
+    }
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      utterance.lang = selectedVoice.lang; // Alinha o idioma da utterance com a voz encontrada
+    }
+  }
+
+  utterance.rate = 0.95;
+  window.speechSynthesis.speak(utterance);
+}
+	
+	
+	
+	
 
     const DATABASE = {
       textos: {
