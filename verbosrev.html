@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula Prática e Comparativa de Verbos (Espanhol x Português)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #475569;
+      --text: #f8fafc;
+      --text-muted: #cbd5e1;
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --accent-es: #ef4444;
+      --accent-pb: #10b981;
+      --accent-info: #38bdf8;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --base-size: 16px;
+    }
+
+    body.projector-mode {
+      --base-size: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: var(--base-size);
+      line-height: 1.55;
+      padding-bottom: 50px;
+      overflow-x: hidden;
+    }
+
+    /* CABEÇALHO COMPACTO E CENTRALIZADO */
+    header {
+      background: #1e293b;
+      border-bottom: 3px solid var(--primary);
+      padding: 0.9rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.45);
+    }
+
+    .header-container {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand {
+      text-align: center;
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      color: var(--primary);
+      line-height: 1.25;
+    }
+
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* BARRA DE FERRAMENTAS CENTRALIZADA E AGRUPADA */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      width: 100%;
+      background: #0f172a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .search-input {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      width: 190px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .lang-select {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid var(--primary);
+      padding: 0.45rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 0.48rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: filter 0.15s, transform 0.1s;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    .btn-conjugate {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .btn-translate {
+      background: var(--accent-info);
+      color: #000;
+    }
+
+    .btn-proj {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-proj.active {
+      background: var(--accent-pb);
+      color: #000;
+      border-color: var(--accent-pb);
+    }
+
+    .helper-tip {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      width: 100%;
+    }
+
+    /* NAVEGAÇÃO DE ABAS SEM ROLAGEM ESCONDIDA */
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      margin-top: 0.2rem;
+    }
+
+    .tab-btn {
+      background: #0f172a;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+    }
+
+    /* CONTEÚDO PRINCIPAL CENTRALIZADO */
+    main {
+      max-width: 980px;
+      margin: 1.2rem auto;
+      padding: 0 1rem;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 0.35rem;
+      border-left: 4px solid var(--accent-es);
+      padding-left: 0.7rem;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 1.1rem;
+      font-size: 0.95rem;
+    }
+
+    /* GRIDS RESPONSIVOS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+    }
+
+    .card h3 {
+      color: var(--accent-info);
+      margin-bottom: 0.65rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-es { background: var(--accent-es); color: #fff; }
+    .badge-pb { background: var(--accent-pb); color: #000; }
+    .badge-warn { background: var(--primary); color: #000; }
+
+    .alert-box, .danger-box, .success-box {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    .alert-box { background: var(--warning-bg); border-left: 4px solid var(--primary); }
+    .danger-box { background: var(--danger-bg); border-left: 4px solid var(--accent-es); }
+    .success-box { background: var(--success-bg); border-left: 4px solid var(--accent-pb); }
+
+    /* TABELAS RESPONSIVAS QUE NÃO ESTOURAM A TELA */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 0.93rem;
+    }
+
+    th, td {
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    th {
+      background: #0f172a;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+
+    .hl-es { color: #fca5a5; font-weight: 700; }
+    .hl-pb { color: #6ee7b7; font-weight: 700; }
+    .hl-end { color: var(--primary); font-weight: 800; text-decoration: underline; }
+    .wrong { color: #f87171; text-decoration: line-through; margin-right: 0.35rem; }
+    .right { color: #4ade80; font-weight: 700; }
+
+    /* SIMULADOR E SUB-BOTÕES */
+    .simulator-box {
+      background: #162032;
+      border: 2px solid var(--accent-info);
+      border-radius: 10px;
+      padding: 1.1rem;
+      margin-top: 1.1rem;
+    }
+
+    .sim-controls, .sub-nav {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 0.8rem 0;
+    }
+
+    .sim-btn {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 2px solid transparent;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .sim-btn.active {
+      border-color: var(--primary);
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--primary);
+    }
+
+    .sim-output {
+      background: #090d16;
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent-pb);
+      font-size: 1.05rem;
+    }
+
+    /* CHIPS DE VERBOS CLICÁVEIS */
+    .verb-chip {
+      display: inline-block;
+      background: #0f172a;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin: 0.2rem;
+    }
+
+    .verb-chip:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    /* QUIZ INTERATIVO */
+    .quiz-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-question {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .quiz-opt {
+      background: #0f172a;
+      color: var(--text);
+      border: 2px solid var(--border);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    .quiz-opt:hover {
+      border-color: var(--accent-info);
+    }
+
+    .quiz-opt.correct {
+      background: var(--success-bg);
+      border-color: var(--accent-pb);
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .quiz-opt.wrong-choice {
+      background: var(--danger-bg);
+      border-color: var(--accent-es);
+      color: #f87171;
+    }
+
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border-left: 4px solid var(--accent-info);
+      display: none;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 640px) {
+      header { position: static; }
+      .search-input { width: 100%; }
+      .toolbar { justify-content: stretch; }
+      .lang-select, .btn-action { flex: 1; justify-content: center; }
+      th, td { padding: 0.5rem; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <h1>🇪🇸 Verbos, Conjugação, Modos e Tempos (Espanhol x Português) 🇧🇷</h1>
+        <p>Aula Prática e Comparativa: Pessoas Gramaticais • Tempos • Particípios • Pronomes e Regência</p>
+      </div>
+
+      <!-- BARRA DE CONSULTA COM SELETOR DE IDIOMA, CONJUGAR E TRADUZIR -->
+      <div class="toolbar">
+        <input type="text" id="wordInput" class="search-input" placeholder="Digite ou selecione um verbo/palavra..." onkeypress="if(event.key==='Enter') openConjugator()">
+        
+        <select id="langSelect" class="lang-select" title="Selecione o idioma da palavra digitada">
+          <option value="es">🇪🇸 Espanhol</option>
+          <option value="pt">🇧🇷 Português</option>
+        </select>
+
+        <button class="btn-action btn-conjugate" onclick="openConjugator()" title="Conjugar verbo no idioma selecionado">
+          📘 Conjugar Verbo
+        </button>
+
+        <button class="btn-action btn-translate" onclick="openTranslator()" title="Traduzir palavra entre Espanhol e Português">
+          🔄 Traduzir Palavra
+        </button>
+
+        <button class="btn-action btn-proj" id="projBtn" onclick="toggleProjector()" title="Aumentar fonte para projetor">
+          🖥️ Fonte A+
+        </button>
+
+        <div class="helper-tip">
+          💡 <strong>Dica:</strong> Você pode digitar na caixa acima <u>ou</u> apenas selecionar com o mouse qualquer palavra da aula e clicar em <strong>Conjugar</strong> ou <strong>Traduzir</strong>!
+        </div>
+      </div>
+
+      <!-- ABAS COMPACTAS E VISÍVEIS -->
+      <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-pessoas', this)">1. Pessoas (Tú / Vos / Ud.)</button>
+        <button class="tab-btn" onclick="switchTab('tab-tempos', this)">2. Modos e Tempos</button>
+        <button class="tab-btn" onclick="switchTab('tab-participios', this)">3. Particípios e Irregulares</button>
+        <button class="tab-btn" onclick="switchTab('tab-pronomes', this)">4. Reflexivos e Gustar</button>
+        <button class="tab-btn" onclick="switchTab('tab-regencia', this)">5. Preposições e Regência</button>
+        <button class="tab-btn" onclick="switchTab('tab-quiz', this)">6. Quiz Prático</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ABA 1: PESSOAS GRAMATICAIS -->
+    <section id="tab-pessoas" class="tab-panel active">
+      <h2 class="section-title">O Mapa das Pessoas Gramaticais: A "Armadilha" do Você</h2>
+      <p class="section-subtitle">Entenda a diferença entre com quem falamos (pessoa do discurso) e qual terminação usamos no verbo.</p>
+
+      <div class="alert-box">
+        <strong>⚡ Regra de Ouro:</strong> No Brasil, tanto <em>"Você"</em> (informal) quanto <em>"O senhor / A senhora"</em> (formal) conjugam o verbo na <strong>3ª pessoa</strong> (Você fala / O senhor fala). Em espanhol, <strong>informalidade exige 2ª pessoa com "-S" no final (Tú / Vos)</strong>. Usar <em>"Usted"</em> achando que equivale ao nosso <em>"Você"</em> informal cria distanciamento imediato (equivale a <em>"O senhor"</em>)!
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Pronome (ES)</th>
+              <th>Uso e Região</th>
+              <th>Equivalente no Brasil</th>
+              <th>Pessoa Verbal em Espanhol</th>
+              <th>Exemplo (HABLAR / COMER / VIVIR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="hl-es">Yo</span></td>
+              <td>1ª pessoa singular</td>
+              <td><span class="hl-pb">Eu</span></td>
+              <td>1ª pessoa singular (termina em <strong>-o</strong> no Presente)</td>
+              <td>Yo habl<span class="hl-end">o</span> / com<span class="hl-end">o</span> / viv<span class="hl-end">o</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Tú</span></td>
+              <td><strong>Informal</strong> (Espanha, México, Colômbia, Peru, Caribe...)</td>
+              <td><span class="hl-pb">Você / Tu</span> (informal)</td>
+              <td><strong>2ª pessoa singular (Tuteo)</strong> — Obrigatório o <strong>-S</strong>!</td>
+              <td>Tú habl<span class="hl-end">as</span> / com<span class="hl-end">es</span> / viv<span class="hl-end">es</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Vos</span></td>
+              <td><strong>Informal (Voseo)</strong> (Argentina, Uruguai, Paraguai...)</td>
+              <td><span class="hl-pb">Você / Tu</span> (informal)</td>
+              <td><strong>2ª pessoa voseante</strong> — Oxítona com acento e <strong>-S</strong>!</td>
+              <td>Vos habl<span class="hl-end">ás</span> / com<span class="hl-end">és</span> / viv<span class="hl-end">ís</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Usted (Ud.)</span></td>
+              <td><strong>Formal / Respeito</strong> (Todo o mundo hispânico)</td>
+              <td><span class="hl-pb">O senhor / A senhora</span></td>
+              <td><strong>3ª pessoa singular</strong> (igual a <em>Él / Ella</em> — sem -S!)</td>
+              <td>Usted habl<span class="hl-end">a</span> / com<span class="hl-end">e</span> / viv<span class="hl-end">e</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Nosotros / Nosotras</span></td>
+              <td>1ª pessoa plural (Varia em gênero!)</td>
+              <td><span class="hl-pb">Nós / A gente</span> <em>(*"La gente" = o povo!)</em></td>
+              <td>1ª pessoa plural (<strong>-mos</strong>)</td>
+              <td>Nosotros habl<span class="hl-end">amos</span> / com<span class="hl-end">emos</span> / viv<span class="hl-end">imos</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Vosotros / Vosotras</span></td>
+              <td><strong>Plural Informal exclusivo da Espanha</strong></td>
+              <td><span class="hl-pb">Vocês</span> (informal na Espanha) / <em>Vós</em></td>
+              <td><strong>2ª pessoa plural</strong> (<strong>-áis, -éis, -ís</strong>)</td>
+              <td>Vosotros habl<span class="hl-end">áis</span> / com<span class="hl-end">éis</span> / viv<span class="hl-end">ís</span></td>
+            </tr>
+            <tr>
+              <td><span class="hl-es">Ustedes (Uds.)</span></td>
+              <td><strong>Universal na América Latina</strong> (Formal e Informal) / Formal na Espanha</td>
+              <td><span class="hl-pb">Vocês / Os senhores(as)</span></td>
+              <td><strong>3ª pessoa plural</strong> (termina sempre em <strong>-N</strong>, igual a <em>Ellos</em>)</td>
+              <td>Ustedes habl<span class="hl-end">an</span> / com<span class="hl-end">en</span> / viv<span class="hl-end">en</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SIMULADOR INTERATIVO -->
+      <div class="simulator-box">
+        <h3>🦎 Simulador "Camaleão Social": Compare a Mudança de Tratamento</h3>
+        <p>Clique em cada perfil abaixo para observar como os verbos mudam na mesma frase:</p>
+        <div class="sim-controls">
+          <button class="sim-btn active" onclick="setScenario(0, this)">🎸 Amigo em Madri / Bogotá (TÚ)</button>
+          <button class="sim-btn" onclick="setScenario(1, this)">🧉 Amigo em Buenos Aires / Montevidéu (VOS)</button>
+          <button class="sim-btn" onclick="setScenario(2, this)">⚖️ Tratamento Formal (USTED)</button>
+          <button class="sim-btn" onclick="setScenario(3, this)">🌎 Grupo na América Latina (USTEDES)</button>
+          <button class="sim-btn" onclick="setScenario(4, this)">🥘 Grupo Informal na Espanha (VOSOTROS)</button>
+        </div>
+        <div class="sim-output" id="simOutput"></div>
+      </div>
+    </section>
+
+    <!-- ABA 2: MODOS E TEMPOS -->
+    <section id="tab-tempos" class="tab-panel">
+      <h2 class="section-title">Modos e Tempos Verbais: Contraste com Micro-Frases</h2>
+      <p class="section-subtitle">Escolha o Modo Verbal abaixo para comparar o uso real entre o Português Brasileiro e o Espanhol:</p>
+
+      <div class="sub-nav">
+        <button class="sim-btn active" onclick="filterMode('modo-ind', this)">🟢 MODO INDICATIVO (Certezas e Fatos)</button>
+        <button class="sim-btn" onclick="filterMode('modo-sub', this)">🟣 MODO SUBJUNTIVO (Desejos, "Cuando" e "Si")</button>
+        <button class="sim-btn" onclick="filterMode('modo-imp', this)">🔴 MODO IMPERATIVO (Ordens e Pedidos)</button>
+      </div>
+
+      <!-- INDICATIVO -->
+      <div id="modo-ind" class="mode-block">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tempo Verbal</th>
+                <th>Função e Contraste com o Português</th>
+                <th>Micro-Frases em Espanhol</th>
+                <th>Equivalente Natural no PB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Presente</strong></td>
+                <td>Atenção ao <strong>-s</strong> obrigatório em <em>tú/vos</em> e ao <strong>-n</strong> em <em>ustedes/ellos</em>.</td>
+                <td>• ¿Tú <strong>trabajas</strong> aquí?<br>• ¿Vos <strong>tenés</strong> tiempo hoy?<br>• Usted <strong>habla</strong> muy bien.</td>
+                <td>• Você/Tu trabalha(s) aqui?<br>• Você/Tu tem(tens) tempo hoje?<br>• O(A) Sr.(a) fala muito bem.</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Perfecto Compuesto</strong><br><em>(he hablado)</em></td>
+                <td><span class="badge badge-warn">Falso Amigo!</span> No PB (<em>"tenho falado"</em>) indica repetição. Em ES indica <strong>passado recente</strong> ou ligado ao presente (<em>hoy, esta semana, ya, alguna vez</em>).</td>
+                <td>• <strong>Hoy</strong> yo <strong>he desayunado</strong> temprano.<br>• ¿Alguna vez (tú/vos) <strong>has ido</strong> a Salta?</td>
+                <td>• <strong>Hoje</strong> eu <strong>tomei café</strong> cedo.<br>• Alguma vez você <strong>foi</strong> a Salta?</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Perfecto Simple / Indefinido</strong><br><em>(hablé)</em></td>
+                <td>Passado concluído em tempo já encerrado (<em>ayer, el año pasado</em>).<br>Em <em>Nosotros</em> (-AR e -IR), é idêntico ao Presente (<em>hablamos / vivimos</em>).</td>
+                <td>• <strong>Ayer</strong> (tú/vos) <strong>llegaste</strong> tarde.<br>• El mes pasado <strong>viajamos</strong> a Chile.<br>• ¿Ustedes <strong>vieron</strong> eso?</td>
+                <td>• Ontem você <strong>chegou</strong> tarde.<br>• No mês passado <strong>viajamos</strong>.<br>• Vocês <strong>viram</strong> isso?</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Imperfecto</strong><br><em>(hablaba / comía)</em></td>
+                <td>Hábito no passado ou descrição. Verbos em <strong>-AR</strong> levam <strong>-ABA (sempre com B!)</strong>. Verbos em -ER/-IR levam <strong>-ÍA</strong>.</td>
+                <td>• De niño, yo <strong>jugaba</strong> en la calle.<br>• Antes, vos <strong>vivías</strong> cerca de acá.</td>
+                <td>• Quando criança, eu <strong>brincava</strong> na rua.<br>• Antes, você <strong>morava</strong> perto daqui.</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Pluscuamperfecto</strong><br><em>(había hablado)</em></td>
+                <td>Passado anterior a outro passado. Em espanhol é <strong>proibido usar "tenía"</strong>, usa-se apenas <strong>HABÍA + particípio</strong>!</td>
+                <td>• Cuando llegaste, él ya <strong>había salido</strong>.<br><span class="wrong">❌ ya tenía salido</span></td>
+                <td>• Quando você chegou, ele já <strong>tinha saído</strong> (havia saído).</td>
+              </tr>
+              <tr>
+                <td><strong>Futuro Simple</strong><br><em>(hablaré)</em></td>
+                <td>Usado para promessas futuras e também para <strong>suposição/dúvida no presente</strong>.</td>
+                <td>• Mañana <strong>hablaremos</strong> con él.<br>• ¿Qué hora <strong>será</strong>? / ¿Dónde <strong>estará</strong> Ana?</td>
+                <td>• Amanhã <strong>falaremos</strong> com ele.<br>• Que horas <strong>será que são</strong>?</td>
+              </tr>
+              <tr>
+                <td><strong>Condicional Simple</strong><br><em>(hablaría)</em></td>
+                <td>Cortesia, conselhos e hipóteses.</td>
+                <td>• Yo en tu lugar no <strong>haría</strong> eso.<br>• ¿Me <strong>podría</strong> ayudar, por favor? (Ud.)</td>
+                <td>• Eu no seu lugar não <strong>faria</strong> isso.<br>• O(A) Sr.(a) <strong>poderia</strong> me ajudar?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SUBJUNTIVO -->
+      <div id="modo-sub" class="mode-block" style="display:none;">
+        <div class="danger-box">
+          <strong>🚨 ATENÇÃO AO FUTURO DO SUBJUNTIVO:</strong> O Futuro do Subjuntivo (<em>hablare, tuviere, fuere</em>) não é usado no espanhol moderno falado! Onde o brasileiro diz <em>"Quando você puder"</em> ou <em>"Se você for"</em>, o espanhol usa o <strong>Presente do Subjuntivo (com CUANDO)</strong> e o <strong>Imperfecto do Subjuntivo (com SI)</strong>!
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tempo do Subjuntivo</th>
+                <th>Como Funciona no Espanhol</th>
+                <th>Micro-Frases Corretas (ES)</th>
+                <th>Contraste com o Português (Evite o erro!)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Presente de Subjuntivo</strong><br><em>(hable / coma)</em></td>
+                <td>Inverte a vogal temática: -AR vira <strong>-E</strong>; -ER/-IR vira <strong>-A</strong>.<br><strong>Obrigatório em frases futuras com CUANDO!</strong></td>
+                <td>• Espero que (tú/vos) <strong>tengas</strong> suerte.<br>• Avísame <strong>cuando llegues</strong> a casa.<br>• <strong>Cuando puedan</strong> (Uds.), llámenme.</td>
+                <td>• "Me avise quando <em>chegar</em>" $\rightarrow$ <span class="wrong">❌ cuando llegar</span> $\rightarrow$ <span class="right">✔️ cuando llegues</span>.<br>• "Quando <em>puderem</em>" $\rightarrow$ <span class="right">✔️ cuando puedan</span>.</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Imperfecto</strong><br><em>(hablara / hablase)</em></td>
+                <td>Possui duas formas equivalentes (<strong>-ra</strong> e <strong>-se</strong>).<br><strong>Obrigatório em condições hipotéticas com SI (Se)!</strong></td>
+                <td>• <strong>Si</strong> yo <strong>tuviera</strong> (tuviese) tiempo, iría.<br>• <strong>Si</strong> (tú/vos) <strong>vinieras</strong> mañana, sería genial.</td>
+                <td>• "Se você <em>vier</em>" $\rightarrow$ <span class="wrong">❌ Si vengas / Si vieres</span> $\rightarrow$ <span class="right">✔️ Si vienes (real) / Si vinieras (hipótese)</span>.</td>
+              </tr>
+              <tr>
+                <td><strong>Pretérito Perfecto</strong><br><em>(haya hablado)</em></td>
+                <td>Desejo ou dúvida sobre uma ação passada recente.</td>
+                <td>• Espero que ustedes <strong>hayan descansado</strong> bien.</td>
+                <td>• Espero que vocês <strong>tenham descansado</strong> bem.</td>
+              </tr>
+              <tr>
+                <td><strong>Pluscuamperfecto</strong><br><em>(hubiera hablado)</em></td>
+                <td>Condição impossível no passado.</td>
+                <td>• <strong>Si</strong> me <strong>hubieras avisado</strong>, te <strong>habría ayudado</strong>.</td>
+                <td>• Se você <strong>tivesse me avisado</strong>, eu teria ajudado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- IMPERATIVO -->
+      <div id="modo-imp" class="mode-block" style="display:none;">
+        <div class="alert-box">
+          <strong>💡 Regra Prática do Imperativo Negativo:</strong> Para negar uma ordem para <strong>qualquer pessoa</strong> em espanhol, basta usar <strong>NO + Presente do Subjuntivo</strong>! (Ex: <em>¡Habla! / ¡Hablá! $\rightarrow$ ¡No hables!</em>).
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pessoa</th>
+                <th>Imperativo Afirmativo</th>
+                <th>Imperativo Negativo (NO + Subjuntivo)</th>
+                <th>Micro-Frase Comparativa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Tú</strong></td>
+                <td>3ª pessoa do Presente (sem -s): <strong>Habla, Come, Abre</strong>.<br><em>Irregulares curtos:</em> <strong>Ven, Ten, Pon, Sal, Haz, Di, Sé, Ve</strong>.</td>
+                <td><strong>No hables, No comas, No vengas, No hagas, No digas</strong></td>
+                <td>• ¡<strong>Ven</strong> aquí y <strong>dime</strong> la verdad! / ¡<strong>No vengas</strong> tarde!</td>
+              </tr>
+              <tr>
+                <td><strong>Vos</strong></td>
+                <td>Tira o "-R" do infinitivo e acentua a última vogal:<br><strong>Hablá, Comé, Abrí, Vení, Tené, Poné, Salí, Hacé, Decí</strong>.</td>
+                <td><strong>No hables, No vengas, No digas</strong></td>
+                <td>• ¡<strong>Vení</strong> acá y <strong>decime</strong> la verdad! / ¡<strong>No vengas</strong> tarde!</td>
+              </tr>
+              <tr>
+                <td><strong>Usted</strong></td>
+                <td>Presente do Subjuntivo:<br><strong>Hable, Coma, Venga, Haga, Diga, Pase</strong>.</td>
+                <td><strong>No hable, No coma, No venga, No se preocupe</strong></td>
+                <td>• <strong>Pase</strong> usted y <strong>siéntese</strong>, por favor.</td>
+              </tr>
+              <tr>
+                <td><strong>Ustedes</strong></td>
+                <td>Presente do Subjuntivo plural (com -N):<br><strong>Hablen, Coman, Vengan, Hagan, Digan, Pasen</strong>.</td>
+                <td><strong>No hablen, No coman, No vengan</strong></td>
+                <td>• Chicos, <strong>entren</strong> y <strong>no hagan</strong> ruido.</td>
+              </tr>
+              <tr>
+                <td><strong>Vosotros</strong></td>
+                <td>Troca o "-R" do infinitivo por <strong>-D</strong>:<br><strong>Hablad, Comed, Abrid, Venid, Haced</strong>.</td>
+                <td><strong>No habléis, No comáis, No vengáis</strong></td>
+                <td>• ¡<strong>Venid</strong> todos aquí! / ¡<strong>No os vayáis</strong>! (Espanha)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 3: PARTICÍPIOS E IRREGULARIDADES -->
+    <section id="tab-participios" class="tab-panel">
+      <h2 class="section-title">Formação dos Particípios, Regularidades e Irregularidades</h2>
+      <p class="section-subtitle">Como funcionam os tempos compostos e os 4 grupos de verbos irregulares em espanhol.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>1. Particípios Regulares e Hiatos <span class="badge badge-es">-ADO / -IDO</span></h3>
+          <p>Formação base igual ao português: <strong>-AR $\rightarrow$ -ADO</strong> (<em>hablado</em>) e <strong>-ER/-IR $\rightarrow$ -IDO</strong> (<em>comido, vivido</em>).</p>
+          <div class="alert-box">
+            <strong>Acento Obrigatório no Hiato:</strong> Raízes terminadas em vogal (<em>-aer, -eer, -oír</em>) recebem acento no <strong>-ÍDO</strong>:<br>
+            • <em>Caer $\rightarrow$ <strong>caído</strong></em> | <em>Leer $\rightarrow$ <strong>leído</strong></em> | <em>Oír $\rightarrow$ <strong>oído</strong></em> | <em>Traer $\rightarrow$ <strong>traído</strong></em>.
+          </div>
+          <p><strong>Regras Inegociáveis com o auxiliar HABER:</strong></p>
+          <ul style="margin-left:1.1rem; margin-top:0.4rem;">
+            <li>Jamais use <em>TENER</em> como auxiliar (<span class="wrong">❌ Yo tengo hablado</span> $\rightarrow$ <span class="right">✔️ Yo he hablado</span>).</li>
+            <li>O particípio com <em>HABER</em> é <strong>invariável</strong> (sempre termina em <strong>-o</strong>).</li>
+            <li>Nunca separe o verbo <em>haber</em> do particípio (<span class="right">✔️ Ya le he dicho</span>).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>2. Particípios Irregulares <span class="badge badge-warn">Clique para Conjugar</span></h3>
+          <p>Clique em qualquer verbo abaixo para abrir sua tabela completa de conjugação:</p>
+          <div style="margin: 0.6rem 0;">
+            <span class="verb-chip" onclick="quickAction('abrir', 'es', 'conj')">Abrir $\rightarrow$ <strong>Abierto</strong></span>
+            <span class="verb-chip" onclick="quickAction('cubrir', 'es', 'conj')">Cubrir $\rightarrow$ <strong>Cubierto</strong></span>
+            <span class="verb-chip" onclick="quickAction('decir', 'es', 'conj')">Decir $\rightarrow$ <strong>Dicho</strong></span>
+            <span class="verb-chip" onclick="quickAction('escribir', 'es', 'conj')">Escribir $\rightarrow$ <strong>Escrito</strong></span>
+            <span class="verb-chip" onclick="quickAction('hacer', 'es', 'conj')">Hacer $\rightarrow$ <strong>Hecho</strong></span>
+            <span class="verb-chip" onclick="quickAction('morir', 'es', 'conj')">Morir $\rightarrow$ <strong>Muerto</strong></span>
+            <span class="verb-chip" onclick="quickAction('poner', 'es', 'conj')">Poner $\rightarrow$ <strong>Puesto</strong></span>
+            <span class="verb-chip" onclick="quickAction('ver', 'es', 'conj')">Ver $\rightarrow$ <strong>Visto</strong></span>
+            <span class="verb-chip" onclick="quickAction('volver', 'es', 'conj')">Volver $\rightarrow$ <strong>Vuelto*</strong></span>
+            <span class="verb-chip" onclick="quickAction('resolver', 'es', 'conj')">Resolver $\rightarrow$ <strong>Resuelto*</strong></span>
+            <span class="verb-chip" onclick="quickAction('romper', 'es', 'conj')">Romper $\rightarrow$ <strong>Roto*</strong></span>
+          </div>
+          <div class="danger-box">
+            <strong>*Regulares em PB, mas Irregulares em ES:</strong> Em português dizemos <em>"voltado / resolvido / rompido"</em>, mas em espanhol são irregulares: <strong>he vuelto, he resuelto, se ha roto</strong>!
+          </div>
+        </div>
+      </div>
+
+      <div class="danger-box">
+        <h3>💣 Armadilha dos "Particípios Duplos" (Pago, Ganho, Limpo, Gasto, Aceso, Aceito)</h3>
+        <p>Em português usamos formas curtas no dia a dia: <em>"Eu tinha <strong>pago / ganho / gasto / limpo / aceso</strong>"</em>. <strong>Em espanhol, essas formas curtas NÃO EXISTEM nos tempos compostos!</strong> Com <em>HABER</em>, use sempre a forma em <strong>-ADO / -IDO</strong>:</p>
+        <p style="margin-top:0.4rem;">
+          • "Eu já tinha <strong>pago</strong> a conta" $\rightarrow$ <span class="wrong">❌ Yo ya había pago</span> $\rightarrow$ <span class="right">✔️ Yo ya había PAGADO la cuenta.</span><br>
+          • "Ele tem <strong>ganho</strong> muito" $\rightarrow$ <span class="wrong">❌ Él ha gano</span> $\rightarrow$ <span class="right">✔️ Él ha GANADO mucho.</span><br>
+          • "Nós tínhamos <strong>gasto</strong> tudo" $\rightarrow$ <span class="wrong">❌ Habíamos gasto</span> $\rightarrow$ <span class="right">✔️ Habíamos GASTADO todo.</span><br>
+          • "Você tinha <strong>aceso</strong> a luz?" $\rightarrow$ <span class="wrong">❌ ¿Habías enceso?</span> $\rightarrow$ <span class="right">✔️ ¿Habías ENCENDIDO la luz?</span>
+        </p>
+      </div>
+
+      <h3 style="margin: 1.2rem 0 0.8rem; color: var(--primary);">Os 4 Padrões de Irregularidade Verbal em Espanhol</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h3>🥾 1. Verbos de Ditongação ("Bota")</h3>
+          <p>Quando a sílaba tônica cai na raiz no Presente, a vogal se divide em duas em <strong>Yo, Tú, Él/Ud., Ellos/Uds.</strong> <strong>Nosotros, Vosotros e VOS não ditongam!</strong></p>
+          <p style="margin-top:0.5rem;">
+            • <strong>E $\rightarrow$ IE (Querer / Pensar / Tener):</strong> Yo <em>qu<strong>ie</strong>ro</em>, Tú <em>qu<strong>ie</strong>res</em> $\leftrightarrow$ Vos <em>qu<strong>e</strong>rés</em>, Nosotros <em>qu<strong>e</strong>remos</em>.<br>
+            • <strong>O $\rightarrow$ UE (Poder / Dormir / Almorzar):</strong> Yo <em>p<strong>ue</strong>do</em>, Tú <em>p<strong>ue</strong>des</em> $\leftrightarrow$ Vos <em>p<strong>o</strong>dés</em>, Nosotros <em>p<strong>o</strong>demos</em>.<br>
+            • <strong>E $\rightarrow$ I (Pedir / Servir):</strong> Yo <em>p<strong>i</strong>do</em>, Tú <em>p<strong>i</strong>des</em> $\leftrightarrow$ Vos <em>p<strong>e</strong>dís</em>, Nosotros <em>p<strong>e</strong>dimos</em>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>⚡ 2. Verbos com "-GO" e "-ZCO" na 1ª Pessoa</h3>
+          <p>Ganham <strong>-go</strong> ou <strong>-zco</strong> em <em>Yo</em> no Presente do Indicativo e <strong>levam essa raiz para todo o Presente do Subjuntivo!</strong></p>
+          <p style="margin-top:0.5rem;">
+            • <strong>Grupo -GO:</strong> <em>Tener (ten<strong>go</strong>), Venir (ven<strong>go</strong>), Salir (sal<strong>go</strong>), Poner (pon<strong>go</strong>), Hacer (ha<strong>go</strong>), Decir (di<strong>go</strong>), Traer (trai<strong>go</strong>), Caer (cai<strong>go</strong>), Oír (oi<strong>go</strong>).</em><br>
+            $\rightarrow$ Subjuntivo: <em>Que yo sal<strong>ga</strong>, tú/vos sal<strong>gas</strong>, usted sal<strong>ga</strong>...</em><br>
+            • <strong>Grupo -ZCO:</strong> <em>Conocer (cono<strong>zco</strong>), Parecer (pare<strong>zco</strong>), Conducir (condu<strong>zco</strong>) $\rightarrow$ Subjuntivo: cono<strong>zca</strong>.</em>
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>🧱 3. Raiz Forte no Passado Simples (Indefinido)</h3>
+          <p>Mudam a raiz no passado e <strong>NÃO levam acento agudo</strong> em <em>yo</em> nem em <em>él/usted</em>:</p>
+          <p style="margin-top:0.5rem;">
+            • <strong>ESTAR $\rightarrow$ ESTUV-:</strong> <em>estuve, estuviste, estuvo, estuvimos, estuvieron</em>.<br>
+            • <strong>TENER $\rightarrow$ TUV-:</strong> <em>tuve, tuviste, tuvo, tuvimos, tuvieron</em>.<br>
+            • <strong>PODER / PONER:</strong> <em>pude, pudo / puse, puso</em>.<br>
+            • <strong>DECIR / TRAER:</strong> <em>dije, dijo, <strong>dijeron</strong> / traje, trajo, <strong>trajeron</strong></em> (sem "i" em <em>ellos</em>!).
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>✂️ 4. Raiz Curta no Futuro e Condicional</h3>
+          <p>12 verbos perdem a vogal ou ganham um <strong>-d-</strong> no Futuro e no Condicional (mas <strong>TRAER é regular: traeré!</strong>):</p>
+          <p style="margin-top:0.5rem;">
+            • <strong>Perdem o "E":</strong> <em>Poder (<strong>podré</strong>), Querer (<strong>querré</strong>), Saber (<strong>sabré</strong>), Haber (<strong>habré</strong>).</em><br>
+            • <strong>Ganham "D":</strong> <em>Tener (<strong>tendré</strong>), Venir (<strong>vendré</strong>), Poner (<strong>pondré</strong>), Salir (<strong>saldré</strong>).</em><br>
+            • <strong>Raiz curta:</strong> <em>Hacer (<strong>haré / haría</strong>), Decir (<strong>diré / diría</strong>).</em>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 4: VERBOS PRONOMINAIS E GUSTAR -->
+    <section id="tab-pronomes" class="tab-panel">
+      <h2 class="section-title">Tipos de Verbos: Pronominais Obrigatórios e Tipo Gustar</h2>
+      <p class="section-subtitle">Na fala brasileira omitimos os pronomes reflexivos ("Levantei cedo", "Esqueci a chave"). Em espanhol, eles são indispensáveis!</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>🪞 1. Verbos Pronominais (Me, Te, Se, Nos, Os, Se)</h3>
+          <p><strong>Alinhamento por pessoa:</strong> Yo <strong>me</strong> | Tú/Vos <strong>te</strong> | Él/Ella/Usted <strong>se</strong> | Nosotros <strong>nos</strong> | Vosotros <strong>os</strong> | Ellos/Ustedes <strong>se</strong>.</p>
+          <ul style="margin-left:1.1rem; margin-top:0.5rem;">
+            <li><strong>Rotina e Postura:</strong> <em>Levantarse, despertarse, acostarse, ducharse, bañarse, lavarse los dientes, ponerse la ropa, sentarse, callarse.</em><br>
+            $\rightarrow$ <span class="wrong">❌ Ayer levanté a las 7 y tomé baño.</span><br>
+            $\rightarrow$ <span class="right">✔️ Ayer ME levanté a las 7 y ME duché.</span></li>
+            <li><strong>Emoção e Processos Mentais:</strong> <em>Acordarse de, olvidarse, equivocarse, quejarse de, reírse de, quedarse (permanecer), dormirse (adormecer).</em><br>
+            $\rightarrow$ <span class="wrong">❌ Disculpe, equivoqué y quedé en casa.</span><br>
+            $\rightarrow$ <span class="right">✔️ Disculpe, ME equivoqué y ME quedé en casa.</span></li>
+          </ul>
+          <div class="alert-box">
+            <strong>Mudança de Sentido com "-SE":</strong><br>
+            • <strong>Ir</strong> (ir a um destino: <em>Voy al cine</em>) vs. <strong>Irse</strong> (ir embora: <em>¡Ya <strong>me voy</strong>!</em>)<br>
+            • <strong>Dormir</strong> (dormir: <em>Dormí bien</em>) vs. <strong>Dormirse</strong> (pegar no sono: <em><strong>Me dormí</strong> en el sofá</em>)
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🔄 2. Verbos Tipo GUSTAR (Sujeito Invertido)</h3>
+          <p>Verbos como <strong>Gustar, Encantar, Doler, Molestar, Importar, Interesar, Parecer, Faltar</strong> concordam com aquilo que agrada:</p>
+          <div class="table-wrap" style="margin-top:0.6rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reforço (Com "A")</th>
+                  <th>Pronome</th>
+                  <th>Singular / Verbo</th>
+                  <th>Plural</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>(A mí)</td>
+                  <td><span class="hl-es">me</span></td>
+                  <td rowspan="6" style="vertical-align:middle; text-align:center; font-weight:700;">
+                    gusta el café<br>gusta viajar<br>duele la cabeza
+                  </td>
+                  <td rowspan="6" style="vertical-align:middle; text-align:center; font-weight:700;">
+                    gustan los libros<br>duelen los pies<br>encantan las playas
+                  </td>
+                </tr>
+                <tr><td>(A ti / A vos)</td><td><span class="hl-es">te</span></td></tr>
+                <tr><td>(A él / ella / <strong>usted</strong>)</td><td><span class="hl-es">le</span></td></tr>
+                <tr><td>(A nosotros/as)</td><td><span class="hl-es">nos</span></td></tr>
+                <tr><td>(A vosotros/as)</td><td><span class="hl-es">os</span></td></tr>
+                <tr><td>(A ellos / <strong>ustedes</strong>)</td><td><span class="hl-es">les</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="danger-box">
+            <strong>Erros Proibidos com GUSTAR:</strong><br>
+            1. <span class="wrong">❌ Yo gusto de música</span> $\rightarrow$ <span class="right">✔️ (A mí) me gusta la música</span>.<br>
+            2. <span class="wrong">❌ Me gusta de viajar</span> $\rightarrow$ <span class="right">✔️ Me gusta viajar</span> (Sem preposição "de"!).
+          </div>
+        </div>
+      </div>
+
+      <div class="success-box">
+        <strong>📌 Posição dos Pronomes em Espanhol (JAMAIS USE HÍFEN!):</strong><br>
+        • <strong>ANTES e separado do verbo:</strong> Com verbos conjugados (Presente, Passado, Futuro, Subjuntivo) e Imperativo Negativo $\rightarrow$ <em><strong>Me</strong> levanto, <strong>Se</strong> fue, ¡No <strong>te</strong> vayas!</em><br>
+        • <strong>DEPOIS e colado numa única palavra:</strong> Apenas no Infinitivo, Gerúndio e Imperativo Afirmativo $\rightarrow$ <em>Voy a levantar<strong>me</strong>, Estoy duchándo<strong>me</strong>, ¡Siénta<strong>te</strong>! / ¡Sent<strong>ate</strong>! / ¡Siénte<strong>se</strong>!</em>
+      </div>
+    </section>
+
+    <!-- ABA 5: PREPOSIÇÕES E REGÊNCIA -->
+    <section id="tab-regencia" class="tab-panel">
+      <h2 class="section-title">Regência Verbal: Verbos com Preposição Obrigatória e o "A" Pessoal</h2>
+      <p class="section-subtitle">Compare as preposições exigidas pelos verbos mais comuns no espanhol e no português brasileiro.</p>
+
+      <div class="alert-box">
+        <strong>👤 A Regra do "A" Pessoal (Objeto Direto de Pessoa):</strong><br>
+        Em português dizemos: <em>"Vi o João", "Conheci a diretora", "Estou esperando minha mãe", "Chamei o médico"</em> (sem preposição).<br>
+        <strong>Em espanhol, quando o complemento direto do verbo é uma PESSOA (ou animal de estimação), a preposição "A" é obrigatória:</strong><br>
+        • <em>Ayer vi <strong>a</strong> Juan.</em> | <em>¿Conoces <strong>a</strong> la directora?</em> | <em>Estoy esperando <strong>a</strong> mi madre.</em> | <em>Voy a llamar <strong>al</strong> médico.</em>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Verbo em Espanhol</th>
+              <th>Preposição (ES)</th>
+              <th>Uso no Brasil (PB)</th>
+              <th>Micro-Frases Comparativas (Certo vs. Portunhol)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Ir / Viajar / Llegar</strong><br><em>(Destino e movimento)</em></td>
+              <td><span class="badge badge-es">A</span></td>
+              <td>Ir <em>em / para</em><br>Chegar <em>em</em></td>
+              <td><span class="right">✔️ Mañana voy A Madrid y llego A casa a las diez.</span><br><span class="wrong">❌ Voy en/para Madrid y llego en casa.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Pasar</strong><br><em>(Passar em um local)</em></td>
+              <td><span class="badge badge-es">POR</span></td>
+              <td>Passar <em>em / na</em></td>
+              <td><span class="right">✔️ Más tarde paso POR tu casa / POR la farmacia.</span><br><span class="wrong">❌ Paso en tu casa.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Enamorarse / Depender / Acordarse / Despedirse</strong></td>
+              <td><span class="badge badge-es">DE</span></td>
+              <td>Apaixonar-se <em>por</em><br>Lembrar <em>de</em></td>
+              <td><span class="right">✔️ Él se enamoró DE su mejor amiga. / ¿Te acordás DE mí?</span><br><span class="wrong">❌ Se enamoró por su amiga.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Oler / Saber</strong><br><em>(Ter cheiro / gosto de)</em></td>
+              <td><span class="badge badge-es">A</span></td>
+              <td>Cheirar <em>a</em><br>Ter gosto <em>de</em></td>
+              <td><span class="right">✔️ Esto huele A rosas y sabe A chocolate.</span><br><span class="wrong">❌ Sabe de chocolate.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Jugar</strong><br><em>(Esportes e jogos)</em></td>
+              <td><span class="badge badge-es">A (AL / A LA)</span></td>
+              <td>Jogar <em>[sem prep.]</em></td>
+              <td><span class="right">✔️ Nosotros jugamos AL fútbol / A LAS cartas / AL tenis.</span><br><span class="wrong">❌ Jugamos fútbol.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tardar / Quedar</strong><br><em>(Demorar para / Combinar de)</em></td>
+              <td><span class="badge badge-es">EN</span> + Infinitivo</td>
+              <td>Demorar <em>para</em><br>Combinar <em>de</em></td>
+              <td><span class="right">✔️ Tardé una hora EN llegar. / Quedamos EN salir hoy.</span><br><span class="wrong">❌ Tardé para llegar / Combinamos de salir.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Soñar / Casarse / Encontrarse</strong></td>
+              <td><span class="badge badge-es">CON</span></td>
+              <td>Sonhar / Casar <em>com</em></td>
+              <td><span class="right">✔️ Anoche soñé CONTIGO. / Se casó CON Pedro.</span></td>
+            </tr>
+            <tr>
+              <td><strong>Empezar / Comenzar / Ayudar / Enseñar / Aprender</strong></td>
+              <td><span class="badge badge-es">A</span> + Infinitivo</td>
+              <td>Começar / Ajudar <em>a</em></td>
+              <td><span class="right">✔️ Empezó A llover. / ¿Me ayudas A limpiar esto?</span></td>
+            </tr>
+            <tr>
+              <td><strong>Dejar / Terminar / Acabar / Tratar</strong></td>
+              <td><span class="badge badge-es">DE</span> + Infinitivo</td>
+              <td>Deixar / Tentar</td>
+              <td><span class="right">✔️ Trata DE llegar temprano (Tente chegar cedo).</span></td>
+            </tr>
+            <tr>
+              <td><strong>Preferir</strong><br><em>(Comparação)</em></td>
+              <td><span class="badge badge-warn">QUE (Sem prep.!)</span></td>
+              <td>Preferir X <em>do que / a</em> Y</td>
+              <td><span class="right">✔️ Prefiero el mate QUE el café. / Prefiero leer QUE ver tele.</span><br><span class="wrong">❌ Prefiero mate de lo que café.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ABA 6: QUIZ INTERATIVO -->
+    <section id="tab-quiz" class="tab-panel">
+      <h2 class="section-title">Quiz Prático: Caça ao Portunhol</h2>
+      <p class="section-subtitle">Escolha a alternativa correta e veja a explicação detalhada de cada estrutura:</p>
+
+      <div id="quizContainer"></div>
+
+      <div style="text-align:center; margin-top:1.2rem;">
+        <button class="btn-action btn-proj" onclick="renderQuiz()">🔄 Reiniciar Exercícios</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // 1. NAVEGAÇÃO ENTRE ABAS
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // 2. MODO PROJEÇÃO (FONTE A+)
+    function toggleProjector() {
+      document.body.classList.toggle('projector-mode');
+      const btn = document.getElementById('projBtn');
+      btn.classList.toggle('active');
+      btn.textContent = document.body.classList.contains('projector-mode')
+        ? '🖥️ Fonte A+ (Ativo)'
+        : '🖥️ Fonte A+';
+    }
+
+    // 3. CAPTURA INTELIGENTE: PALAVRA DIGITADA OU SELECIONADA NA TELA
+    function getTargetWord() {
+      const inputEl = document.getElementById('wordInput');
+      let word = inputEl.value.trim();
+      if (!word) {
+        const selected = window.getSelection().toString().trim();
+        if (selected) {
+          word = selected;
+          inputEl.value = word;
+        }
+      }
+      // Limpa pontuação acidental nas bordas
+      return word.replace(/^[¿¡"«»().,;!?]+|[¿¡"«»().,;!?]+$/g, '').trim().toLowerCase();
+    }
+
+    // 4. CONJUGADOR (FUNCIONA PARA ESPANHOL E PORTUGUÊS)
+    function openConjugator() {
+      const word = getTargetWord();
+      const lang = document.getElementById('langSelect').value;
+      const langSlug = (lang === 'pt') ? 'portugues' : 'espanol';
+
+      if (!word) {
+        window.open(`https://conjugador.reverso.net/conjugacion-${langSlug}.html`, '_blank');
+        return;
+      }
+      window.open(`https://conjugador.reverso.net/conjugacion-${langSlug}-verbo-${encodeURIComponent(word)}.html`, '_blank');
+    }
+
+    // 5. TRADUTOR CONTEXTUAL (ESPANHOL <-> PORTUGUÊS)
+    function openTranslator() {
+      const word = getTargetWord();
+      const lang = document.getElementById('langSelect').value;
+      const dirSlug = (lang === 'pt') ? 'portugues-espanhol' : 'espanhol-portugues';
+
+      if (!word) {
+        window.open(`https://context.reverso.net/traducao/${dirSlug}/`, '_blank');
+        return;
+      }
+      window.open(`https://context.reverso.net/traducao/${dirSlug}/${encodeURIComponent(word)}`, '_blank');
+    }
+
+    // Atalho dos chips de verbos irregulares
+    function quickAction(word, lang, actionType) {
+      document.getElementById('wordInput').value = word;
+      document.getElementById('langSelect').value = lang;
+      if (actionType === ' translate') {
+        openTranslator();
+      } else {
+        openConjugator();
+      }
+    }
+
+    // 6. FILTRO DE MODOS VERBAIS (ABA 2)
+    function filterMode(modeId, btn) {
+      document.querySelectorAll('.mode-block').forEach(b => b.style.display = 'none');
+      document.querySelectorAll('#tab-tempos .sim-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(modeId).style.display = 'block';
+      btn.classList.add('active');
+    }
+
+    // 7. SIMULADOR CAMALEÃO SOCIAL (ABA 1)
+    const scenarios = [
+      {
+        title: "Pronome: TÚ (2ª pessoa singular — Tuteo)",
+        pb: "Português: «Você pode vir aqui amanhã? Quando você chegar, sente-se e me diga a verdade!»",
+        es: "Espanhol (Tú): «¿(Tú) <span class='hl-end'>puedes</span> venir aquí mañana? Cuando <span class='hl-end'>llegues</span>, ¡<span class='hl-end'>siéntate</span> y <span class='hl-end'>dime</span> la verdad!»",
+        note: "'Puedes' ditonga (o -> ue) e exige -S; 'cuando llegues' usa Presente do Subjuntivo; 'siéntate' e 'dime' prendem o pronome no final."
+      },
+      {
+        title: "Pronome: VOS (2ª pessoa singular — Voseo Rioplatense)",
+        pb: "Português: «Você pode vir aqui amanhã? Quando você chegar, sente-se e me diga a verdade!»",
+        es: "Espanhol (Vos): «¿(Vos) <span class='hl-end'>podés</span> venir acá mañana? Cuando <span class='hl-end'>llegues</span>, ¡<span class='hl-end'>sentate</span> y <span class='hl-end'>decime</span> la verdad!»",
+        note: "'Podés' e 'sentate' NÃO ditongam no voseo e têm sílaba tônica final. 'Decime' vem do imperativo voseante 'decí + me'."
+      },
+      {
+        title: "Pronome: USTED (Tratamento Formal — 3ª pessoa singular)",
+        pb: "Português: «O senhor pode vir aqui amanhã? Quando o senhor chegar, sente-se e me diga a verdade!»",
+        es: "Espanhol (Usted): «¿Usted <span class='hl-end'>puede</span> venir aquí mañana? Cuando <span class='hl-end'>llegue</span>, ¡<span class='hl-end'>siéntese</span> y <span class='hl-end'>dígame</span> la verdad!»",
+        note: "Conjugação na 3ª pessoa (sem -S final: 'puede', 'llegue'), pronome reflexivo 'SE' ('siéntese') e imperativo extraído do Subjuntivo ('dígame')."
+      },
+      {
+        title: "Pronome: USTEDES (Plural Universal na América Latina — 3ª pessoa plural)",
+        pb: "Português: «Vocês podem vir aqui amanhã? Quando vocês chegarem, sentem-se e me digam a verdade!»",
+        es: "Espanhol (Ustedes): «¿Ustedes <span class='hl-end'>pueden</span> venir aquí mañana? Cuando <span class='hl-end'>lleguen</span>, ¡<span class='hl-end'>siéntense</span> y <span class='hl-end'>díganme</span> la verdad!»",
+        note: "Todos os verbos recebem o -N da 3ª pessoa do plural ('pueden', 'lleguen', 'siéntense', 'díganme')."
+      },
+      {
+        title: "Pronome: VOSOTROS (Plural Informal na Espanha — 2ª pessoa plural)",
+        pb: "Português: «Vocês podem vir aqui amanhã? Quando vocês chegarem, sentem-se e me digam a verdade!»",
+        es: "Espanhol (Vosotros): «¿Vosotros <span class='hl-end'>podéis</span> venir aquí mañana? Cuando <span class='hl-end'>lleguéis</span>, ¡<span class='hl-end'>sentaos</span> y <span class='hl-end'>decidme</span> la verdad!»",
+        note: "'Podéis' não ditonga; no imperativo reflexivo cai o '-d' antes de 'os' (sentad + os = sentaos), mas mantém-se em 'decidme'."
+      }
+    ];
+
+    function setScenario(idx, btn) {
+      if (btn) {
+        document.querySelectorAll('.simulator-box .sim-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      const s = scenarios[idx];
+      document.getElementById('simOutput').innerHTML = `
+        <div style="color:var(--primary); font-weight:700; margin-bottom:0.35rem;">${s.title}</div>
+        <div style="color:var(--text-muted); margin-bottom:0.4rem;">🇧🇷 ${s.pb}</div>
+        <div style="font-size:1.18rem; margin-bottom:0.5rem;">🇪🇸 ${s.es}</div>
+        <div style="font-size:0.9rem; color:var(--accent-info);">💡 <strong>Análise:</strong> ${s.note}</div>
+      `;
+    }
+
+    // 8. QUIZ INTERATIVO (ABA 6)
+    const quizData = [
+      {
+        q: "1. (Pessoas Gramaticais) Conversando informalmente com um amigo em Buenos Aires, como você pergunta: «Você tem tempo agora?»",
+        opts: [
+          "¿Usted tiene tiempo ahora?",
+          "¿Vos tenés tiempo ahora? (ou ¿Tú tienes tiempo ahora?)",
+          "¿Tu tiene tiempo ahora?"
+        ],
+        correct: 1,
+        exp: "No trato informal usa-se 'Vos tenés' (voseo) ou 'Tú tienes' (tuteo), sempre com -S final. 'Usted tiene' significa 'O senhor tem'."
+      },
+      {
+        q: "2. (Subjuntivo com CUANDO) Como traduzir: «Quando você chegar em casa, me avise!» (informal)?",
+        opts: [
+          "Cuando llegar en casa, ¡me avise!",
+          "Cuando llegares a casa, ¡avísame!",
+          "Cuando llegues a casa, ¡avísame! (tú) / ¡avisame! (vos)"
+        ],
+        correct: 2,
+        exp: "1) Com 'CUANDO' indicando ação futura, usa-se o Presente do Subjuntivo ('llegues'); 2) 'Llegar' exige a preposição 'A' ('a casa'); 3) No imperativo afirmativo o pronome vai colado ao final."
+      },
+      {
+        q: "3. (Particípios e Tempos Compostos) Como traduzir: «Eu já tinha pago a conta quando o copo quebrou»?",
+        opts: [
+          "Yo ya había pagado la cuenta cuando el vaso se rompió (ou se ha roto).",
+          "Yo ya tenía pago la cuenta cuando el vaso rompió.",
+          "Yo ya había pago la cuenta cuando el vaso había rompido."
+        ],
+        correct: 0,
+        exp: "1) O auxiliar de tempo composto é HABER ('había'); 2) Com 'haber' não existe forma curta 'pago', usa-se 'pagado'; 3) O particípio de romper é 'roto' (e quebrar-se é reflexivo: 'se rompió')."
+      },
+      {
+        q: "4. (Condicional com SI) Como dizer em espanhol: «Se eu tivesse dinheiro agora, viajaria para Madri»?",
+        opts: [
+          "Si yo tuviese (ou tuviera) dinero ahora, viajaría a Madrid.",
+          "Si yo tiver dinero ahora, viajaría para Madrid.",
+          "Si yo tenga dinero ahora, viajaría en Madrid."
+        ],
+        correct: 0,
+        exp: "A conjunção condicional 'SI' em hipóteses exige o Pretérito Imperfecto de Subjuntivo ('tuviera / tuviese'), e verbos de destino ('viajar a') exigem a preposição A."
+      },
+      {
+        q: "5. (Verbos Pronominais) Como dizer: «Ontem eu acordei cedo, lembrei da reunião e fui embora»?",
+        opts: [
+          "Ayer desperté temprano, acordé de la reunión y fui.",
+          "Ayer me desperté temprano, me acordé de la reunión y me fui.",
+          "Ayer me desperté temprano, me acordé por la reunión y me iba."
+        ],
+        correct: 1,
+        exp: "Despertarse (acordar), acordarse de (lembrar-se de) e irse (ir embora) exigem obrigatoriamente o pronome reflexivo ('me')."
+      },
+      {
+        q: "6. (Verbo GUSTAR e 'A' Pessoal) Como traduzir: «Vocês gostaram de visitar meus pais?» (na América Latina)?",
+        opts: [
+          "¿Ustedes gustaron de visitar mis padres?",
+          "¿A ustedes les gustó visitar a mis padres?",
+          "¿A ustedes les gustaron de visitar a mis padres?"
+        ],
+        correct: 1,
+        exp: "'Gustar' concorda com 'visitar' (singular -> gustó) sem preposição 'de', exigindo 'A ustedes les...'. E 'visitar' pede a preposição 'A' antes de pessoas ('visitar a mis padres')."
+      }
+    ];
+
+    function renderQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = quizData.map((item, qIdx) => `
+        <div class="quiz-card">
+          <div class="quiz-question">${item.q}</div>
+          <div class="quiz-options">
+            ${item.opts.map((opt, oIdx) => `
+              <button class="quiz-opt" id="q${qIdx}_o${oIdx}" onclick="checkAnswer(${qIdx},${oIdx})">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <div class="quiz-feedback" id="fb_${qIdx}">
+            <strong>Explicação:</strong> ${item.exp}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function checkAnswer(qIdx, oIdx) {
+      const item = quizData[qIdx];
+      item.opts.forEach((_, idx) => {
+        const btn = document.getElementById(`q${qIdx}_o${idx}`);
+        btn.disabled = true;
+        if (idx === item.correct) {
+          btn.classList.add('correct');
+        } else if (idx === oIdx) {
+          btn.classList.add('wrong-choice');
+        }
+      });
+      document.getElementById(`fb_${qIdx}`).style.display = 'block';
+    }
+
+    // Inicialização
+    setScenario(0);
+    renderQuiz();
+  </script>
+</body>
+</html>
