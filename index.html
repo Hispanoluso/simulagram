@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal de Evaluaciones - La Escuela -Dojo de Español</title>
+  <title>Portal de Evaluaciones - La Escuela - Dojo de Español</title>
   <style>
     :root {
       --primary: #1e3a8a;
@@ -50,6 +50,16 @@
       margin-bottom: 28px;
     }
 
+    /* Estilos responsivos para el logo insertado */
+    .profile-logo {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+      border-radius: 50%;
+      margin: 0 auto 16px auto;
+      display: block;
+    }
+
     .badge {
       display: inline-block;
       background: #eff6ff;
@@ -94,6 +104,7 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
+      margin-bottom: 16px; /* Para dar espacio consistente entre bloques */
     }
 
     @media (min-width: 600px) {
@@ -162,6 +173,18 @@
       font-size: 0.85rem;
       border-top: 1px solid var(--border);
     }
+
+    /* Estilo para el enlace específico en el footer */
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -170,6 +193,8 @@
     
     <!-- Ficha del profesor -->
     <div class="profile-card">
+      <!-- Imagen de forma responsiva insertada aquí -->
+      <img src="image_0.png" alt="Logotipo de La Escuela - Dojo de Español" class="profile-logo">
       <span class="badge">Portal Educativo</span>
       <h1>La Escuela - Dojo de Español</h1>
       <p class="subtitle">Grupo de estudio y producción en español</p>
@@ -183,7 +208,6 @@
     <div class="links-grid">
       
       <!-- Enlace 1: Simulador MCER -->
-      <!-- Edita el valor del href="mcer.html" con la ruta o URL de tu simulador MCER -->
       <a href="mcer.html" class="simulator-card">
         <div>
           <h2>📘 Simulador MCER</h2>
@@ -193,7 +217,6 @@
       </a>
 
       <!-- Enlace 2: Simulador DELE -->
-      <!-- Edita el valor del href="dele.html" con la ruta o URL de tu simulador DELE -->
       <a href="dele.html" class="simulator-card">
         <div>
           <h2>🎓 Simulador DELE</h2>
@@ -283,7 +306,7 @@
   </div>
 
   <footer>
-    <p>&copy; Claudio Marcelo Budnikar — La Escuela - Dojo de Español</p>
+    <p>&copy; Claudio Marcelo Budnikar — <a href="https://docs.google.com/document/d/1JSazDC-wR3uk-gp972MC04N9PI6lCEgLcrgOZ0kmHmE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">La Escuela - Dojo de Español</a></p>
   </footer>
 
 </body>
