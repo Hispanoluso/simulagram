@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafío Musical Brasil: 30 Canciones Icónicas</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Efecto de desfoque / spoiler */
+    .lyrics-hidden {
+      filter: blur(6px);
+      user-select: none;
+      transition: filter 0.25s ease-in-out;
+    }
+    .lyrics-visible {
+      filter: blur(0px);
+      user-select: text;
+      transition: filter 0.25s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen font-sans flex flex-col justify-between selection:bg-emerald-200">
+
+  <!-- Header Superior con Marcador Fijo -->
+  <header class="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center space-x-2.5">
+          <span class="text-2xl">🇧🇷 🎶 🇪🇸</span>
+          <h1 class="text-xl sm:text-2xl font-black tracking-tight">Desafio Musical: 30 Clássicos Brasileiros</h1>
+        </div>
+        <p class="text-xs sm:text-sm text-emerald-200 mt-0.5">
+          Para estudiantes hispanohablantes: lee la traducción literal en español y adivina el clásico original.
+        </p>
+      </div>
+
+      <!-- Placar / Estatísticas em tempo real -->
+      <div class="flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20 gap-4 text-center">
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-emerald-300 font-bold">Aciertos</span>
+          <span id="score-hits" class="text-lg sm:text-xl font-black text-emerald-400">0</span>
+        </div>
+        <div class="h-7 w-px bg-white/20"></div>
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-slate-300 font-bold">Respondidas</span>
+          <span id="score-total" class="text-lg sm:text-xl font-bold text-white">0 / 30</span>
+        </div>
+        <div class="h-7 w-px bg-white/20"></div>
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-yellow-300 font-bold">Acierto %</span>
+          <span id="score-accuracy" class="text-lg sm:text-xl font-black text-yellow-300">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de progreso visual -->
+    <div class="w-full bg-slate-950/40 h-1.5">
+      <div id="progress-bar" class="bg-gradient-to-r from-emerald-400 to-teal-300 h-1.5 w-0 transition-all duration-300"></div>
+    </div>
+  </header>
+
+  <!-- Área Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1">
+    
+    <!-- Barra de Herramientas y Filtro -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Buscador -->
+      <div class="relative w-full md:w-80">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-sm">
+          🔍
+        </span>
+        <input 
+          type="text" 
+          id="search-input" 
+          oninput="handleSearch()"
+          placeholder="Buscar canción, artista o verso..." 
+          class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 transition"
+        />
+      </div>
+
+      <!-- Controles Globales -->
+      <div class="flex items-center flex-wrap gap-2 w-full md:w-auto justify-end">
+        <button onclick="toggleAllLyrics(true)" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 font-semibold transition flex items-center gap-1.5 text-slate-700 active:scale-95">
+          👁️ Mostrar Todas
+        </button>
+        <button onclick="toggleAllLyrics(false)" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 font-semibold transition flex items-center gap-1.5 text-slate-700 active:scale-95">
+          🙈 Ocultar Todas
+        </button>
+        <button onclick="resetQuiz()" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+          🔄 Reiniciar Quiz
+        </button>
+      </div>
+    </div>
+
+    <!-- Títulos de Columnas para Escritorio -->
+    <div class="hidden lg:grid lg:grid-cols-12 gap-5 pb-3 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <div class="col-span-4">1. Traducción Literal (Español)</div>
+      <div class="col-span-4">2. Estrofe Original em Português</div>
+      <div class="col-span-4">3. Título e Intérprete (Escolha 1 de 3)</div>
+    </div>
+
+    <!-- Contenedor de las 30 Cartas -->
+    <div id="songs-container" class="space-y-4">
+      <!-- Generado dinámicamente con JS -->
+    </div>
+
+    <!-- Mensaje cuando la búsqueda no arroja resultados -->
+    <div id="no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200">
+      <p class="text-3xl mb-2">🔎</p>
+      <p class="text-slate-600 font-medium text-sm">No se encontraron canciones coincidentes con el término de búsqueda.</p>
+    </div>
+
+  </main>
+
+  <!-- Notificación Toast -->
+  <div id="feedback-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition duration-300 pointer-events-none max-w-sm w-full bg-slate-900 text-white rounded-2xl shadow-2xl p-4 border border-slate-700 flex items-center gap-3">
+    <span id="toast-icon" class="text-2xl">✨</span>
+    <div>
+      <p id="toast-title" class="font-bold text-sm">Acierto</p>
+      <p id="toast-message" class="text-xs text-slate-300 mt-0.5">Mensaje motivador</p>
+    </div>
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="bg-white border-t border-slate-200 py-5 mt-10">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      Recurso didáctico interactivo para la enseñanza de Portugués del Brasil a hispanohablantes. 30 joyas de la música popular brasileña.
+    </div>
+  </footer>
+
+  <!-- Lógica y Base de Datos de las 30 Canciones -->
+  <script>
+    const songsData = [
+      {
+        id: 1,
+        genre: "Bossa Nova",
+        esLyrics: "Mira qué cosa más linda, más llena de gracia,\nes ella, muchacha, que viene y que pasa,\nen un dulce balanceo, camino del mar.",
+        ptLyrics: "Olha que coisa mais linda, mais cheia de graça\nÉ ela, menina, que vem e que passa\nNum doce balanço a caminho do mar",
+        options: [
+          { text: "Garota de Ipanema — Tom Jobim & Vinicius de Moraes", correct: true },
+          { text: "Wave — Tom Jobim", correct: false },
+          { text: "Corcovado — João Gilberto", correct: false }
+        ]
+      },
+      {
+        id: 2,
+        genre: "Samba Exaltação",
+        esLyrics: "Brasil, mi Brasil brasileño,\nmi mulato malevo,\nvoy a cantar para ti en mis versos.",
+        ptLyrics: "Brasil, meu Brasil brasileiro\nMeu mulato inzoneiro\nVou cantar-te nos meus versos",
+        options: [
+          { text: "Aquarela do Brasil — Gal Costa (comp. Ary Barroso)", correct: true },
+          { text: "Canta Canta, Minha Gente — Martinho da Vila", correct: false },
+          { text: "O Ébano — Alcione", correct: false }
+        ]
+      },
+      {
+        id: 3,
+        genre: "Samba-Rock",
+        esLyrics: "¡O ariá-raioh, obá, obá, obá!\nSal de mi camino que quiero pasar,\npues la samba está animada y lo que quiero es sambar.",
+        ptLyrics: "O ariá-raioh, obá, obá, obá\nMas que nada, sai da minha frente que eu quero passar\nPois o samba está animado, o que eu quero é sambar",
+        options: [
+          { text: "Taj Mahal — Jorge Ben Jor", correct: false },
+          { text: "Mas que Nada — Jorge Ben Jor", correct: true },
+          { text: "Fio Maravilha — Jorge Ben Jor", correct: false }
+        ]
+      },
+      {
+        id: 4,
+        genre: "Bossa Nova / MPB",
+        esLyrics: "Es palo, es piedra, es el fin del camino,\nes un resto de tocón, es un poco solitario,\nes un pedazo de vidrio, es la vida, es el sol.",
+        ptLyrics: "É pau, é pedra, é o fim do caminho\nÉ um resto de toco, é um pouco sozinho\nÉ um caco de vidro, é a vida, é o sol",
+        options: [
+          { text: "Águas de Março — Elis Regina & Tom Jobim", correct: true },
+          { text: "Construção — Chico Buarque", correct: false },
+          { text: "Passaredo — Francis Hime", correct: false }
+        ]
+      },
+      {
+        id: 5,
+        genre: "MPB",
+        esLyrics: "Tú me preguntas por mi pasión,\ndigo que estoy encantada con una nueva invención...\nMi dolor es percibir que a pesar de haber hecho todo lo que hicimos,\ntodavía somos los mismos y vivimos como nuestros padres.",
+        ptLyrics: "Você me pergunta pela minha paixão\nDigo que estou encantada com uma nova invenção\nMinha dor é perceber que apesar de termos feito tudo o que fizemos\nAinda somos os mesmos e vivemos como os nossos pais",
+        options: [
+          { text: "Romaria — Renato Teixeira", correct: false },
+          { text: "O Bêbado e a Equilibrista — Elis Regina", correct: false },
+          { text: "Como Nossos Pais — Elis Regina (comp. Belchior)", correct: true }
+        ]
+      },
+      {
+        id: 6,
+        genre: "Rock Brasileño",
+        esLyrics: "Es preciso amar a las personas como si no hubiera un mañana,\nporque si tú te paras a pensar,\nen verdad no lo hay.",
+        ptLyrics: "É preciso amar as pessoas como se não houvesse amanhã\nPorque se você parar pra pensar\nNa verdade não há",
+        options: [
+          { text: "Tempo Perdido — Legião Urbana", correct: false },
+          { text: "Pais e Filhos — Legião Urbana", correct: true },
+          { text: "Índios — Legião Urbana", correct: false }
+        ]
+      },
+      {
+        id: 7,
+        genre: "Sertanejo",
+        esLyrics: "Cuando digo que dejé de amarte, es porque te amo,\ncuando digo que no te quiero más, es porque te quiero;\ntengo miedo de dar el brazo a torcer y confesar que estoy en tus manos.",
+        ptLyrics: "Quando eu digo que deixei de te amar, é porque eu te amo\nQuando eu digo que não quero mais você, é porque eu te quero\nEu tenho medo de te dar as mãos e confessar o que parece...",
+        options: [
+          { text: "Evidências — Chitãozinho & Xororó", correct: true },
+          { text: "É o Amor — Zezé Di Camargo & Luciano", correct: false },
+          { text: "Dormi na Praça — Bruno & Marrone", correct: false }
+        ]
+      },
+      {
+        id: 8,
+        genre: "Pop / Sertanejo",
+        esLyrics: "Nuestra, nuestra, así tú me matas,\nay si te agarro, ay, ay si te agarro;\ndelicia, delicia, así tú me matas.",
+        ptLyrics: "Nossa, nossa, assim você me mata\nAi se eu te pego, ai, ai se eu te pego\nDelícia, delícia, assim você me mata",
+        options: [
+          { text: "Balada (Tchê Tcherere) — Gusttavo Lima", correct: false },
+          { text: "Ai Se Eu Te Pego — Michel Teló", correct: true },
+          { text: "Lepo Lepo — Psirico", correct: false }
+        ]
+      },
+      {
+        id: 9,
+        genre: "Baião / Forró",
+        esLyrics: "Cuando miré la tierra ardiendo,\ncual fogata de San Juan,\nle pregunté a Dios del cielo: ¡ay!, ¿por qué tanta condenación?",
+        ptLyrics: "Quando olhei a terra ardendo\nQual fogueira de São João\nEu perguntei a Deus do céu, uai\nPor que tamanha judiação?",
+        options: [
+          { text: "Asa Branca — Luiz Gonzaga", correct: true },
+          { text: "Qui Nem Jiló — Luiz Gonzaga", correct: false },
+          { text: "Feira de Caruaru — Elba Ramalho", correct: false }
+        ]
+      },
+      {
+        id: 10,
+        genre: "Bossa Nova Fundacional",
+        esLyrics: "Ve, mi tristeza, y dile a ella\nque sin ella no puede ser,\nque rece, que regrese, porque ya no aguanto más sufrir.",
+        ptLyrics: "Vai, minha tristeza, e diz a ela\nQue sem ela não pode ser\nDiz-lhe, numa prece, que ela regresse\nPorque eu não posso mais sofrer",
+        options: [
+          { text: "Insensatez — João Gilberto", correct: false },
+          { text: "Desafinado — João Gilberto", correct: false },
+          { text: "Chega de Saudade — João Gilberto", correct: true }
+        ]
+      },
+      {
+        id: 11,
+        genre: "Samba Popular",
+        esLyrics: "Vivir y no tener la vergüenza de ser feliz,\ncantar y cantar y cantar\nla belleza de ser un eterno aprendiz.",
+        ptLyrics: "Viver e não ter a vergonha de ser feliz\nCantar e cantar e cantar\nA beleza de ser um eterno aprendiz",
+        options: [
+          { text: "O Que É, O Que É? — Gonzaguinha", correct: true },
+          { text: "Com Que Roupa? — Noel Rosa", correct: false },
+          { text: "Vou Festejar — Beth Carvalho", correct: false }
+        ]
+      },
+      {
+        id: 12,
+        genre: "Pop Acústico / MPB",
+        esLyrics: "No se trata de tener a todas las personas del mundo para uno,\nse trata de saber que en algún lugar alguien vela por ti.",
+        ptLyrics: "Não é sobre ter todas as pessoas do mundo pra si\nÉ sobre saber que, em algum lugar, alguém zela por ti",
+        options: [
+          { text: "Trevo (Tu) — Anavitória", correct: false },
+          { text: "Trem-Bala — Ana Vilela", correct: true },
+          { text: "Meu Abrigo — Melim", correct: false }
+        ]
+      },
+      {
+        id: 13,
+        genre: "Frevo / MPB Nordestina",
+        esLyrics: "En la bruma leve de las pasiones que vienen de adentro,\ntú vienes llegando para jugar en mi patio,\nen tu caballo, pecho desnudo, cabello al viento.",
+        ptLyrics: "Na bruma leve das paixões que vêm de dentro\nTu vens chegando pra brincar no meu quintal\nNo teu cavalo, peito nu, cabelo ao vento",
+        options: [
+          { text: "Anunciação — Alceu Valença", correct: true },
+          { text: "Tropicana (Morena Tropicana) — Alceu Valença", correct: false },
+          { text: "Chão de Giz — Zé Ramalho", correct: false }
+        ]
+      },
+      {
+        id: 14,
+        genre: "Samba-Rock / Tropicália",
+        esLyrics: "Vivo en un país tropical, bendecido por Dios\ny bonito por naturaleza, ¡qué belleza!\nEn febrero hay carnaval.",
+        ptLyrics: "Moro num país tropical, abençoado por Deus\nE bonito por natureza, mas que beleza\nEm fevereiro tem carnaval",
+        options: [
+          { text: "Fio Maravilha — Jorge Ben Jor", correct: false },
+          { text: "Aquele Abraço — Gilberto Gil", correct: false },
+          { text: "País Tropical — Jorge Ben Jor / Wilson Simonal", correct: true }
+        ]
+      },
+      {
+        id: 15,
+        genre: "MPB Romántica",
+        esLyrics: "A veces en el silencio de la noche\nme quedo imaginando a nosotros dos,\nme quedo viendo el reflejo de tu mirada,\ny pienso si tú también piensas en mí después.",
+        ptLyrics: "Às vezes no silêncio da noite\nEu fico imaginando nós dois\nEu fico ali sonhando acordado, juntando\nO antes, o agora e o depois",
+        options: [
+          { text: "Sozinho — Caetano Veloso (comp. Peninha)", correct: true },
+          { text: "Você é Linda — Caetano Veloso", correct: false },
+          { text: "Codinome Beija-Flor — Cazuza", correct: false }
+        ]
+      },
+      {
+        id: 16,
+        genre: "Pop Rock / MPB",
+        esLyrics: "Quien sabe si todavía soy un muchachito\nque para perder el ritmo se demora un poco...\nYo solo le pido a Dios un poco de picardía\npara saber hasta dónde ir.",
+        ptLyrics: "Quem sabe eu ainda sou uma garotinha\nEsperando o ônibus da escola sozinha...\nEu só peço a Deus um pouco de malandragem\nPra saber até onde vai a minha coragem",
+        options: [
+          { text: "O Segundo Sol — Cássia Eller", correct: false },
+          { text: "Malandragem — Cássia Eller (comp. Cazuza & Frejat)", correct: true },
+          { text: "Por Enquanto — Renato Russo", correct: false }
+        ]
+      },
+      {
+        id: 17,
+        genre: "Pop Rock",
+        esLyrics: "Estoy sumergido en un mar de incertidumbres,\ntu faro guía mis pasos en la noche.\nSé que no estás aquí, pero mantengo encendida la linterna de los ahogados.",
+        ptLyrics: "Tô mantendo a loucura de pé\nTô fingindo que sei o que quero...\nUma luz lá no fim me acena\nUma lanterna dos afogados",
+        options: [
+          { text: "Óculos — Os Paralamas do Sucesso", correct: false },
+          { text: "Lanterna dos Afogados — Os Paralamas do Sucesso", correct: true },
+          { text: "Alagados — Os Paralamas do Sucesso", correct: false }
+        ]
+      },
+      {
+        id: 18,
+        genre: "Indie Rock / Pop",
+        esLyrics: "¿Quién te ve pasar así por la calle y no se fija?\nOlvida la timidez y dame una mirada...\n¡Oh, Anna Júlia!",
+        ptLyrics: "Quem te vê passar assim por mim não sabe o que é sofrer\nTer que ver você, assim, sempre a passar...\nOh, Anna Júlia!",
+        options: [
+          { text: "Anna Júlia — Los Hermanos", correct: true },
+          { text: "O Vencedor — Los Hermanos", correct: false },
+          { text: "Primeiro Erro — Capital Inicial", correct: false }
+        ]
+      },
+      {
+        id: 19,
+        genre: "Pop Rock Ochentas",
+        esLyrics: "Mediodía en la noche, tú enciendes el faro,\nchica veneno, el mundo es pequeño para los dos.\nTu perfume me domina y me deja sin aire.",
+        ptLyrics: "Meia-noite no meu quarto, ela vai subir\nMenina veneno, o mundo é pequeno demais pra nós dois\nEm toda cama que eu durmo é com você que eu fico",
+        options: [
+          { text: "Whisky a Go-Go — Roupa Nova", correct: false },
+          { text: "Menina Veneno — Ritchie", correct: true },
+          { text: "Bete Balanço — Barão Vermelho", correct: false }
+        ]
+      },
+      {
+        id: 20,
+        genre: "Brega Romántico / Pop",
+        esLyrics: "Quiero tu amor, gitana mía, quiero tu pasión,\n¿dónde estás tú, Sandra Rosa Madalena?\n¡Quiero besarte en la boca y darte mi corazón!",
+        ptLyrics: "Eu quero o seu amor, cigana\nSandra Rosa Madalena, a cigana mais bela\nQuero você pra mim!",
+        options: [
+          { text: "Sandra Rosa Madalena — Sidney Magal", correct: true },
+          { text: "O Meu Sangue Ferve Por Você — Sidney Magal", correct: false },
+          { text: "Garçom — Reginaldo Rossi", correct: false }
+        ]
+      },
+      {
+        id: 21,
+        genre: "MPB",
+        esLyrics: "La luna apareció tan brillante,\nsi el sol brilla de día, la luna vela por la noche;\nquien nace para la música sueña con la poesía, ¡vamos a cantar!",
+        ptLyrics: "O luar, estrela do mar\nO sol e o dom, quiçá um dia a fúria desse mar\nVocê é a sina que eu quis pra mim",
+        options: [
+          { text: "Samurai — Djavan", correct: false },
+          { text: "Sina — Djavan", correct: true },
+          { text: "Oceano — Djavan", correct: false }
+        ]
+      },
+      {
+        id: 22,
+        genre: "MPB Urbana",
+        esLyrics: "Alguna cosa sucede en mi corazón\nque solo cuando cruzo Ipiranga con la avenida San Juan\nse emociona y no comprende.",
+        ptLyrics: "Alguma coisa acontece no meu coração\nQue só quando cruza a Ipiranga e a avenida São João\nÉ que entende a força daquela canção",
+        options: [
+          { text: "Sampa — Caetano Veloso", correct: true },
+          { text: "Tropicália — Caetano Veloso", correct: false },
+          { text: "Alegria, Alegria — Caetano Veloso", correct: false }
+        ]
+      },
+      {
+        id: 23,
+        genre: "MPB de Resistencia",
+        esLyrics: "Padre, aparta de mí este cáliz,\npadre, aparta de mí este cáliz\nde vino tinto de sangre.",
+        ptLyrics: "Pai, afasta de mim esse cálice\nPai, afasta de mim esse cálice\nPai, afasta de mim esse cálice\nDe vinho tinto de sangue",
+        options: [
+          { text: "Roda Viva — Chico Buarque", correct: false },
+          { text: "Cálice — Chico Buarque & Milton Nascimento", correct: true },
+          { text: "Apesar de Você — Chico Buarque", correct: false }
+        ]
+      },
+      {
+        id: 24,
+        genre: "Forró Suave / MPB",
+        esLyrics: "Estoy de vuelta a mi refugio,\ntraigo en el corazón la añoranza de tus brazos,\npara calentarme del frío y calmar el cansancio.",
+        ptLyrics: "Estou de volta pro meu aconchego\nTrazendo no coração a saudade de você\nPra me aquecer do frio que faz aqui dentro",
+        options: [
+          { text: "De Volta pro Aconchego — Elba Ramalho (comp. Dominguinhos)", correct: true },
+          { text: "Eu Só Quero um Xodó — Dominguinhos", correct: false },
+          { text: "Gostoso Demais — Maria Bethânia", correct: false }
+        ]
+      },
+      {
+        id: 25,
+        genre: "Forró Universitário",
+        esLyrics: "Cuando la lluvia cesa y el sol calienta el suelo,\nme quedo aquí en la ventana esperando a que pases,\ncon la flor en el pecho soñando despierto.",
+        ptLyrics: "Quando a chuva passar e o sol raiar\nEu fico aqui esperando na janela você chegar\nCom um sorriso me dizendo que ainda me ama",
+        options: [
+          { text: "Rindo à Toa — Falamansa", correct: false },
+          { text: "Esperando na Janela — Gilberto Gil / Cogumelo Plutão", correct: true },
+          { text: "Xote da Alegria — Falamansa", correct: false }
+        ]
+      },
+      {
+        id: 26,
+        genre: "Pop Solar",
+        esLyrics: "¿Oye sol!, ve si no me olvidas y calienta mi día,\nnecesito de tu luz para guiar mi camino,\nporque la vida es corta y el mar es grande.",
+        ptLyrics: "Ô sol, vê se não esquece e me ilumina\nPreciso de você aqui\nÔ sol, vê se enriquece a minha melanina\nSó você pra me fazer sorrir",
+        options: [
+          { text: "O Sol — Vitor Kley", correct: true },
+          { text: "Morena — Vitor Kley", correct: false },
+          { text: "Ouvi Dizer — Melim", correct: false }
+        ]
+      },
+      {
+        id: 27,
+        genre: "MPB Tribalista",
+        esLyrics: "Tú eres mi amor, tú eres mi cielo,\nen nuestra vieja infancia compartimos los secretos,\ny nunca me canso de decirte lo mucho que te amo.",
+        ptLyrics: "Você é assim, um sonho pra mim\nE quando eu não te vejo, eu penso em você\nDesde o amanhecer até quando eu me deito",
+        options: [
+          { text: "Já Sei Namorar — Tribalistas", correct: false },
+          { text: "Velha Infância — Tribalistas (Marisa Monte, Arnaldo, Brown)", correct: true },
+          { text: "Amor I Love You — Marisa Monte", correct: false }
+        ]
+      },
+      {
+        id: 28,
+        genre: "Hardcore / Punk Pop",
+        esLyrics: "Mi chica tiene fases, un día me quiere con locura,\nal otro ni me mira y me trata como a un perro;\npero aun así no consigo dejarla.",
+        ptLyrics: "Ela é mulher de fases, complicada e perfeitinha\nUm dia tá na paz, no outro quer briga\nMas eu não largo ela por nada nesse mundo",
+        options: [
+          { text: "Mulher de Fases — Raimundos", correct: true },
+          { text: "A Mais Pedida — Raimundos", correct: false },
+          { text: "Proibida Pra Mim — Charlie Brown Jr.", correct: false }
+        ]
+      },
+      {
+        id: 29,
+        genre: "Rock Cómico",
+        esLyrics: "Mina, tus cabellos son tan bonitos,\nven conmigo en mi Brasilia amarilla con ruedas cromadas,\nvamos a pasear por Santos.",
+        ptLyrics: "Mina, seus cabelo é da hora\nSeu corpão violão, meu docinho de coco\nNão tá no gibi a história que eu vou te contar",
+        options: [
+          { text: "Vira-Vira — Mamonas Assassinas", correct: false },
+          { text: "Robocop Gay — Mamonas Assassinas", correct: false },
+          { text: "Pelados em Santos — Mamonas Assassinas", correct: true }
+        ]
+      },
+      {
+        id: 30,
+        genre: "Samba / Pop Moderno",
+        esLyrics: "Ella va al gimnasio de mañana, come ensalada y sale a pasear,\ntodo el mundo mira cuando pasa,\n¡ay mi burguesita, qué vida tan buena!",
+        ptLyrics: "Vai no salão, faz a mão, lava o cabelo\nSeca, faz escova, sai bem perfumada\nBurguesinha, burguesinha, burguesinha!",
+        options: [
+          { text: "Burguesinha — Seu Jorge", correct: true },
+          { text: "Mina do Condomínio — Seu Jorge", correct: false },
+          { text: "Carolina — Seu Jorge", correct: false }
+        ]
+      }
+    ];
+
+    // Estados
+    let userAnswers = {}; // { songId: { selectedIndex, isCorrect } }
+    let revealedLyrics = {}; // { songId: boolean }
+    let searchQuery = "";
+
+    // Filtrar canciones según el buscador
+    function getFilteredSongs() {
+      if (!searchQuery.trim()) return songsData;
+      const q = searchQuery.toLowerCase();
+      return songsData.filter(s => {
+        return (
+          s.esLyrics.toLowerCase().includes(q) ||
+          s.ptLyrics.toLowerCase().includes(q) ||
+          s.genre.toLowerCase().includes(q) ||
+          s.options.some(opt => opt.text.toLowerCase().includes(q))
+        );
+      });
+    }
+
+    // Renderizar la lista
+    function renderQuiz() {
+      const container = document.getElementById('songs-container');
+      const noResults = document.getElementById('no-results');
+      const filtered = getFilteredSongs();
+
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+
+      filtered.forEach((song) => {
+        const isRevealed = !!revealedLyrics[song.id];
+        const answerStatus = userAnswers[song.id];
+
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-sm transition hover:shadow-md";
+
+        card.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+            
+            <!-- Columna 1: Traducción Literal (Español) -->
+            <div class="lg:col-span-4 bg-slate-50 border border-slate-200/80 p-4 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-800 text-white">
+                      #${song.id}
+                    </span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-800">
+                      ${song.genre}
+                    </span>
+                  </div>
+                  <span class="text-[11px] text-slate-500 font-medium">Traducción didáctica</span>
+                </div>
+                <blockquote class="italic text-xs sm:text-sm text-slate-700 whitespace-pre-line leading-relaxed font-serif border-l-2 border-emerald-500 pl-3 my-2">
+"${song.esLyrics}"
+                </blockquote>
+              </div>
+              <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200 mt-2">
+                🇪🇸 Lee con atención los falsos amigos y pistas de vocabulario.
+              </div>
+            </div>
+
+            <!-- Columna 2: Portugués Original (Desenfocado / Spoiler) -->
+            <div class="lg:col-span-4 bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-emerald-600 text-white">
+                    🇧🇷 Versos em Português
+                  </span>
+                  <button 
+                    onclick="toggleLyric(${song.id})" 
+                    class="text-xs px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 border border-emerald-300 text-emerald-800 transition font-semibold shadow-xs flex items-center gap-1 active:scale-95">
+                    ${isRevealed ? '🙈 Ocultar' : '👁️ Ver estrofe'}
+                  </button>
+                </div>
+
+                <div class="relative min-h-[5.5rem] flex items-center justify-center py-1">
+                  <p class="text-xs sm:text-sm font-medium text-slate-900 whitespace-pre-line leading-relaxed w-full ${isRevealed ? 'lyrics-visible' : 'lyrics-hidden'}">
+${song.ptLyrics}
+                  </p>
+                  ${!isRevealed ? `
+                    <div onclick="toggleLyric(${song.id})" class="absolute inset-0 flex items-center justify-center cursor-pointer group bg-emerald-900/5 rounded-lg">
+                      <span class="text-xs bg-slate-900/85 group-hover:bg-slate-900 text-white font-semibold px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm transition">
+                        👁️ Revelar estrofe original
+                      </span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="mt-2 pt-2 border-t border-emerald-200/60 flex items-center justify-between text-[11px] text-emerald-800">
+                <span>Estrofe representativa</span>
+                <a href="https://www.google.com/search?q=${encodeURIComponent(song.options.find(o => o.correct).text + ' letra')}" target="_blank" rel="noopener noreferrer" class="hover:underline font-semibold flex items-center gap-0.5">
+                  Letra completa ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Columna 3: Tres Opciones de Título e Intérprete -->
+            <div class="lg:col-span-4 flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                  Qual é a canção e o intérprete?
+                </span>
+                <div class="space-y-2">
+                  ${song.options.map((opt, optIdx) => {
+                    let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-500 hover:bg-emerald-50/50";
+                    let disabledAttr = "";
+
+                    if (answerStatus) {
+                      disabledAttr = "disabled";
+                      if (opt.correct) {
+                        btnStyle = "bg-emerald-600 border-emerald-600 text-white font-bold shadow-sm";
+                      } else if (answerStatus.selectedIndex === optIdx && !opt.correct) {
+                        btnStyle = "bg-rose-500 border-rose-500 text-white font-medium line-through opacity-90";
+                      } else {
+                        btnStyle = "bg-slate-100 border-slate-200 text-slate-400 opacity-60";
+                      }
+                    }
+
+                    return `
+                      <button 
+                        ${disabledAttr}
+                        onclick="selectOption(${song.id}, ${optIdx})" 
+                        class="w-full text-left p-3 rounded-xl border text-xs sm:text-sm transition duration-150 flex items-center justify-between gap-2 ${btnStyle}">
+                        <span>${opt.text}</span>
+                        ${answerStatus && opt.correct ? '<span class="text-sm">✅</span>' : ''}
+                        ${answerStatus && answerStatus.selectedIndex === optIdx && !opt.correct ? '<span class="text-sm">❌</span>' : ''}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- Feedback por tarjeta -->
+              ${answerStatus ? `
+                <div class="mt-2.5 text-xs font-semibold px-3 py-1.5 rounded-lg ${answerStatus.isCorrect ? 'text-emerald-800 bg-emerald-100 border border-emerald-200' : 'text-rose-800 bg-rose-100 border border-rose-200'}">
+                  ${answerStatus.isCorrect ? '🎉 ¡Correto! Parabéns!' : '⚠️ Errado. A opção correta está marcada em verde.'}
+                </div>
+              ` : `
+                <div class="mt-2.5 text-[11px] text-slate-400 text-right">
+                  Selecciona una opción para verificar
+                </div>
+              `}
+            </div>
+
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      updateScoreboard();
+    }
+
+    // Toggle individual de estrofa
+    function toggleLyric(songId) {
+      revealedLyrics[songId] = !revealedLyrics[songId];
+      renderQuiz();
+    }
+
+    // Mostrar u ocultar todas las estrofas
+    function toggleAllLyrics(show) {
+      songsData.forEach(s => {
+        revealedLyrics[s.id] = show;
+      });
+      renderQuiz();
+      showToast(show ? "👁️ Estrofes Visíveis" : "🙈 Estrofes Ocultadas", show ? "Mostrando todas as estrofes em português." : "Todas as estrofes foram desfocadas.");
+    }
+
+    // Búsqueda en vivo
+    function handleSearch() {
+      const input = document.getElementById('search-input');
+      searchQuery = input.value;
+      renderQuiz();
+    }
+
+    // Manejar selección de respuesta
+    function selectOption(songId, optionIndex) {
+      if (userAnswers[songId]) return;
+
+      const song = songsData.find(s => s.id === songId);
+      const isCorrect = song.options[optionIndex].correct;
+
+      userAnswers[songId] = {
+        selectedIndex: optionIndex,
+        isCorrect: isCorrect
+      };
+
+      if (isCorrect) {
+        showToast("¡Muito bem! 🇧🇷", `Acertaste: ${song.options[optionIndex].text.split('—')[0].trim()}`, true);
+      } else {
+        showToast("¡Quase! 💡", "Aprende con la opción en verde para memorizarla.", false);
+      }
+
+      renderQuiz();
+    }
+
+    // Actualizar barra y contadores
+    function updateScoreboard() {
+      const answeredKeys = Object.keys(userAnswers);
+      const totalAnswered = answeredKeys.length;
+      let hits = 0;
+
+      answeredKeys.forEach(k => {
+        if (userAnswers[k].isCorrect) hits++;
+      });
+
+      const accuracy = totalAnswered > 0 ? Math.round((hits / totalAnswered) * 100) : 0;
+      const progressPercent = Math.round((totalAnswered / songsData.length) * 100);
+
+      document.getElementById('score-hits').textContent = hits;
+      document.getElementById('score-total').textContent = `${totalAnswered} / ${songsData.length}`;
+      document.getElementById('score-accuracy').textContent = `${accuracy}%`;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    }
+
+    // Reiniciar quiz completo
+    function resetQuiz() {
+      userAnswers = {};
+      revealedLyrics = {};
+      document.getElementById('search-input').value = "";
+      searchQuery = "";
+      renderQuiz();
+      showToast("🔄 Quiz Reiniciado", "Puntuaciones y estrofas restauradas al inicio.");
+    }
+
+    // Toast flotante
+    let toastTimeout;
+    function showToast(title, msg, isSuccess = true) {
+      const toast = document.getElementById('feedback-toast');
+      const icon = document.getElementById('toast-icon');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-message');
+
+      icon.textContent = isSuccess ? '✨' : '📝';
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+
+      toast.classList.remove('opacity-0', 'translate-y-20');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-20');
+      }, 2500);
+    }
+
+    // Iniciar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
