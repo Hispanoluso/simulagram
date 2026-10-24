@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Evaluaciones - La Escuela - Dojo de Español</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      width: 100%;
+    }
+
+    .profile-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 30px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Estilos responsivos para el logo insertado */
+    .profile-logo {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+      border-radius: 50%;
+      margin: 0 auto 16px auto;
+      display: block;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .contact-info {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .contact-info a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px; /* Para dar espacio consistente entre bloques */
+    }
+
+    @media (min-width: 600px) {
+      .links-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .simulator-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .simulator-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+    }
+
+    .simulator-card h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .simulator-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+
+    .simulator-card:hover .btn-action {
+      background: var(--primary-hover);
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Estilo para el enlace específico en el footer */
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Ficha del profesor -->
+    <div class="profile-card">
+      <!-- Imagen de forma responsiva insertada aquí -->
+      <img src="la_escuela_dojo_logo.jpg" alt="Logotipo de La Escuela - Dojo de Español" class="profile-logo">
+      <span class="badge">Portal Educativo</span>
+      <h1>La Escuela - Dojo de Español</h1>
+      <p class="subtitle">Grupo de estudio y producción en español</p>
+      <div class="contact-info">
+        <span>Contacto: </span>
+        <a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a>
+      </div>
+    </div>
+
+    <!-- Enlaces a los simuladores -->
+    <div class="links-grid">
+      
+      <!-- Enlace 1: Simulador MCER -->
+      <a href="mcer.html" class="simulator-card">
+        <div>
+          <h2>📘 Simulador MCER</h2>
+          <p>Evaluación progresiva por niveles del Marco Común Europeo de Referencia (A1 a C2).</p>
+        </div>
+        <span class="btn-action">Ingresar al Examen &rarr;</span>
+      </a>
+
+      <!-- Enlace 2: Simulador DELE -->
+      <a href="dele.html" class="simulator-card">
+        <div>
+          <h2>🎓 Simulador DELE</h2>
+          <p>Prácticas orientadas al formato de los Diplomas de Español como Lengua Extranjera.</p>
+        </div>
+        <span class="btn-action">Ingresar al Examen &rarr;</span>
+      </a>
+
+    </div>
+
+
+    <!-- Enlaces a los manuales de gramática del MarcoELE -->
+    <div class="links-grid">
+      
+      <!-- Enlace 1: PapELEs MCER -->
+      <a href="https://gramaticas.marcoele.com/papeles/" class="simulator-card" target="_blank">
+        <div>
+          <h2>📘 PapELEs </h2>
+          <p>Manual de gramática MarcoELE (A1 a A2).</p>
+        </div>
+        <span class="btn-action">Abrir el manual online</span>
+      </a>
+
+      <!-- Enlace 2: ELEfante MCER -->
+      <a href="https://gramaticas.marcoele.com/elefante/" class="simulator-card" target="_blank">
+        <div>
+          <h2>📘 ELEfante </h2>
+          <p>Manual de gramática MarcoELE (B1 a B2).</p>
+        </div>
+        <span class="btn-action">Abrir el manual online</span>
+      </a>
+      
+
+    </div>
+
+
+
+
+
+    <!-- Enlaces a ProfesdeELE --> 
+    <div class="links-grid">
+    
+    <!-- Enlace 5: Profedeele -->
+      <a href="https://www.profedeele.es/" class="simulator-card" target="_blank">
+        <div>
+          <h2>👷 ProfesdeELE</h2>
+          <p>Actividades de Español como lengua extranjera</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+   
+    <!-- Enlaces al indice Portunhol --> 
+    <!-- Enlace 6: Portunhol -->
+      <a href="portunhol_palavras.html" class="simulator-card" target="_blank">
+        <div>
+          <h2>ÑÇ "Portunhol"</h2>
+          <p>Palabras y frases peligrosas en "Portunhol"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+    <!-- Enlaces al fonetica IOWA --> 
+    <!-- Enlace 7: Sonidos del habla -->
+      <a href="https://soundsofspeech.uiowa.edu/spanish/list" class="simulator-card" target="_blank">
+        <div>
+          <h2> 📢 Sonidos del habla</h2>
+          <p>Fonética de la pronunciación en Español"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+    <!-- Verbos --> 
+      <a href="verbosrev.html" class="simulator-card" target="_blank">
+        <div>
+          <h2> 🆎 Verbos</h2>
+          <p>Comparativo português - Español"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+    <!-- Letras --> 
+      <a href="https://www.letras.mus.br/" class="simulator-card" target="_blank">
+        <div>
+          <h2> 🎵 Letras de canciones</h2>
+          <p>Letras, traducciones y significado"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+    <!-- Portunhol perigoso - Presentação --> 
+      <a href="https://drive.google.com/file/d/13UdcKMVXUhW6KmFZmwJLeROC0bw9XeHC/view?usp=sharing" class="simulator-card" target="_blank">
+        <div>
+          <h2> ☢️ O portunhol perigoso</h2>
+          <p>Historia y desarrollo del español y el portugués"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+     <!-- 100 errores de Portuõl - Lista youtube --> 
+      <a href="https://youtube.com/playlist?list=PLjrA7qr_1t-NpMRIkZTJztuXGtJet_Wyd&si=4wj3P5alP3h7Q6UY" class="simulator-card" target="_blank">
+        <div>
+          <h2> ⚡ 100 errores de Portuñol</h2>
+          <p>Lista de pequeño videos en youtube"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+    
+    </div>
+
+
+  </div>
+
+  <footer>
+    <p>&copy; Claudio Marcelo Budnikar — <a href="#" target="_blank" rel="noopener noreferrer">La Escuela - Dojo de Español</a></p>
+  </footer>
+
+</body>
+</html>
