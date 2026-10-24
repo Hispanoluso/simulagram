@@ -1,87 +1,355 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Evaluaciones - La Escuela - Dojo de Español</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: radial-gradient(circle at top right, #1e3a8a, #0f172a 60%); color: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: #1e293b; border: 1px solid #334155; border-radius: 16px; width: 100%; max-width: 400px; padding: 36px 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.45); text-align: center; }
-        .logo { width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 14px auto; display: block; object-fit: cover; border: 2px solid rgba(96,165,250,0.4); }
-        .badge { display: inline-block; background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
-        h1 { font-size: 1.5rem; margin-bottom: 6px; color: #fff; }
-        p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 24px; }
-        input[type="password"] { width: 100%; padding: 13px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; font-size: 1rem; margin-bottom: 18px; text-align: center; }
-        input[type="password"]:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
-        button { width: 100%; padding: 13px; background: #3b82f6; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #2563eb; }
-        .error { display: none; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Evaluaciones - La Escuela - Dojo de Español</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      width: 100%;
+    }
+
+    .profile-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 30px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Estilos responsivos para el logo insertado */
+    .profile-logo {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+      border-radius: 50%;
+      margin: 0 auto 16px auto;
+      display: block;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .contact-info {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .contact-info a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px; /* Para dar espacio consistente entre bloques */
+    }
+
+    @media (min-width: 600px) {
+      .links-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .simulator-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .simulator-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+    }
+
+    .simulator-card h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .simulator-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+
+    .simulator-card:hover .btn-action {
+      background: var(--primary-hover);
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Estilo para el enlace específico en el footer */
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: var(--primary);
+    }
+  </style>
 </head>
 <body>
-    <div class="login-box">
-        <img src="la_escuela_dojo_logo.jpg" alt="La Escuela - Dojo de Español" class="logo" onerror="this.style.display='none'">
-        <span class="badge">La Escuela &bull; Dojo de Español</span>
-        <h1>Portal de Evaluaciones</h1>
-        <p>Digite a senha de acesso para entrar na plataforma</p>
-        <div id="err" class="error">Senha incorreta. Tente novamente.</div>
-        <form id="unlockForm" autocomplete="off">
-            <input type="password" id="pass" placeholder="••••••••" required autofocus autocomplete="new-password">
-            <button type="submit" id="btn">Entrar na Plataforma</button>
-        </form>
+
+  <div class="container">
+    
+    <!-- Ficha del profesor -->
+    <div class="profile-card">
+      <!-- Imagen de forma responsiva insertada aquí -->
+      <img src="la_escuela_dojo_logo.jpg" alt="Logotipo de La Escuela - Dojo de Español" class="profile-logo">
+      <span class="badge">Portal Educativo</span>
+      <h1>La Escuela - Dojo de Español</h1>
+      <p class="subtitle">Grupo de estudio y producción en español</p>
+      <div class="contact-info">
+        <span>Contacto: </span>
+        <a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a>
+      </div>
     </div>
 
-    <script>
-        const ENCRYPTED_DATA = {"salt":"Sh+7r6WEUU7HaV9g1KmHZQ==","iv":"el+dsJWf7G7qB28J","cipher":"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"};
+    <!-- Enlaces a los simuladores -->
+    <div class="links-grid">
+      
+      <!-- Enlace 1: Simulador MCER -->
+      <a href="mcer.html" class="simulator-card">
+        <div>
+          <h2>📘 Simulador MCER</h2>
+          <p>Evaluación progresiva por niveles del Marco Común Europeo de Referencia (A1 a C2).</p>
+        </div>
+        <span class="btn-action">Ingresar al Examen &rarr;</span>
+      </a>
 
-        function base64ToBuf(b64) {
-            const bin = window.atob(b64);
-            const bytes = new Uint8Array(bin.length);
-            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-            return bytes.buffer;
-        }
+      <!-- Enlace 2: Simulador DELE -->
+      <a href="dele.html" class="simulator-card">
+        <div>
+          <h2>🎓 Simulador DELE</h2>
+          <p>Prácticas orientadas al formato de los Diplomas de Español como Lengua Extranjera.</p>
+        </div>
+        <span class="btn-action">Ingresar al Examen &rarr;</span>
+      </a>
 
-        async function unlock(password) {
-            const err = document.getElementById('err');
-            const btn = document.getElementById('btn');
-            err.style.display = 'none';
-            btn.textContent = 'Verificando...';
+    </div>
 
-            try {
-                const enc = new TextEncoder();
-                const keyMaterial = await crypto.subtle.importKey(
-                    "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
-                );
-                const key = await crypto.subtle.deriveKey(
-                    { name: "PBKDF2", salt: base64ToBuf(ENCRYPTED_DATA.salt), iterations: 100000, hash: "SHA-256" },
-                    keyMaterial,
-                    { name: "AES-GCM", length: 256 },
-                    false,
-                    ["decrypt"]
-                );
-                const decryptedBuf = await crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: base64ToBuf(ENCRYPTED_DATA.iv) },
-                    key,
-                    base64ToBuf(ENCRYPTED_DATA.cipher)
-                );
 
-                const decodedHtml = new TextDecoder().decode(decryptedBuf);
-                document.open();
-                document.write(decodedHtml);
-                document.close();
-            } catch (e) {
-                err.style.display = 'block';
-                btn.textContent = 'Entrar na Plataforma';
-                document.getElementById('pass').value = '';
-                document.getElementById('pass').focus();
-            }
-        }
+    <!-- Enlaces a los manuales de gramática del MarcoELE -->
+    <div class="links-grid">
+      
+      <!-- Enlace 1: PapELEs MCER -->
+      <a href="https://gramaticas.marcoele.com/papeles/" class="simulator-card" target="_blank">
+        <div>
+          <h2>📘 PapELEs </h2>
+          <p>Manual de gramática MarcoELE (A1 a A2).</p>
+        </div>
+        <span class="btn-action">Abrir el manual online</span>
+      </a>
 
-        document.getElementById('unlockForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            unlock(document.getElementById('pass').value.trim());
-        });
-    </script>
+      <!-- Enlace 2: ELEfante MCER -->
+      <a href="https://gramaticas.marcoele.com/elefante/" class="simulator-card" target="_blank">
+        <div>
+          <h2>📘 ELEfante </h2>
+          <p>Manual de gramática MarcoELE (B1 a B2).</p>
+        </div>
+        <span class="btn-action">Abrir el manual online</span>
+      </a>
+      
+
+    </div>
+
+
+
+
+
+    <!-- Enlaces a ProfesdeELE --> 
+    <div class="links-grid">
+    
+    <!-- Enlace 5: Profedeele -->
+      <a href="https://www.profedeele.es/" class="simulator-card" target="_blank">
+        <div>
+          <h2>👷 ProfesdeELE</h2>
+          <p>Actividades de Español como lengua extranjera</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+   
+    <!-- Enlaces al indice Portunhol --> 
+    <!-- Enlace 6: Portunhol -->
+      <a href="portunhol_palavras.html" class="simulator-card" target="_blank">
+        <div>
+          <h2>ÑÇ "Portunhol"</h2>
+          <p>Palabras y frases peligrosas en "Portunhol"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+    <!-- Enlaces al fonetica IOWA --> 
+    <!-- Enlace 7: Sonidos del habla -->
+      <a href="https://soundsofspeech.uiowa.edu/spanish/list" class="simulator-card" target="_blank">
+        <div>
+          <h2> 📢 Sonidos del habla</h2>
+          <p>Fonética de la pronunciación en Español"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+    <!-- Verbos --> 
+      <a href="verbosrev.html" class="simulator-card" target="_blank">
+        <div>
+          <h2> 🆎 Verbos</h2>
+          <p>Comparativo português - Español"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+    <!-- Letras --> 
+      <a href="https://www.letras.mus.br/" class="simulator-card" target="_blank">
+        <div>
+          <h2> 🎵 Letras de canciones</h2>
+          <p>Letras, traducciones y significado"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+    <!-- Portunhol perigoso - Presentação --> 
+      <a href="https://drive.google.com/file/d/13UdcKMVXUhW6KmFZmwJLeROC0bw9XeHC/view?usp=sharing" class="simulator-card" target="_blank">
+        <div>
+          <h2> ☢️ O portunhol perigoso</h2>
+          <p>Historia y desarrollo del español y el portugués"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+     <!-- 100 errores de Portuõl - Lista youtube --> 
+      <a href="https://youtube.com/playlist?list=PLjrA7qr_1t-NpMRIkZTJztuXGtJet_Wyd&si=4wj3P5alP3h7Q6UY" class="simulator-card" target="_blank">
+        <div>
+          <h2> ⚡ 100 errores de Portuñol</h2>
+          <p>Lista de pequeño videos en youtube"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+
+     <!-- Canciones de Brasil Quiz --> 
+      <a href="musicabrasil.html" class="simulator-card" target="_blank">
+        <div>
+          <h2> ⚡ Desafío Musical: 30 Clásicos Brasileños</h2>
+          <p>Traducción literal en español y adivinar el clásico original en portugués"</p>
+        </div>
+        <span class="btn-action">Abrir</span>
+      </a>
+
+
+
+
+
+    
+    </div>
+
+
+  </div>
+
+  <footer>
+    <p>&copy; Claudio Marcelo Budnikar — <a href="#" target="_blank" rel="noopener noreferrer">La Escuela - Dojo de Español</a></p>
+  </footer>
+
 </body>
 </html>
