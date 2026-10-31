@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Pronombres de OD y OI en Español</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --correct: #15803d;
+      --correct-bg: #dcfce7;
+      --wrong: #b91c1c;
+      --wrong-bg: #fee2e2;
+      --contrast-bg: #fefce8;
+      --contrast-border: #ca8a04;
+      --contrast-text: #854d0e;
+      --audio-bg: #f0f9ff;
+      --audio-border: #bae6fd;
+      --audio-text: #0369a1;
+      --option-hover: #f1f5f9;
+      --focus-voice: #2563eb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    .author-badge {
+      display: inline-block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .author-badge a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .author-badge a:hover { text-decoration: underline; }
+
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 6px; }
+    header p { color: var(--text-muted); font-size: 0.95rem; max-width: 780px; margin: 0 auto; }
+
+    .top-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .tab-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
+    }
+
+    .rule-banner {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      font-size: 0.89rem;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      color: #1e3a8a;
+    }
+
+    .status-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .status-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: #f1f5f9; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: #e2e8f0; }
+
+    .btn-audio-stop {
+      background: #fee2e2 !important;
+      color: #b91c1c !important;
+      border: 1px solid #fca5a5 !important;
+    }
+    .btn-audio-stop:hover {
+      background: #fecaca !important;
+    }
+
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .question-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+    .q-num {
+      background: #eff6ff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .q-text { font-size: 1.05rem; font-weight: 600; white-space: pre-line; }
+    .options-grid { display: grid; gap: 10px; }
+    .opt-btn {
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text);
+      outline: none;
+    }
+    .opt-btn:hover:not(:disabled) { background: var(--option-hover); border-color: #94a3b8; }
+
+    .opt-btn.voice-focused {
+      border: 2px solid var(--focus-voice) !important;
+      background: #eff6ff !important;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25) !important;
+    }
+    .opt-btn.correct { background: var(--correct-bg) !important; border-color: var(--correct) !important; color: var(--correct) !important; font-weight: 600; }
+    .opt-btn.wrong { background: var(--wrong-bg) !important; border-color: var(--wrong) !important; color: var(--wrong) !important; font-weight: 600; }
+    .opt-btn:disabled { cursor: default; }
+
+    .audio-voice-module {
+      margin-top: 14px;
+      background: var(--audio-bg);
+      border: 1px solid var(--audio-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--audio-text);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .audio-voice-header {
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .audio-voice-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-mic { background: #ef4444; color: white; }
+    .btn-mic.recording {
+      animation: pulse 1s infinite alternate;
+      background: #b91c1c;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.04); opacity: 0.8; }
+    }
+    .voice-feedback {
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: none;
+      line-height: 1.45;
+    }
+    .voice-feedback.info {
+      display: block;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    .voice-feedback.retry {
+      display: block;
+      background: var(--wrong-bg);
+      color: var(--wrong);
+      border: 1px solid var(--wrong);
+    }
+
+    .explanation-panel {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--primary);
+      font-size: 0.92rem;
+      display: none;
+    }
+    .explanation-panel.show { display: block; }
+    .section-title { font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
+    .correct-title { color: var(--correct); }
+    .wrong-title { color: var(--wrong); margin-top: 14px; }
+    .wrong-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .wrong-list li { position: relative; padding-left: 18px; color: #334155; }
+    .wrong-list li::before { content: "✕"; position: absolute; left: 0; top: 0; color: var(--wrong); font-weight: bold; }
+    .contrast-box {
+      margin-top: 14px;
+      background: var(--contrast-bg);
+      border: 1px solid var(--contrast-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--contrast-text);
+      font-size: 0.89rem;
+      line-height: 1.55;
+    }
+    .contrast-header { display: block; color: #713f12; font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+
+    .empty-filter-msg {
+      background: #ffffff;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 24px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 860px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
+    }
+    .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+
+    .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .summary-table th, .summary-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    .summary-table th { background: #f8fafc; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; }
+    .summary-table tr.total-row { font-weight: 700; background: #f1f5f9; color: var(--primary); font-size: 1.05rem; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-pass { background: #dcfce7; color: #15803d; border: 1px solid #15803d; }
+    .status-fail { background: #fee2e2; color: #b91c1c; border: 1px solid #b91c1c; }
+    .status-pending { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); }
+
+    .level-details-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .level-detail-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; background: #f8fafc; }
+    .level-detail-header { font-weight: 700; font-size: 1rem; margin-bottom: 8px; color: var(--primary); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+    .badges-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
+    .badge-label { font-weight: 600; font-size: 0.85rem; width: 120px; flex-shrink: 0; }
+    .badge-num { display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; min-width: 26px; text-align: center; }
+    .badge-num.correct { background: var(--correct-bg); color: var(--correct); border: 1px solid var(--correct); }
+    .badge-num.wrong { background: var(--wrong-bg); color: var(--wrong); border: 1px solid var(--wrong); }
+    .badge-num.pending { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); }
+
+    .modal-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; flex-wrap: wrap; }
+
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
+      .container, .modal-footer, .close-btn { display: none !important; }
+      .modal-overlay { display: block !important; position: static !important; width: 100% !important; background: none !important; padding: 0 !important; }
+      .modal-content { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+      .level-detail-card { page-break-inside: avoid !important; border: 1px solid #666 !important; margin-bottom: 12px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-actions-bar">
+    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+      📋 Cuestionario Multinivel Continuo (50 Preguntas)
+    </div>
+    <button class="btn btn-primary" onclick="openSummaryModal()">🖨 Finalizar y Ver Resumen</button>
+  </div>
+
+  <header>
+    <div class="author-badge">
+      Sistema desarrollado por <strong>Claudio Marcelo Budnikar</strong> — Clases Particulares de Español (<a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a>)
+    </div>
+    <h1>Simulador de Pronombres de OD y OI en Español</h1>
+    <p>50 cuestiones multinivel (sin especificación de nivel) sobre el uso, la colocación (próclisis y énclisis), la duplicación y la comparación contrastiva de los pronombres de Objeto Directo y Objeto Indirecto con el portugués brasileño.</p>
+  </header>
+
+  <div class="tabs" id="filter-tabs">
+    <button class="tab-btn active" onclick="selectFilter('ALL', this)">Todas (1-50)</button>
+    <button class="tab-btn" onclick="selectFilter('B1', this)">Preguntas 1 a 10</button>
+    <button class="tab-btn" onclick="selectFilter('B2', this)">Preguntas 11 a 20</button>
+    <button class="tab-btn" onclick="selectFilter('B3', this)">Preguntas 21 a 30</button>
+    <button class="tab-btn" onclick="selectFilter('B4', this)">Preguntas 31 a 40</button>
+    <button class="tab-btn" onclick="selectFilter('B5', this)">Preguntas 41 a 50</button>
+    <button class="tab-btn" onclick="selectFilter('REVIEW', this)">Pendientes / Incorrectas</button>
+  </div>
+
+  <div class="rule-banner">
+    ⚖️ <strong>Criterio de Evaluación:</strong> Esta prueba integra <strong>50 preguntas multinivel</strong> de dificultad progresiva y combinada sin etiquetas de nivel. Para <strong>aprobar</strong> el cuestionario se exige alcanzar al menos el <strong>75% de respuestas correctas</strong> (mínimo <strong>38 de 50</strong> preguntas acertadas).
+  </div>
+
+  <div class="status-card">
+    <div>
+      <span id="view-title" style="font-weight: 700; font-size: 1.08rem; color: var(--primary);">Progreso Global</span>: 
+      <span id="score-text">0 / 50 respondidas &nbsp;|&nbsp; <strong>0 aciertos (0%)</strong></span>
+    </div>
+    <div class="status-actions">
+      <button class="btn btn-outline" onclick="resetAllQuestions()">🔄 Reiniciar cuestionario</button>
+    </div>
+  </div>
+
+  <div id="questions-container"></div>
+
+  <footer>
+    <p><strong>Claudio Marcelo Budnikar</strong> — Profesor Particular de Español y Creador del Sistema</p>
+    <p>Consultas y clases: <a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a></p>
+  </footer>
+</div>
+
+<!-- Modal de Resumen Imprimible -->
+<div class="modal-overlay" id="summary-modal">
+  <div class="modal-content" id="printable-report">
+    <div class="modal-header">
+      <div>
+        <h2 style="color: var(--primary); font-size: 1.5rem;">Informe de Rendimiento — Pronombres de OD y OI</h2>
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2px;">
+          Profesor: <strong>Claudio Marcelo Budnikar</strong> | <a href="mailto:claudio.hispanoluso@gmail.com" style="color: var(--primary); text-decoration: none;">claudio.hispanoluso@gmail.com</a>
+        </div>
+        <small id="report-date" style="color: var(--text-muted); display: block; margin-top: 6px;"></small>
+      </div>
+      <button class="close-btn" onclick="closeSummaryModal()">&times;</button>
+    </div>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Bloque de Preguntas</th>
+          <th>Respondidas</th>
+          <th>Aciertos / Total</th>
+          <th>% Obtenido</th>
+          <th>Rendimiento (≥ 75%)</th>
+        </tr>
+      </thead>
+      <tbody id="summary-tbody"></tbody>
+    </table>
+
+    <h3 style="font-size: 1.15rem; color: var(--primary); margin-bottom: 12px;">Desglose Numérico por Pregunta (1 a 50)</h3>
+    <div class="level-details-container" id="level-details-list"></div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeSummaryModal()">Cerrar</button>
+      <button class="btn btn-outline" onclick="printSeparateWindow()">📄 Abrir en Nueva Pestaña para PDF</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========================================================
+// 1. BANCO DE 50 PREGUNTAS MULTINIVEL (OD y OI EN ESPAÑOL vs. PORTUGUÉS BRASILEÑO)
+//    Posiciones de respuesta correcta (correct: 0, 1, 2, 3) variadas y equilibradas
+// ========================================================
+const questionsList = [
+  {
+    id: 1,
+    q: "A - ¿Dónde compraste ese diccionario de español?\nB - ___ compré en una librería del centro.",
+    options: ["Le", "Él", "Lo", "O"],
+    correct: 2,
+    expectedVoice: "Lo",
+    whyCorrect: "'El diccionario' es un sustantivo masculino singular que funciona como Objeto Directo (OD) de cosa, por lo que exige el pronombre átono 'lo'.",
+    whyWrong: {
+      "Le": "Es pronombre de Objeto Indirecto (o leísmo de cosa, censurado por la RAE).",
+      "Él": "Es un pronombre personal tónico de sujeto o término de preposición; nunca puede funcionar como OD sin preposición.",
+      "O": "Forma pronominal exclusiva de la lengua portuguesa, inexistente en español."
+    },
+    contrast: "En el portugués brasileño coloquial se emplea el pronombre tónico sujeto en función de objeto (\"Comprei ele numa livraria\") o se omite (\"Comprei numa livraria\"). En español es obligatorio usar el pronombre clítico 'LO' antepuesto al verbo conjugado: 'Lo compré'."
+  },
+  {
+    id: 2,
+    q: "A - ¿Has visto a mis hermanas hoy?\nB - Sí, ___ vi esta mañana en la cafetería.",
+    options: ["les", "las", "ellas", "los"],
+    correct: 1,
+    expectedVoice: "las",
+    whyCorrect: "'Ver' es un verbo transitivo directo. Aunque el referente sea de personas ('a mis hermanas'), al ser femenino plural exige el pronombre de Objeto Directo 'las'.",
+    whyWrong: {
+      "les": "Es pronombre de Objeto Indirecto; usarlo como OD femenino plural constituye un caso de leísmo censurado.",
+      "ellas": "Pronombre de sujeto; en español es agramatical decir '*Vi ellas'.",
+      "los": "Pronombre masculino plural, discordante con 'hermanas'."
+    },
+    contrast: "En español los objetos directos de persona llevan la preposición 'a' ('vi a mis hermanas'), lo que confunde al estudiante brasileño haciéndole creer que es Objeto Indirecto. Sin embargo, sigue siendo OD y exige 'LAS' ('Las vi'), frente al portugués oral \"Vi elas hoje\"."
+  },
+  {
+    id: 3,
+    q: "A - ¿Trajiste los pasaportes para el viaje?\nB - Sí, ya ___.",
+    options: ["traje", "traje ellos", "les traje", "los traje"],
+    correct: 3,
+    expectedVoice: "los traje",
+    whyCorrect: "En español es obligatoria la presencia explícita del pronombre de Objeto Directo ('los') cuando el referente ('los pasaportes') ya ha sido mencionado.",
+    whyWrong: {
+      "traje": "Incurre en 'objeto nulo' (omisión del clítico), construcción inaceptable con objetos definidos en español.",
+      "traje ellos": "Uso agramatical del pronombre sujeto 'ellos' como complemento directo.",
+      "les traje": "Usa el pronombre de Objeto Indirecto 'les' en lugar del directo 'los'."
+    },
+    contrast: "INTERFERENCIA FRECUENTE (Objeto Nulo): En portugués de Brasil la respuesta natural consiste en repetir el verbo sin pronombre (\"Trouxe os passaportes? — Sim, já trouxe\"). En español el verbo transitivo exige retomar el referente definido con el clítico: 'Sí, ya LOS traje'."
+  },
+  {
+    id: 4,
+    q: "- A mi padre ___ gusta muchísimo el café sin azúcar.",
+    options: ["le", "lo", "se", "él"],
+    correct: 0,
+    expectedVoice: "le",
+    whyCorrect: "Con el verbo 'gustar', la persona que experimenta el agrado ('A mi padre') funciona como Objeto Indirecto singular y exige obligatoriamente el clítico 'le'.",
+    whyWrong: {
+      "lo": "Es pronombre de Objeto Directo masculino; 'gustar' rige complemento indirecto.",
+      "se": "Solo se usa si concurre con otro clítico de 3.ª persona o en oraciones reflexivas.",
+      "él": "Pronombre sujeto incompatible con la estructura preposicional 'A mi padre'."
+    },
+    contrast: "En portugués 'gostar' tiene como sujeto a la persona (\"Meu pai gosta muito de café\"). En español 'el café' es el sujeto gramatical y la persona es el Objeto Indirecto duplicado obligatoriamente con el pronombre 'LE': 'A mi padre LE gusta'."
+  },
+  {
+    id: 5,
+    q: "- A nosotros ___ encantan las playas del nordeste de Brasil.",
+    options: ["les", "los", "nos", "se nos"],
+    correct: 2,
+    expectedVoice: "nos",
+    whyCorrect: "El sintagma tónico 'A nosotros' exige la duplicación con el pronombre átono de Objeto Indirecto de primera persona del plural: 'nos'.",
+    whyWrong: {
+      "les": "Corresponde a la 3.ª persona del plural ('a ellos / a ustedes').",
+      "los": "Pronombre de Objeto Directo de 3.ª persona plural.",
+      "se nos": "Añade un pronombre 'se' innecesario en la construcción con 'encantar'."
+    },
+    contrast: "Mientras que en portugués se dice \"Nós adoramos as praias\", en español 'encantar' sigue la misma estructura inversa que 'gustar': 'las playas' concuerdan en plural con 'encantan' y el experimentador lleva clítico de OI: 'A nosotros NOS encantan'."
+  },
+  {
+    id: 6,
+    q: "A - ¿Qué hiciste con las llaves del coche?\nB - ___ entregué al recepcionista del hotel.",
+    options: ["Le las", "Se las", "Las", "Les"],
+    correct: 1,
+    expectedVoice: "Se las",
+    whyCorrect: "Concurren el OI 'le' (al recepcionista) y el OD femenino plural 'las' (las llaves). Por regla fonética eufónica, 'le' se transforma obligatoriamente en 'se' ante 'lo/la/los/las': 'Se las entregué'.",
+    whyWrong: {
+      "Le las": "Combinación cacofónica terminantemente prohibida en la gramática española.",
+      "Las": "Omite la duplicación del Objeto Indirecto ('al recepcionista'), obligatoria en este registro.",
+      "Les": "Omite el Objeto Directo ('las llaves') y pluraliza erróneamente el indirecto."
+    },
+    contrast: "En portugués brasileño se evita la combinación de dos clíticos (\"Entreguei elas para o recepcionista\"). En español la combinación OI + OD es constante y transforma 'le/les' en 'SE' delante de 'lo/la/los/las': 'SE LAS entregué'."
+  },
+  {
+    id: 7,
+    q: "- Ayer ___ una carta de recomendación al director, pero aún no la ha leído.",
+    options: ["envié-le", "lo envié", "envié para él", "le envié"],
+    correct: 3,
+    expectedVoice: "le envié",
+    whyCorrect: "Con un verbo conjugado en indicativo ('envié'), el pronombre átono de Objeto Indirecto ('le', que anticipa 'al director') debe colocarse obligatoriamente en próclisis (antes del verbo) y sin guion.",
+    whyWrong: {
+      "envié-le": "En español moderno no existe énclisis con verbos conjugados en indicativo y jamás se usa guion para unir pronombres.",
+      "lo envié": "Incurre en loísmo al usar 'lo' para el destinatario indirecto.",
+      "envié para él": "Calco del portugués coloquial; además, el destinatario de 'enviar' en español se introduce con 'a', no con 'para'."
+    },
+    contrast: "Doble contraste con el portugués: 1) En español NUNCA se utiliza guion (hífen) con los pronombres clíticos; 2) Con verbos en indicativo, subjuntivo o condicional la posición es siempre proclítica (antes del verbo): 'Le envié'."
+  },
+  {
+    id: 8,
+    q: "- ¡Camarero, por favor, ___ la cuenta cuando pueda!",
+    options: ["tráiganos", "nos traiga", "traiga-nos", "traiganos"],
+    correct: 0,
+    expectedVoice: "tráiganos",
+    whyCorrect: "En el imperativo afirmativo ('traiga', de usted), los pronombres átonos van obligatoriamente pospuestos y soldados al verbo formando una sola palabra (énclisis). Al convertirse en palabra esdrújula ('trái-ga-nos'), debe llevar tilde.",
+    whyWrong: {
+      "nos traiga": "Coloca el pronombre antes del imperativo afirmativo (próclisis), lo cual es agramatical en español.",
+      "traiga-nos": "Usa guion al estilo portugués, signo ortográfico inexistente para pronombres en español.",
+      "traiganos": "Omite la tilde obligatoria de las palabras esdrújulas en español."
+    },
+    contrast: "En el portugués de Brasil hablado es habitual iniciar el pedido con próclisis (\"Garçom, me traz / nos traga a conta\") o usar guion en la escritura formal (\"traga-nos\"). En español el imperativo afirmativo exige énclisis sin guion y con tilde: '¡Tráiganos!'."
+  },
+  {
+    id: 9,
+    q: "- Este secreto es muy delicado; por favor, no ___ a nadie.",
+    options: ["cuénteselo", "lo cuentes", "se lo cuentes", "le lo cuentes"],
+    correct: 2,
+    expectedVoice: "se lo cuentes",
+    whyCorrect: "En el imperativo negativo ('no cuentes'), los pronombres átonos deben ir obligatoriamente antepuestos al verbo (próclisis) y separados: 'no se lo cuentes' ('se' = a nadie; 'lo' = el secreto).",
+    whyWrong: {
+      "cuénteselo": "La énclisis está prohibida en oraciones negativas.",
+      "lo cuentes": "Falta el pronombre de Objeto Indirecto que duplica a 'a nadie'.",
+      "le lo cuentes": "Secuencia 'le lo' agramatical en lugar de 'se lo'."
+    },
+    contrast: "En español la regla de colocación en el imperativo es absoluta: Imperativo Afirmativo = ÉNCLISIS ('Cuéntaselo'); Imperativo Negativo = PRÓCLISIS con subjuntivo ('No se lo cuentes')."
+  },
+  {
+    id: 10,
+    q: "A - ¿Vas a comprar esos zapatos negros?\nB - Sí, ___ ahora mismo.",
+    options: ["voy a los comprar", "voy a comprarlos / los voy a comprar (ambas son correctas)", "voy comprarlos", "voy a comprar-los"],
+    correct: 1,
+    expectedVoice: "voy a comprarlos o los voy a comprar",
+    whyCorrect: "En las perífrasis verbales de infinitivo ('ir a + infinitivo'), el pronombre átono puede colocarse tanto antepuesto al verbo auxiliar ('los voy a comprar') como pospuesto y soldado al infinitivo ('voy a comprarlos').",
+    whyWrong: {
+      "voy a los comprar": "En español está terminantemente prohibido intercalar el pronombre entre el auxiliar/preposición y el infinitivo.",
+      "voy comprarlos": "Omite la preposición 'a' obligatoria en la perífrasis 'ir a + infinitivo'.",
+      "voy a comprar-los": "Usa guion y conserva la '-r' o la altera según la ortografía portuguesa, lo que es incorrecto en español."
+    },
+    contrast: "CONTRASTE SINTÁCTICO CRUCIAL: En portugués brasileño es muy común colocar el clítico entre el auxiliar y el infinitivo (\"Vou te falar / Vou os comprar\") y omitir la preposición 'a' (\"Vou comprar\"). En español jamás se coloca el pronombre en medio: o va antes de todo ('Los voy a comprar') o pegado al final ('Voy a comprarlos')."
+  },
+  {
+    id: 11,
+    q: "A - ¿Qué están haciendo los niños con la tarea?\nB - ___ en su habitación.",
+    options: ["Están la haciendo", "Están haciendo-la", "Están haciendola", "La están haciendo / Están haciéndola (ambas son correctas)"],
+    correct: 3,
+    expectedVoice: "La están haciendo o Están haciéndola",
+    whyCorrect: "En las perífrasis con gerundio ('estar + gerundio'), el clítico admite dos posiciones válidas: proclítico al auxiliar ('La están haciendo') o enclítico soldado al gerundio con tilde por ser palabra esdrújula ('Están haciéndola').",
+    whyWrong: {
+      "Están la haciendo": "Intercala el clítico entre el auxiliar y el gerundio, posición agramatical en español.",
+      "Están haciendo-la": "Emplea un guion inexistente en la ortografía española.",
+      "Están haciendola": "Carece de la tilde obligatoria en la sílaba tónica ('ha-CIÉN-do-la')."
+    },
+    contrast: "En portugués se dice \"Estão fazendo ela\" o \"Estão a fazendo / Estão fazendo-a\". En español solo existen los dos extremos del complejo verbal ('La están haciendo' o 'Están haciéndola', siempre con tilde al unirse al gerundio)."
+  },
+  {
+    id: 12,
+    q: "A - ¿Has llamado al médico hoy?\nB - Sí, ya ___ dos veces.",
+    options: ["lo he llamado", "he lo llamado", "he llamado-lo", "he llamádolo"],
+    correct: 0,
+    expectedVoice: "lo he llamado",
+    whyCorrect: "En los tiempos compuestos con 'haber' ('he llamado'), el pronombre átono va única y exclusivamente delante del verbo auxiliar ('lo he llamado').",
+    whyWrong: {
+      "he lo llamado": "Prohibido intercalar cualquier palabra o pronombre entre el auxiliar 'haber' y el participio.",
+      "he llamado-lo": "El participio jamás admite pronombres enclíticos ni guiones.",
+      "he llamádolo": "En español moderno el participio nunca admite pronombres soldados al final."
+    },
+    contrast: "En portugués formal existe la colocación entre auxiliar y participio (\"Tenho-o chamado\"). En español el bloque 'haber + participio' es indisoluble y el participio es inmune a la énclisis: el pronombre precede siempre a 'haber' ('Lo he llamado')."
+  },
+  {
+    id: 13,
+    q: "- A María ___ encontré ayer en el supermercado, pero a su marido no ___ vi.",
+    options: ["le / le", "la / él", "la / lo", "se / lo"],
+    correct: 2,
+    expectedVoice: "la y lo",
+    whyCorrect: "Tanto 'encontrar' como 'ver' son verbos transitivos directos. Al estar el Objeto Directo antepuesto al verbo ('A María', 'a su marido'), es obligatoria su duplicación con los clíticos de OD 'la' (femenino) y 'lo' (masculino).",
+    whyWrong: {
+      "le / le": "Emplea pronombres de Objeto Indirecto para verbos transitivos directos (leísmo femenino en el primer caso, censurado por la RAE).",
+      "la / él": "Usa el pronombre tónico sujeto 'él' tras el adverbio 'no'.",
+      "se / lo": "'Se' es reflexivo y no corresponde a una tercera persona distinta del sujeto 'yo'."
+    },
+    contrast: "REGLA DE ORO DE LA DUPLICACIÓN: En portugués se puede anticipar el objeto directo sin repetirlo con pronombre (\"A Maria eu encontrei ontem\"). En español, todo Objeto Directo o Indirecto colocado ANTES del verbo exige obligatoriamente ser duplicado con su pronombre átono: 'A María LA encontré'."
+  },
+  {
+    id: 14,
+    q: "- Los informes financieros ___ entregué al jefe esta mañana.",
+    options: ["los", "se los", "le", "les"],
+    correct: 1,
+    expectedVoice: "se los",
+    whyCorrect: "Como el Objeto Directo ('Los informes financieros') está dislocado a la izquierda (antes del verbo), debe duplicarse con 'los', y al concurrir con el Objeto Indirecto ('al jefe' -> 'le'), se forma obligatoriamente el grupo 'se los'.",
+    whyWrong: {
+      "los": "Duplica el OD pero omite el clítico de OI correspondiente 'al jefe'.",
+      "le": "Omite la duplicación obligatoria del OD topicalizado ('Los informes financieros').",
+      "les": "Error de número en el OI y ausencia de duplicación del OD."
+    },
+    contrast: "Cuando en español colocamos el objeto al inicio de la frase para enfatizarlo ('Los informes financieros...'), estamos obligados a retomarlo con el clítico dentro de la oración: 'Los informes financieros SE LOS entregué al jefe'."
+  },
+  {
+    id: 15,
+    q: "- ¿Conoces a la nueva directora? Yo todavía no ___.",
+    options: ["conozco a la", "le conozco", "conozco ella", "la conozco"],
+    correct: 3,
+    expectedVoice: "la conozco",
+    whyCorrect: "'Conocer' es transitivo directo; para sustituir a un referente femenino singular ('a la nueva directora') se utiliza el clítico de OD 'la' antepuesto al verbo: 'la conozco'.",
+    whyWrong: {
+      "conozco a la": "Deja la preposición y el artículo incompletos sin núcleo nominal.",
+      "le conozco": "El leísmo referido a mujer ('le' por 'la') se considera incorrecto en la norma panhispánica.",
+      "conozco ella": "Calco del portugués coloquial (\"conheço ela\"), agramatical en español."
+    },
+    contrast: "Aunque el complemento lleve la preposición 'a' de persona ('conocer a la directora'), al pronominalizarse desaparece la preposición 'a' y se sustituye todo el sintagma por el clítico directo 'LA': 'No la conozco'."
+  },
+  {
+    id: 16,
+    q: "A - ¿Me trajiste el regalo que me prometiste?\nB - ¡Claro! Aquí ___ traigo.",
+    options: ["te lo", "lo te", "te él", "se lo"],
+    correct: 0,
+    expectedVoice: "te lo",
+    whyCorrect: "Al combinarse dos pronombres átonos, el Objeto Indirecto ('te', a ti) precede siempre al Objeto Directo ('lo', el regalo): 'te lo traigo'.",
+    whyWrong: {
+      "lo te": "Invierte el orden obligatorio en español (OI siempre va antes que OD).",
+      "te él": "Mezcla un clítico con un pronombre tónico de sujeto.",
+      "se lo": "'Se' corresponde a 3.ª persona (a él/ella/usted), no a 2.ª persona ('tú')."
+    },
+    contrast: "En español el orden de los clíticos es fijo e inalterable: primero el Objeto Indirecto (`me, te, nos, os, se`) y segundo el Objeto Directo (`lo, la, los, las`). Nunca se contraen en una sola palabra como el arcaico portugués \"to\" (\"te + o\"): se escriben separados 'te lo'."
+  },
+  {
+    id: 17,
+    q: "A - ¿Les explicaste el problema a tus padres?\nB - Sí, ya ___ expliqué con calma.",
+    options: ["se los", "les lo", "se lo", "se las"],
+    correct: 2,
+    expectedVoice: "se lo",
+    whyCorrect: "'Se' sustituye a 'les' (a tus padres, OI plural) y 'lo' sustituye a 'el problema' (OD masculino singular). El pronombre 'lo' debe concordar con 'el problema' (singular), no con 'padres'.",
+    whyWrong: {
+      "se los": "Error muy frecuente: transfiere la marca de plural de 'a tus padres' al pronombre 'lo', pese a que 'el problema' es singular.",
+      "les lo": "Combinación prohibida en español.",
+      "se las": "'Problema' es de género masculino y singular."
+    },
+    contrast: "ATENCIÓN AL PLURAL DE 'SE': Como 'se' (que viene de 'les') es invariable y no muestra plural, muchos hablantes añaden por error una '-s' a 'lo' diciendo '*se los expliqué'. En la norma culta panhispánica, si lo explicado es singular ('el problema'), debe decirse 'SE LO expliqué'."
+  },
+  {
+    id: 18,
+    q: "A - ¿Parecen cansados los jugadores?\nB - Sí, ___ están porque jugaron una prórroga.",
+    options: ["los", "lo", "les", "así"],
+    correct: 1,
+    expectedVoice: "lo",
+    whyCorrect: "Para sustituir el atributo de verbos copulativos ('ser, estar, parecer'), el español emplea obligatoriamente el pronombre neutro invariable 'lo', sin importar el género ni el número del sujeto ('cansados' -> 'lo están').",
+    whyWrong: {
+      "los": "El atributo no concuerda en género ni número cuando se pronominaliza; siempre es neutro 'lo'.",
+      "les": "Pronombre de Objeto Indirecto incompatible con función de atributo.",
+      "así": "En español 'estar' copulativo exige el clítico neutro 'lo', no el adverbio modal."
+    },
+    contrast: "DIVERGENCIA CLAVE CON EL PORTUGUÉS: En portugués se responde simplemente repitiendo el verbo copulativo sin pronombre (\"Eles estão cansados? — Sim, estão\"). En español es obligatorio usar el pronombre neutro 'LO' con 'ser, estar y parecer': 'Sí, LO están'."
+  },
+  {
+    id: 19,
+    q: "A - María es una excelente abogada.\nB - Sí, ___ es desde que se graduó con honores.",
+    options: ["la", "ella", "le", "lo"],
+    correct: 3,
+    expectedVoice: "lo",
+    whyCorrect: "Con el verbo copulativo 'ser', el atributo ('una excelente abogada') se sustituye siempre por el pronombre neutro invariable 'lo' ('Sí, lo es'), aunque el sujeto sea femenino.",
+    whyWrong: {
+      "la": "'La' solo se usa para Objetos Directos femeninos, nunca para el atributo de 'ser, estar o parecer'.",
+      "ella": "Si fuera sujeto sería 'Ella lo es', pero sin 'lo' la oración queda incompleta.",
+      "le": "Pronombre de Objeto Indirecto."
+    },
+    contrast: "El alumno brasileño suele decir '*Sí, es' (calcando \"Sim, é\") o usar '*la es' pensando en el femenino 'abogada'. Recuerda: con 'ser, estar y parecer', cualquier adjetivo o sustantivo atributivo se resume en el neutro invariable 'LO': 'Lo es'."
+  },
+  {
+    id: 20,
+    q: "A - ¿Sabes que van a inaugurar una nueva línea de metro?\nB - Sí, ya ___ leí en el periódico de hoy.",
+    options: ["lo", "eso", "la", "le"],
+    correct: 0,
+    expectedVoice: "lo",
+    whyCorrect: "Cuando se retoma toda una oración o idea anterior ('que van a inaugurar...'), se utiliza el pronombre neutro de Objeto Directo 'lo': 'ya lo leí'.",
+    whyWrong: {
+      "eso": "Si se antepone 'eso', requeriría duplicación ('eso ya lo leí'), pero 'ya eso leí' es antinatural.",
+      "la": "Lo que leyó en el periódico no es la línea física de metro, sino la noticia/hecho completo (neutro 'lo').",
+      "le": "Objeto indirecto impropio para 'leer algo'."
+    },
+    contrast: "En portugués se omite el pronombre (\"Sim, já li no jornal\"). En español, los verbos de lengua, pensamiento y percepción ('saber, decir, leer, preguntar, creer') exigen el neutro 'LO' para reproducir una oración subordinada previa: 'Sí, ya LO sé / ya LO leí'."
+  },
+  {
+    id: 21,
+    q: "- Mi abuela tiene dificultades para caminar, así que siempre ___ a cruzar la calle.",
+    options: ["le ayudo a ella en", "ayudo ella", "la ayudo", "la ayudo para"],
+    correct: 2,
+    expectedVoice: "la ayudo",
+    whyCorrect: "En el español general mayoritario, 'ayudar' es un verbo transitivo directo que rige OD ('la ayudo' para referente femenino) seguido de la preposición 'a' + infinitivo ('a cruzar').",
+    whyWrong: {
+      "le ayudo a ella en": "La preposición que introduce el infinitivo tras 'ayudar' es 'a', no 'en'.",
+      "ayudo ella": "Uso agramatical del pronombre tónico 'ella' como objeto directo.",
+      "la ayudo para": "Tras 'ayudar', el infinitivo se enlaza con la preposición 'a' ('ayudar a hacer algo')."
+    },
+    contrast: "Coincide con el régimen transitivo del portugués culto (\"Eu a ajudo a atravessar\"), frente al coloquial \"Eu ajudo ela\". Nota: en algunas zonas leístas de España se oye 'le ayudo', pero en todo el mundo hispánico el estándar transitivo femenino es 'LA ayudo'."
+  },
+  {
+    id: 22,
+    q: "- Ayer fue el cumpleaños de Ana y ___ por teléfono para felicitarla.",
+    options: ["llamé para ella", "la llamé", "le llamé a ella por", "llamé a la"],
+    correct: 1,
+    expectedVoice: "la llamé",
+    whyCorrect: "El verbo 'llamar' (por teléfono) es transitivo directo en español ('llamar a alguien' -> 'lo/la llamé'). Como Ana es femenino singular, corresponde 'la llamé'.",
+    whyWrong: {
+      "llamé para ella": "Interferencia directa del portugués (\"liguei para ela\"). En español no se dice '*llamar para alguien'.",
+      "le llamé a ella por": "Incurre en laísmo/leísmo impropio y altera el régimen verbal.",
+      "llamé a la": "Deja el artículo sin sustantivo."
+    },
+    contrast: "FALSO AMIGO SINTÁCTICO: En portugués 'ligar' es transitivo indirecto con la preposición 'para' o 'a' (\"Liguei para ela / Liguei-lhe\"). En español 'llamar (por teléfono)' es TRANSITIVO DIRECTO: 'Llamé a Ana' -> 'LA llamé'."
+  },
+  {
+    id: 23,
+    q: "- El profesor hizo una pregunta difícil y ningún alumno supo ___.",
+    options: ["responder para él", "responder a él", "responder-lhe", "responderle / responderla (según sea a él o a la pregunta)"],
+    correct: 3,
+    expectedVoice: "responderle o responderla",
+    whyCorrect: "'Responder' admite 'responderla' si el pronombre sustituye a 'la pregunta' (OD) o 'responderle' si sustituye 'al profesor' (OI). Ambas opciones con enclisis al infinitivo son correctas.",
+    whyWrong: {
+      "responder para él": "Calco del portugués coloquial (\"responder para ele\"); en español el destinatario lleva 'a' y clítico 'le'.",
+      "responder a él": "En español, si se usa el pronombre tónico 'a él', es obligatoria la presencia simultánea del clítico: 'responderle a él'.",
+      "responder-lhe": "Grafía y pronombre propios del portugués."
+    },
+    contrast: "En español, un pronombre tónico con 'a' ('a mí, a ti, a él, a ella') NUNCA puede aparecer solo sin su clítico correspondiente: no se puede decir '*responder a él', sino 'responderle (a él)'."
+  },
+  {
+    id: 24,
+    q: "- A mí no ___ interesa ese tipo de películas violentas.",
+    options: ["me", "mí", "yo", "le"],
+    correct: 0,
+    expectedVoice: "me",
+    whyCorrect: "El complemento indirecto tónico 'A mí' exige obligatoriamente ser duplicado por el clítico átono de primera persona singular 'me': 'A mí no me interesa'.",
+    whyWrong: {
+      "mí": "'Mí' solo se usa inmediatamente después de preposición ('a mí, para mí'), nunca junto al verbo.",
+      "yo": "Pronombre de sujeto incompatible con la estructura de 'interesar'.",
+      "le": "Discordancia de persona: 'A mí' es 1.ª persona y 'le' es 3.ª persona."
+    },
+    contrast: "En portugués se puede decir \"A mim não interessa esse filme\" o \"Para mim não interessa\" sin el clítico 'me'. En español, la presencia de 'a mí, a ti, a él, a nosotros' obliga de forma absoluta a poner el clítico junto al verbo: 'A mí no ME interesa'."
+  },
+  {
+    id: 25,
+    q: "- ¿Por qué ___ miraron a mí con tanta sorpresa?",
+    options: ["mí", "lo", "me", "se"],
+    correct: 2,
+    expectedVoice: "me",
+    whyCorrect: "Incluso cuando el sintagma tónico 'a mí' va pospuesto al verbo ('miraron a mí'), en español es obligatoria la duplicación mediante el clítico 'me' antes del verbo: '¿Por qué me miraron a mí?'.",
+    whyWrong: {
+      "mí": "Pronombre preposicional tónico que no puede ocupar posición proclítica.",
+      "lo": "3.ª persona masculino, incompatible con 'a mí'.",
+      "se": "3.ª persona reflexiva."
+    },
+    contrast: "En portugués es perfectamente gramatical decir \"Por que olharam para mim?\". En español está prohibido usar 'a mí, a ti, a él, a nosotros, a vosotros, a ellos' como OD u OI sin acompañarlos del clítico: '*Miraron a mí' es agramatical; debe decirse 'ME miraron a mí'."
+  },
+  {
+    id: 26,
+    q: "- Ayer ___ vi a Juan saliendo del cine con su novia.",
+    options: ["lo", "(sin pronombre): Ayer vi a Juan...", "la", "se"],
+    correct: 1,
+    expectedVoice: "sin pronombre Ayer vi a Juan",
+    whyCorrect: "En el español estándar general, cuando el Objeto Directo nominal ('a Juan') va pospuesto al verbo, NO se duplica con pronombre átono: se dice 'Ayer vi a Juan' (a diferencia del Objeto Indirecto, que sí suele duplicarse).",
+    whyWrong: {
+      "lo": "En la norma general panhispánica, duplicar un OD nominal pospuesto ('*Lo vi a Juan') es redundante (aunque se oye en el habla coloquial rioplatense).",
+      "la": "Discordancia de género con 'Juan'.",
+      "se": "Pronombre reflexivo impropio."
+    },
+    contrast: "Distinción sutil pero fundamental: 1) Si el OD nominal va ANTES del verbo, es obligatorio duplicarlo ('A Juan lo vi ayer'); 2) Si el OD nominal va DESPUÉS del verbo, NO se duplica en español estándar ('Ayer vi a Juan')."
+  },
+  {
+    id: 27,
+    q: "- ___ dije a los estudiantes que el examen sería el viernes.",
+    options: ["Le", "Los", "Se", "Les"],
+    correct: 3,
+    expectedVoice: "Les",
+    whyCorrect: "A diferencia del Objeto Directo, el Objeto Indirecto pospuesto ('a los estudiantes') suele duplicarse en español con el clítico correspondiente en plural: 'Les dije a los estudiantes'.",
+    whyWrong: {
+      "Le": "Incurre en una discordancia de número muy extendida en el habla descuidada pero censurada en exámenes: como 'a los estudiantes' es plural, el clítico debe ser 'les', no 'le'.",
+      "Los": "Incurre en loísmo al usar 'los' como Objeto Indirecto.",
+      "Se": "'Se' solo reemplaza a 'les' cuando va seguido de 'lo/la/los/las', no ante una oración con 'que'."
+    },
+    contrast: "Cuidado con dos errores habituales: 1) No poner 'se' cuando no hay clítico 'lo/la' sino una conjunción 'que' ('Les dije que...', nunca '*Se dije que...'); 2) Mantener la concordancia plural: 'LES dije a los estudiantes' (nunca '*Le dije a los estudiantes')."
+  },
+  {
+    id: 28,
+    q: "A - ¡Qué chaqueta tan elegante llevas!\nB - ¿Te gusta? ___ regalaron mis hijos por mi cumpleaños.",
+    options: ["Me la", "La me", "Me le", "Se la"],
+    correct: 0,
+    expectedVoice: "Me la",
+    whyCorrect: "'Me' es el Objeto Indirecto (a mí) y 'la' es el Objeto Directo femenino singular (la chaqueta), que además está topicalizada en el diálogo. El orden obligatorio es OI + OD: 'Me la regalaron'.",
+    whyWrong: {
+      "La me": "Orden inverso agramatical (OD antes de OI).",
+      "Me le": "Usa dos pronombres de Objeto Indirecto sin pronombre de Objeto Directo.",
+      "Se la": "'Se' indicaría que se la regalaron a otra persona (a él/ella), contradiciendo 'por mi cumpleaños'."
+    },
+    contrast: "En portugués brasileño se omitiría el objeto directo diciendo \"Meus filhos me deram de aniversário\". En español, como se está hablando de 'la chaqueta', es indispensable mantener el clítico femenino 'la' junto a 'me': 'ME LA regalaron'."
+  },
+  {
+    id: 29,
+    q: "- Si tienes las manos sucias, tienes que ___ antes de comer.",
+    options: ["te las lavar", "lavarlas-te", "lavártelas", "lavarse las"],
+    correct: 2,
+    expectedVoice: "lavártelas",
+    whyCorrect: "En español la posesión sobre partes del cuerpo ('las manos') se expresa con un verbo reflexivo de Objeto Indirecto ('lavarse' -> 'te' para 'tú') y el Objeto Directo ('las'). Unidos al infinitivo forman una palabra esdrújula con tilde: 'lavártelas'.",
+    whyWrong: {
+      "te las lavar": "Intercala los pronombres entre 'tienes que' y el infinitivo 'lavar', posición prohibida en español.",
+      "lavarlas-te": "Invierte el orden de los clíticos y añade un guion inexistente.",
+      "lavarse las": "Separa el clítico 'las' del infinitivo y no concuerda con la 2.ª persona 'tienes'."
+    },
+    contrast: "En portugués se usa el adjetivo posesivo sin pronombre reflexivo (\"Tem que lavar suas mãos / lavar as mãos\"). En español no se dice '*lavar tus manos', sino 'lavarte las manos' -> 'Tienes que LAVÁRTELAS' (o 'Te las tienes que lavar')."
+  },
+  {
+    id: 30,
+    q: "- Hace muchísimo frío afuera; toma este abrigo y ___ ahora mismo.",
+    options: ["ponlo-te", "póntelo", "te lo pon", "pónselo"],
+    correct: 1,
+    expectedVoice: "póntelo",
+    whyCorrect: "El imperativo afirmativo de 'tú' del verbo 'ponerse' es 'pon' + 'te' (OI reflexivo) + 'lo' (OD, el abrigo). Al unirse en énclisis, forma una palabra esdrújula que requiere tilde: 'póntelo'.",
+    whyWrong: {
+      "ponlo-te": "Invierte el orden de los pronombres (OI debe ir antes que OD) y usa guion.",
+      "te lo pon": "Usa próclisis con un imperativo afirmativo, lo cual es agramatical.",
+      "pónselo": "Mezcla el imperativo de 'tú' ('pon') con el pronombre de 3.ª persona 'se' (sería ponerle el abrigo a otra persona)."
+    },
+    contrast: "Con prendas de vestir y partes del cuerpo, el español usa sistemáticamente el dativo reflexivo ('ponerse el abrigo' -> 'póntelo', 'quitarse los zapatos' -> 'quítatelos'), mientras que el portugués usa el verbo transitivo simple (\"veste ele / coloque-o\")."
+  },
+  {
+    id: 31,
+    q: "- ¡Qué desastre! El jarrón de cristal ___ cayó de las manos y se rompió.",
+    options: ["me se", "me", "se lo", "se me"],
+    correct: 3,
+    expectedVoice: "se me",
+    whyCorrect: "En la construcción de 'eventos involuntarios o accidentales' ('caerse, olvidarse, perderse, romperse'), el pronombre 'se' va SIEMPRE en primer lugar seguido del dativo de la persona afectada ('me'): 'se me cayó'.",
+    whyWrong: {
+      "me se": "Secuencia vulgar estigmatizada ('*me se cayó'); la regla absoluta del español exige que 'se' preceda a cualquier otro clítico.",
+      "me": "Sin 'se', el verbo 'caer' indicaría que la persona misma cayó, no el objeto de forma accidental.",
+      "se lo": "'Caerse' es intransitivo pronominal y no admite Objeto Directo 'lo'."
+    },
+    contrast: "ESTRUCTURA DE INVOLUNTARIEDAD: Donde el portugués dice \"Deixei cair o vaso\" o \"O vaso caiu da minha mão\", el español exime de culpa al sujeto mediante el esquema 'SE + OI (me/te/le/nos/os/les) + verbo': 'Se me cayó el jarrón', 'Se me olvidaron las llaves'."
+  },
+  {
+    id: 32,
+    q: "- Disculpa, profesor, ___ olvidaron los ejercicios en casa.",
+    options: ["se me", "me", "yo", "se los"],
+    correct: 0,
+    expectedVoice: "se me",
+    whyCorrect: "Con 'olvidarse' en construcción involuntaria, el sujeto gramatical plural es 'los ejercicios' (por eso el verbo va en plural 'olvidaron'), acompañado de 'se' y el Objeto Indirecto de la persona afectada 'me': 'se me olvidaron'.",
+    whyWrong: {
+      "me": "Falta el morfema pronominal 'se' que habilita la construcción involuntaria en 3.ª persona plural.",
+      "yo": "Incompatible con el verbo en 3.ª persona plural 'olvidaron'.",
+      "se los": "'Los ejercicios' es el sujeto de 'olvidaron', por lo que no puede sustituirse por 'los'."
+    },
+    contrast: "En español existen dos formas: 1) Activa: 'Olvidé los ejercicios' / 'Me olvidé de los ejercicios'; 2) Involuntaria (muy idiomática): 'SE ME olvidaron los ejercicios' (siempre con 'se' delante de 'me')."
+  },
+  {
+    id: 33,
+    q: "- Cuando Juan ___ acercó para saludarme, casi no lo reconocí.",
+    options: ["me se", "se lo", "se me", "le me"],
+    correct: 2,
+    expectedVoice: "se me",
+    whyCorrect: "El verbo pronominal 'acercarse' lleva el reflexivo 'se' (correspondiente a Juan) seguido del Objeto Indirecto 'me' (a mí): 'se me acercó'.",
+    whyWrong: {
+      "me se": "Viola la regla universal de precedencia del clítico 'se' en primer lugar.",
+      "se lo": "No concuerda con 'saludarme' (primera persona 'a mí').",
+      "le me": "Combinación inexistente para un verbo reflexivo."
+    },
+    contrast: "En portugués se diría \"Quando o João se aproximou de mim\". En español es muy frecuente sustituir el complemento 'a mí' por el clítico dativo intercalado tras el 'se': 'Juan SE ME acercó'."
+  },
+  {
+    id: 34,
+    q: "- Mi hijo pequeño es muy apegado a mí; ¡no ___ separes en medio de la multitud!",
+    options: ["me te", "te me", "se me", "te mí"],
+    correct: 1,
+    expectedVoice: "te me",
+    whyCorrect: "Cuando concurren pronombres de 2.ª persona ('te') y de 1.ª persona ('me' como dativo de interés/afectivo), la regla de orden de clíticos exige que la 2.ª persona preceda siempre a la 1.ª persona: 'no te me separes'.",
+    whyWrong: {
+      "me te": "Viola el orden estricto de los clíticos en español: 'te' siempre va antes que 'me'.",
+      "se me": "Discordancia de persona: el verbo 'separes' está conjugado en 2.ª persona ('tú').",
+      "te mí": "El pronombre tónico 'mí' no puede usarse sin preposición ni junto al verbo."
+    },
+    contrast: "ORDEN JERÁRQUICO DE CLÍTICOS EN ESPAÑOL: 1.º siempre `se`; 2.º segunda persona (`te, os`); 3.º primera persona (`me, nos`); 4.º tercera persona (`lo, la, los, las, le, les`). Por eso se dice 'No TE ME vayas', 'No TE ME pongas triste'."
+  },
+  {
+    id: 35,
+    q: "- Mientras caminábamos por el centro de noche, unos ladrones ___ robaron el móvil a mi amigo.",
+    options: ["lo", "el", "se", "le"],
+    correct: 3,
+    expectedVoice: "le",
+    whyCorrect: "Con los verbos de privación ('robar, quitar, sacar, comprar'), la cosa robada ('el móvil') es el Objeto Directo y la persona que sufre el robo ('a mi amigo') es el Objeto Indirecto: 'le robaron el móvil'.",
+    whyWrong: {
+      "lo": "En esta oración el OD ya es 'el móvil', por lo que la persona ('a mi amigo') funciona como Objeto Indirecto ('le').",
+      "el": "Es un artículo determinado, no un pronombre personal.",
+      "se": "'Se' solo aparece si pronominalizamos también 'el móvil' ('Se lo robaron')."
+    },
+    contrast: "En portugués de Brasil es común decir \"Roubaram o celular do meu amigo\" (usando posesivo 'do'). En español se expresa la víctima como Objeto Indirecto duplicado con 'LE': 'LE robaron el móvil a mi amigo' (y si se sustituye el móvil: 'SE LO robaron')."
+  },
+  {
+    id: 36,
+    q: "- Muchas gracias por tu ayuda con la mudanza; ___ agradezco de todo corazón.",
+    options: ["te la / te lo (según se refiera a 'la ayuda' o al hecho en general)", "te", "la te", "te le"],
+    correct: 0,
+    expectedVoice: "te la o te lo",
+    whyCorrect: "'Agradecer' en español es transitivo: se agradece 'algo' (OD: 'la ayuda' -> 'la', o el hecho -> 'lo') 'a alguien' (OI: 'te'). Por tanto, exige ambos pronombres: 'te la agradezco' o 'te lo agradezco'.",
+    whyWrong: {
+      "te": "Deja al verbo 'agradecer' sin su Objeto Directo obligatorio en español.",
+      "la te": "Orden incorrecto de los pronombres átonos.",
+      "te le": "Reúne dos pronombres de Objeto Indirecto sin Objeto Directo."
+    },
+    contrast: "DIVERGENCIA CON EL PORTUGUÉS: En portugués se dice \"Eu te agradeço de coração\" (sin pronombre de OD). En español 'agradecer' pide Objeto Directo para la cosa agradecida y Objeto Indirecto para la persona: no basta con decir '*Te agradezco', sino 'TE LO agradezco'."
+  },
+  {
+    id: 37,
+    q: "Identifica cuál de las siguientes oraciones presenta un caso de LAÍSMO censurado por la Real Academia Española:",
+    options: [
+      "A mi madre la vi muy contenta ayer.",
+      "A mi madre le compré un bolso nuevo.",
+      "A mi madre la dije toda la verdad.",
+      "A mi madre se lo conté todo."
+    ],
+    correct: 2,
+    expectedVoice: "A mi madre la dije toda la verdad",
+    whyCorrect: "En 'decir toda la verdad a alguien', 'toda la verdad' es el Objeto Directo y 'a mi madre' es el Objeto Indirecto. Usar 'la' en función de Objeto Indirecto ('*la dije') es LAÍSMO, fenómeno dialectal rechazado en la norma culta panhispánica.",
+    whyWrong: {
+      "A mi madre la vi muy contenta ayer.": "Correcta: 'ver' es transitivo directo y 'la' funciona legítimamente como Objeto Directo femenino.",
+      "A mi madre le compré un bolso nuevo.": "Correcta: 'un bolso' es OD y 'le' funciona correctamente como Objeto Indirecto.",
+      "A mi madre se lo conté todo.": "Correcta: 'se' sustituye adecuadamente a 'le' ante el OD 'lo'."
+    },
+    contrast: "El LAÍSMO consiste en emplear 'la/las' como Objeto Indirecto femenino ('*La dije', '*La escribí una carta', '*La duele la cabeza') en vez de 'le/les'. Aunque se escucha en Madrid y centro de España, la RAE lo considera incorrecto en el estándar culto."
+  },
+  {
+    id: 38,
+    q: "Según la norma panhispánica actual de la RAE, ¿cuál es el único tipo de LEÍSMO que se admite sin considerarse incorrecto en el español culto?",
+    options: [
+      "El uso de 'le' como OD para cosas masculinas: 'El libro ya le leí'.",
+      "El uso de 'le' como OD referido a un hombre (persona masculina singular): 'A Juan le vi ayer'.",
+      "El uso de 'le' como OD referido a una mujer: 'A María le llamé ayer'.",
+      "El uso de 'les' como OD para objetos plurales: 'Los coches les vendí'."
+    ],
+    correct: 1,
+    expectedVoice: "El uso de le como OD referido a un hombre",
+    whyCorrect: "La RAE admite únicamente el leísmo de persona masculina singular ('A Juan le vi ayer' junto al mayoritario 'A Juan lo vi ayer') por su enorme arraigo histórico y literario en España, pero desaconseja el plural ('les'), el femenino y el de cosa.",
+    whyWrong: {
+      "El uso de 'le' como OD para cosas masculinas: 'El libro ya le leí'.": "El leísmo de cosa ('*El libro le leí') es considerado incorrecto por la RAE.",
+      "El uso de 'le' como OD referido a una mujer: 'A María le llamé ayer'.": "El leísmo femenino carece de sanción académica en la norma general.",
+      "El uso de 'les' como OD para objetos plurales: 'Los coches les vendí'.": "Doble incorrección: leísmo de cosa y en plural."
+    },
+    contrast: "Para el estudiante brasileño lo más seguro y universal en América y España es mantener el sistema etimológico distinguido: 'LO/LA/LOS/LAS' para Objeto Directo y 'LE/LES' para Objeto Indirecto, sabiendo reconocer 'A Juan le vi' como variante aceptada en textos españoles."
+  },
+  {
+    id: 39,
+    q: "- Chicos, por favor, ___ en la primera fila para que podáis ver bien la pizarra.",
+    options: ["sentados", "os sentad", "sentaros", "sentaos"],
+    correct: 3,
+    expectedVoice: "sentaos",
+    whyCorrect: "En el imperativo afirmativo de 'vosotros' de los verbos pronominales ('sentad + os'), la '-d' final desaparece obligatoriamente al añadir el pronombre enclítico 'os': 'sentaos' (con la única excepción del verbo 'irse': 'idos').",
+    whyWrong: {
+      "sentados": "Conserva la '-d-' formando el participio adjetivo ('están sentados'), no el imperativo verbal.",
+      "os sentad": "La próclisis es agramatical con el imperativo afirmativo.",
+      "sentaros": "Uso del infinitivo con '-r-' en lugar del imperativo, frecuente en el habla coloquial pero desaconsejado en la norma formal."
+    },
+    contrast: "Regla morfológica del imperativo de 'vosotros' + 'os': siempre cae la '-d' final ('callad + os' = 'callaos', 'levantaos', 'poneos'), salvo en el verbo 'ir', que por ser tan breve conserva la '-d-': 'idos'."
+  },
+  {
+    id: 40,
+    q: "- Esta propuesta es excelente para todos nosotros; ¡___ sin perder más tiempo!",
+    options: ["aprobémosla", "aprobemosla", "aprobémos-la", "la aprobemos"],
+    correct: 0,
+    expectedVoice: "aprobémosla",
+    whyCorrect: "En el imperativo exhortativo de 1.ª persona del plural ('nosotros': 'aprobemos'), los clíticos van enclíticos y soldados sin guion, manteniendo la tilde de palabra esdrújula: 'aprobémosla'.",
+    whyWrong: {
+      "aprobemosla": "Carece de la tilde ortográfica obligatoria en las palabras esdrújulas ('a-pro-BÉ-mos-la').",
+      "aprobémos-la": "Usa guion al estilo portugués (\"aprovemo-la\").",
+      "la aprobemos": "En oraciones exhortativas afirmativas sin 'que' inicial, es obligatoria la énclisis."
+    },
+    contrast: "Observa la diferencia con el portugués formal (\"aprovemo-la\", donde cae la '-s' ante 'la' y lleva guion). En español, la '-s' de 'nosotros' NUNCA cae ante 'lo/la/los/las' ('hagámoslo', 'comprémosla'); solo cae ante el reflexivo 'nos' ('vayamos + nos' = 'vayámonos')."
+  },
+  {
+    id: 41,
+    q: "- Ya es muy tarde y mañana madrugamos; ___ a casa de inmediato.",
+    options: ["vayámosnos", "nos vayamos", "vayámonos", "vamos-nos"],
+    correct: 2,
+    expectedVoice: "vayámonos",
+    whyCorrect: "Cuando a la forma exhortativa de 1.ª persona plural ('vayamos') se le une el pronombre reflexivo enclítico 'nos', se suprime obligatoriamente la '-s' final de la desinencia verbal para evitar la cacofonía '*-mosnos': 'vayámonos'.",
+    whyWrong: {
+      "vayámosnos": "Conserva la '-s' antes de '-nos', error ortográfico y morfológico censurado por la RAE.",
+      "nos vayamos": "Usa próclisis en un imperativo afirmativo sin partícula subordinante.",
+      "vamos-nos": "Usa guion y conserva la '-s' (debería ser 'vámonos' o 'vayámonos')."
+    },
+    contrast: "Al igual que en portugués cae la '-s' en \"vamo-nos\", en español desaparece la '-s' final de 'nosotros' delante de 'nos' y se suelda todo en una palabra esdrújula con tilde: 'vámonos', 'vayámonos', 'sentémonos', 'quedémonos'."
+  },
+  {
+    id: 42,
+    q: "- La novela tenía quinientas páginas, pero estaba tan interesante que ___ leí entera en un fin de semana.",
+    options: ["la me", "me la", "se la", "me le"],
+    correct: 1,
+    expectedVoice: "me la",
+    whyCorrect: "Además del Objeto Directo femenino 'la' (la novela), el español emplea el 'dativo aspectual o de interés' ('me') con verbos de consumo o realización total ('leerse, comerse, beberse, saberse'): 'me la leí entera'.",
+    whyWrong: {
+      "la me": "Orden inverso e imposible de pronombres clíticos.",
+      "se la": "Discordancia de persona: el verbo 'leí' está en 1.ª persona singular ('yo'), por lo que el dativo aspectual debe ser 'me', no 'se'.",
+      "me le": "Usa 'le' en lugar del Objeto Directo femenino 'la'."
+    },
+    contrast: "DATIVO ASPECTUAL EN ESPAÑOL: En portugués no se usa pronombre reflexivo para indicar que se consumió o completó algo totalmente (\"Li o romance inteiro / Comi toda a pizza\"). En español es sumamente idiomático añadir el clítico concordante con el sujeto cuando el objeto está cuantificado: 'ME leí toda la novela' -> 'ME LA leí'."
+  },
+  {
+    id: 43,
+    q: "- ¿Todavía tienes hambre después de ___ comido dos platos enteros de paella?",
+    options: ["te haber", "haber-te", "haberse", "haberte"],
+    correct: 3,
+    expectedVoice: "haberte",
+    whyCorrect: "En el infinitivo compuesto ('haber comido'), el verbo auxiliar está en infinitivo ('haber'), por lo que el clítico reflexivo/aspectual 'te' debe ir enclítico y soldado al auxiliar 'haber': 'haberte comido' (nunca al participio '*haber comídote').",
+    whyWrong: {
+      "te haber": "Tras preposición ('después de'), el pronombre nunca puede anteponerse al infinitivo en español.",
+      "haber-te": "Emplea guion impropio del español.",
+      "haberse": "Discordancia de persona: la oración principal ('tienes') está en 2.ª persona singular ('tú')."
+    },
+    contrast: "Contraste clave en infinitivos precedidos de preposición: en portugués brasileño es común colocar el clítico entre la preposición y el infinitivo (\"depois de te ter comido / para me dizer\"). En español, tras preposición ('para, sin, de, por, al'), el clítico va SIEMPRE soldado al final del infinitivo: 'para decirme', 'después de haberte comido'."
+  },
+  {
+    id: 44,
+    q: "- Salió de la reunión furioso sin ni siquiera ___ una explicación.",
+    options: ["darnos", "nos dar", "dar-nos", "dándonos"],
+    correct: 0,
+    expectedVoice: "darnos",
+    whyCorrect: "Tras la preposición 'sin', el verbo va en infinitivo ('dar') y el pronombre átono de Objeto Indirecto ('nos') debe posponerse obligatoriamente formando una sola palabra: 'sin darnos'.",
+    whyWrong: {
+      "nos dar": "Intercala el pronombre entre la preposición 'sin' y el infinitivo, calco directo del portugués ('sem nos dar').",
+      "dar-nos": "Usa guion ortográfico inexistente en español.",
+      "dándonos": "En español las preposiciones no rigen gerundio."
+    },
+    contrast: "CUIDADO CON LAS PREPOSICIONES + INFINITIVO: En portugués se dice \"Saiu sem nos dar uma explicação\" o \"Vim para te ver\". En español, un infinitivo que depende de una preposición exige ÉNCLISIS absoluta: 'sin darnos', 'para verte', 'antes de irse'."
+  },
+  {
+    id: 45,
+    q: "- A tus sobrinos ___ vi jugar en el parque, pero a tus primas no pude ___.",
+    options: ["les / las ver", "los / ver-las", "los / verlas", "ellos / verlas"],
+    correct: 2,
+    expectedVoice: "los y verlas",
+    whyCorrect: "En la primera cláusula, el OD antepuesto ('A tus sobrinos') se duplica con 'los'; en la segunda, con la perífrasis 'pude ver', el OD femenino plural ('a tus primas') se une en énclisis al infinitivo 'verlas'.",
+    whyWrong: {
+      "les / las ver": "En la segunda parte coloca 'las' entre el auxiliar 'pude' y el infinitivo 'ver' ('*pude las ver'), posición prohibida en español.",
+      "los / ver-las": "Emplea un guion incorrecto en 'ver-las'.",
+      "ellos / verlas": "Usa el pronombre tónico 'ellos' en lugar del clítico 'los'."
+    },
+    contrast: "Observa cómo la segunda parte admitiría 'no las pude ver' o 'no pude verlas', pero jamás la posición intermedia portuguesa '*no pude las ver'."
+  },
+  {
+    id: 46,
+    q: "- ¿La maleta negra? ___ dejé guardada en la consigna de la estación.",
+    options: ["Ella", "La", "Le", "(Sin pronombre): Dejé guardada..."],
+    correct: 1,
+    expectedVoice: "La",
+    whyCorrect: "Al retomar un referente definido y específico que acaba de ser tematizado como pregunta ('¿La maleta negra?'), en español es obligatorio encabezar la respuesta con el clítico de OD 'La': 'La dejé guardada'.",
+    whyWrong: {
+      "Ella": "En español los pronombres tónicos 'él/ella' solo se usan para personas (como sujeto o tras preposición), nunca para objetos inanimados ni como OD.",
+      "Le": "Es pronombre de Objeto Indirecto.",
+      "(Sin pronombre): Dejé guardada...": "El objeto nulo con referente específico determinado ('la maleta') resulta agramatical en español."
+    },
+    contrast: "En portugués coloquial es habitual responder \"A mala preta? Deixei guardada\" o \"Ela ficou guardada\". En español, para cosas definidas en función de objeto directo, nunca se usa 'ella' ni se deja vacío: es obligatorio el clítico 'LA dejé'."
+  },
+  {
+    id: 47,
+    q: "- Al principio el director no quería firmar los contratos, pero al final logramos que ___ firmara.",
+    options: ["los nos", "nos le", "se los", "nos los"],
+    correct: 3,
+    expectedVoice: "nos los",
+    whyCorrect: "Concurren el Objeto Indirecto de beneficio de 1.ª persona plural ('nos', para nosotros) y el Objeto Directo masculino plural ('los', los contratos). El OI precede siempre al OD: 'que nos los firmara'.",
+    whyWrong: {
+      "los nos": "Invierte el orden obligatorio OI + OD.",
+      "nos le": "Combina dos pronombres de Objeto Indirecto e ignora el plural de 'los contratos'.",
+      "se los": "Indicaría que se los firmó a una tercera persona, no a 'nosotros' (sujeto de 'logramos')."
+    },
+    contrast: "En portugués no se acostumbra acumular dos clíticos como 'nos' y 'los' ante el verbo (se diría \"conseguimos que ele assinasse os contratos para nós\"). En español la secuencia 'nos los / nos las / te los / me las' es completamente natural y frecuente."
+  },
+  {
+    id: 48,
+    q: "- Si buscas unas gafas de sol baratas, en esa tienda ___ hay de todos los precios.",
+    options: ["las", "los", "les", "lo"],
+    correct: 0,
+    expectedVoice: "las",
+    whyCorrect: "Aunque el verbo impersonal 'hay' introduce habitualmente sustantivos indeterminados, cuando el sustantivo ya ha sido mencionado ('unas gafas de sol', femenino plural), se pronominaliza con los clíticos de Objeto Directo 'lo, la, los, las': 'las hay de todos los precios'.",
+    whyWrong: {
+      "los": "Discordancia de género con 'unas gafas' (femenino plural en español).",
+      "les": "El verbo 'haber' impersonal es transitivo y rige Objeto Directo, nunca Indirecto.",
+      "lo": "No concuerda en género ni en número con 'unas gafas'."
+    },
+    contrast: "Construcción avanzada muy propia del español: el verbo impersonal 'haber' ('hay, había, habrá') admite los pronombres de Objeto Directo 'lo, la, los, las' para no repetir el sustantivo ('¿Hay entradas? Sí, LAS hay'), mientras que en portugués 'haver/ter' nunca lleva clítico de OD (\"Sim, tem\")."
+  },
+  {
+    id: 49,
+    q: "- Cuando vi a Laura tan nerviosa antes del examen, traté de ___ lo mejor que pude.",
+    options: ["la tranquilizar", "tranquilizar a ella", "tranquilizarla", "tranquilizarle a ella"],
+    correct: 2,
+    expectedVoice: "tranquilizarla",
+    whyCorrect: "En la perífrasis o régimen preposicional 'tratar de + infinitivo', el pronombre de OD femenino 'la' va unido en énclisis al infinitivo 'tranquilizar': 'traté de tranquilizarla' (o antepuesto a todo el grupo: 'la traté de tranquilizar').",
+    whyWrong: {
+      "la tranquilizar": "Intercala el clítico entre la preposición 'de' y el infinitivo, estructura del portugués ('tentei a tranquilizar') prohibida en español.",
+      "tranquilizar a ella": "En español es agramatical usar 'a ella' sin el clítico 'la' ('tranquilizarla a ella').",
+      "tranquilizarle a ella": "Incurre en leísmo femenino, rechazado por la norma culta."
+    },
+    contrast: "Recuerda siempre las dos reglas combinadas aquí: 1) Prohibición absoluta de poner el clítico entre preposición e infinitivo ('*de la tranquilizar'); 2) Prohibición de usar 'a ella' sin clítico ('*tranquilizar a ella')."
+  },
+  {
+    id: 50,
+    q: "Selecciona la opción en la que TODOS los pronombres de OD y OI están colocados y utilizados de acuerdo con la norma culta del español:",
+    options: [
+      "A mis padres prometí que, en cuanto tuviera las fotos del viaje, les las enviaría.",
+      "A mis padres les prometí que, en cuanto tuviera las fotos del viaje, se las enviaría.",
+      "A mis padres les prometí que, en cuanto tuviera las fotos del viaje, enviaría-las para ellos.",
+      "A mis padres los prometí que, en cuanto tuviera las fotos del viaje, se la enviaría."
+    ],
+    correct: 1,
+    expectedVoice: "A mis padres les prometí que en cuanto tuviera las fotos del viaje se las enviaría",
+    whyCorrect: "Cumple todas las reglas normativas: 1) Duplica el OI antepuesto 'A mis padres' con 'les'; 2) Transforma 'les' en 'se' ante el OD femenino plural 'las' ('las fotos'); 3) Coloca 'se las' en próclisis ante el condicional 'enviaría'.",
+    whyWrong: {
+      "A mis padres prometí que, en cuanto tuviera las fotos del viaje, les las enviaría.": "Omite la duplicación 'les prometí' y usa la combinación prohibida '*les las'.",
+      "A mis padres les prometí que, en cuanto tuviera las fotos del viaje, enviaría-las para ellos.": "Usa énclisis con guion en un condicional ('*enviaría-las') y 'para ellos' en vez del clítico 'se'.",
+      "A mis padres los prometí que, en cuanto tuviera las fotos del viaje, se la enviaría.": "Incurre en loísmo ('*los prometí') y falla en la concordancia plural de 'las fotos' ('*se la')."
+    },
+    contrast: "Síntesis perfecta del contraste hispano-brasileño: duplicación obligatoria del complemento antepuesto ('A mis padres LES prometí'), sustitución del grupo OI + OD mediante 'SE LAS' y colocación proclítica obligatoria ante el verbo conjugado ('se las enviaría')."
+  }
+];
+
+// ========================================================
+// 2. MOTOR DE AUDIO (COLA SECUENCIAL WEB SPEECH API)
+// ========================================================
+let availableVoices = [];
+let audioQueue = [];
+let isAudioRunning = false;
+let currentlyPlayingQId = null;
+
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    const all = window.speechSynthesis.getVoices();
+    availableVoices = all.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+    if (availableVoices.length === 0 && all.length > 0) {
+      availableVoices = all;
+    }
+  }
+}
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function resetAudioButton(qId) {
+  if (qId !== null) {
+    const btn = document.getElementById(`audio-btn-${qId}`);
+    if (btn) {
+      btn.className = "btn btn-outline";
+      btn.innerHTML = "🔊 Escuchar opciones";
+    }
+  }
+  currentlyPlayingQId = null;
+  isAudioRunning = false;
+  audioQueue = [];
+}
+
+function stopCurrentAudio() {
+  if ('speechSynthesis' in window) {
+    audioQueue = [];
+    isAudioRunning = false;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+  }
+  if (currentlyPlayingQId !== null) {
+    resetAudioButton(currentlyPlayingQId);
+  }
+}
+
+function playNextInQueue() {
+  if (audioQueue.length === 0) {
+    resetAudioButton(currentlyPlayingQId);
+    return;
+  }
+
+  isAudioRunning = true;
+  const item = audioQueue.shift();
+
+  const utterance = new SpeechSynthesisUtterance(item.text);
+  utterance.lang = 'es-ES';
+  utterance.rate = item.rate || 0.92;
+  utterance.pitch = item.pitch || 1.0;
+
+  if (item.voice) {
+    utterance.voice = item.voice;
+  } else if (availableVoices.length > 0) {
+    utterance.voice = availableVoices[0];
+  }
+
+  utterance.onend = () => {
+    playNextInQueue();
+  };
+
+  utterance.onerror = () => {
+    playNextInQueue();
+  };
+
+  window.speechSynthesis.speak(utterance);
+  window.speechSynthesis.resume();
+}
+
+function toggleOptionsAudio(qId) {
+  if (!('speechSynthesis' in window)) {
+    return;
+  }
+
+  if (currentlyPlayingQId === qId) {
+    stopCurrentAudio();
+    return;
+  }
+
+  stopCurrentAudio();
+  loadVoices();
+
+  const qData = questionsList.find(q => q.id === qId);
+  if (!qData) return;
+
+  currentlyPlayingQId = qId;
+  const audioBtn = document.getElementById(`audio-btn-${qId}`);
+  if (audioBtn) {
+    audioBtn.className = "btn btn-audio-stop";
+    audioBtn.innerHTML = "⏹️ Detener audio";
+  }
+
+  const isDialogue = qData.q.includes("A -") && qData.q.includes("B -");
+  audioQueue = [];
+
+  qData.options.forEach((opt, idx) => {
+    const optNum = idx + 1;
+
+    audioQueue.push({
+      text: `Opción ${optNum}.`,
+      rate: 0.95,
+      pitch: 1.0,
+      voice: availableVoices.length > 0 ? availableVoices[0] : null
+    });
+
+    if (isDialogue) {
+      const lines = qData.q.split("\n");
+      lines.forEach(line => {
+        let cleanLine = line.trim();
+        let speaker = "";
+
+        if (cleanLine.startsWith("A -") || cleanLine.startsWith("A:")) {
+          speaker = "A";
+          cleanLine = cleanLine.replace(/^A\s*[-–—:]\s*/, "");
+        } else if (cleanLine.startsWith("B -") || cleanLine.startsWith("B:")) {
+          speaker = "B";
+          cleanLine = cleanLine.replace(/^B\s*[-–—:]\s*/, "");
+        }
+
+        if (cleanLine.includes("___")) {
+          cleanLine = cleanLine.replace(/___+/g, opt);
+        }
+
+        let voiceToUse = availableVoices.length > 0 ? availableVoices[0] : null;
+        let pitchToUse = 1.0;
+
+        if (speaker === "A") {
+          pitchToUse = 1.15;
+        } else if (speaker === "B") {
+          if (availableVoices.length > 1) {
+            voiceToUse = availableVoices[1];
+            pitchToUse = 1.0;
+          } else {
+            pitchToUse = 0.85;
+          }
+        }
+
+        audioQueue.push({
+          text: cleanLine,
+          rate: 0.9,
+          pitch: pitchToUse,
+          voice: voiceToUse
+        });
+      });
+    } else {
+      let sentence = qData.q.replace(/^[A-Z]\s*[-–—:]\s*/gm, "").replace(/^-\s*/gm, "").trim();
+      if (sentence.includes("___")) {
+        const parts = opt.split(" / ");
+        let blanksCount = (sentence.match(/___+/g) || []).length;
+        if (blanksCount >= 2 && parts.length >= 2) {
+          let pIdx = 0;
+          sentence = sentence.replace(/___+/g, () => parts[pIdx++] || opt);
+        } else {
+          sentence = sentence.replace(/___+/g, opt);
+        }
+      } else {
+        sentence = opt;
+      }
+
+      audioQueue.push({
+        text: sentence,
+        rate: 0.9,
+        pitch: 1.0,
+        voice: availableVoices.length > 0 ? availableVoices[0] : null
+      });
+    }
+  });
+
+  playNextInQueue();
+}
+
+// ========================================================
+// 3. MOTOR DE RECONOCIMIENTO DE VOZ
+// ========================================================
+function normalizeText(text) {
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()¿?¡!]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let persistentRecognizer = null;
+let currentActiveQId = null;
+
+if (SpeechRecognitionAPI) {
+  persistentRecognizer = new SpeechRecognitionAPI();
+  persistentRecognizer.lang = 'es-ES';
+  persistentRecognizer.interimResults = false;
+  persistentRecognizer.maxAlternatives = 1;
+
+  persistentRecognizer.onresult = (event) => {
+    if (currentActiveQId === null) return;
+    const qId = currentActiveQId;
+    const qData = questionsList.find(q => q.id === qId);
+    const micBtn = document.getElementById(`mic-btn-${qId}`);
+    const feedbackBox = document.getElementById(`voice-feedback-${qId}`);
+
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+
+    const speechResult = event.results[0][0].transcript;
+    const normSpoken = normalizeText(speechResult);
+
+    if (!qData) return;
+
+    let matchedIndex = -1;
+    const numberWords = [
+      ["1", "uno", "primera", "primero"],
+      ["2", "dos", "segunda", "segundo"],
+      ["3", "tres", "tercera", "tercero"],
+      ["4", "cuatro", "cuarta", "cuarto"]
+    ];
+
+    numberWords.forEach((wordList, idx) => {
+      if (idx < qData.options.length) {
+        wordList.forEach(w => {
+          if (
+            normSpoken === w ||
+            normSpoken === `opcion ${w}` ||
+            normSpoken === `la ${w}` ||
+            normSpoken === `numero ${w}` ||
+            normSpoken === `opcion numero ${w}`
+          ) {
+            matchedIndex = idx;
+          }
+        });
+      }
+    });
+
+    if (matchedIndex === -1) {
+      qData.options.forEach((opt, idx) => {
+        const normOpt = normalizeText(opt);
+        if (normOpt && (normSpoken.includes(normOpt) || normOpt.includes(normSpoken))) {
+          matchedIndex = idx;
+        }
+      });
+    }
+
+    if (matchedIndex === -1 && qData.expectedVoice) {
+      const normExp = normalizeText(qData.expectedVoice);
+      if (normSpoken.includes(normExp) || normExp.includes(normSpoken)) {
+        matchedIndex = qData.correct;
+      }
+    }
+
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+
+      if (matchedIndex !== -1) {
+        const optButtons = document.querySelectorAll(`#card-${qId} .opt-btn`);
+        optButtons.forEach(btn => btn.classList.remove("voice-focused"));
+
+        const targetBtn = document.getElementById(`opt-btn-${qId}-${matchedIndex}`);
+        if (targetBtn) {
+          targetBtn.classList.add("voice-focused");
+          targetBtn.focus();
+        }
+
+        feedbackBox.className = "voice-feedback info";
+        feedbackBox.innerHTML = `
+          🎤 <strong>Voz captada:</strong> "${escapeHtml(speechResult)}".<br>
+          📍 Se ha posicionado en la <strong>Opción ${matchedIndex + 1}</strong>.<br>
+          👉 <strong>Presiona la tecla Enter o haz clic sobre ella para confirmar tu respuesta.</strong>
+        `;
+      } else {
+        feedbackBox.className = "voice-feedback retry";
+        feedbackBox.innerHTML = `
+          🎤 <strong>Voz captada:</strong> "${escapeHtml(speechResult)}".<br>
+          ✕ No se reconoció la opción. Puedes decir por ejemplo: <em>"Opción 1"</em>, <em>"Opción 2"</em> o el texto de la respuesta.
+        `;
+      }
+    }
+  };
+
+  persistentRecognizer.onerror = (event) => {
+    if (currentActiveQId === null) return;
+    const micBtn = document.getElementById(`mic-btn-${currentActiveQId}`);
+    const feedbackBox = document.getElementById(`voice-feedback-${currentActiveQId}`);
+
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+      feedbackBox.className = "voice-feedback retry";
+      feedbackBox.textContent = `Aviso del micrófono: ${event.error}`;
+    }
+  };
+
+  persistentRecognizer.onend = () => {
+    if (currentActiveQId !== null) {
+      const micBtn = document.getElementById(`mic-btn-${currentActiveQId}`);
+      if (micBtn) {
+        micBtn.classList.remove("recording");
+        micBtn.textContent = "🎤 Seleccionar por voz";
+      }
+    }
+  };
+}
+
+function startVoiceRecognition(qId) {
+  const feedbackBox = document.getElementById(`voice-feedback-${qId}`);
+  if (!persistentRecognizer) {
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+      feedbackBox.className = "voice-feedback retry";
+      feedbackBox.textContent = "El reconocimiento de voz requiere Google Chrome, Microsoft Edge o Safari compatible.";
+    }
+    return;
+  }
+
+  stopCurrentAudio();
+
+  try { persistentRecognizer.abort(); } catch (e) {}
+
+  currentActiveQId = qId;
+  const micBtn = document.getElementById(`mic-btn-${qId}`);
+  if (micBtn) {
+    micBtn.classList.add("recording");
+    micBtn.textContent = "🎙️ Escuchando... Di tu opción";
+  }
+
+  try {
+    persistentRecognizer.start();
+  } catch (err) {
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+  }
+}
+
+// ========================================================
+// 4. CONTROL DE FILTROS, RENDERIZADO Y PUNTUACIÓN
+// ========================================================
+let currentFilter = "ALL";
+const userResponses = {};
+
+function getFilteredQuestions() {
+  if (currentFilter === "ALL") return questionsList;
+  if (currentFilter === "B1") return questionsList.filter(q => q.id >= 1 && q.id <= 10);
+  if (currentFilter === "B2") return questionsList.filter(q => q.id >= 11 && q.id <= 20);
+  if (currentFilter === "B3") return questionsList.filter(q => q.id >= 21 && q.id <= 30);
+  if (currentFilter === "B4") return questionsList.filter(q => q.id >= 31 && q.id <= 40);
+  if (currentFilter === "B5") return questionsList.filter(q => q.id >= 41 && q.id <= 50);
+  if (currentFilter === "REVIEW") {
+    return questionsList.filter(q => {
+      const r = userResponses[q.id];
+      return r === undefined || !r.isCorrect;
+    });
+  }
+  return questionsList;
+}
+
+function selectFilter(filterKey, btnElement) {
+  stopCurrentAudio();
+  currentFilter = filterKey;
+
+  document.querySelectorAll("#filter-tabs .tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  if (btnElement) {
+    btnElement.classList.add("active");
+  }
+
+  renderQuestions();
+  updateScore();
+}
+
+function renderQuestions() {
+  const container = document.getElementById("questions-container");
+  container.innerHTML = "";
+  const list = getFilteredQuestions();
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-filter-msg">
+        🎉 <strong>¡Excelente trabajo!</strong> No tienes preguntas pendientes ni incorrectas en esta vista.
+      </div>
+    `;
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `card-${item.id}`;
+
+    const state = userResponses[item.id];
+    const isAnswered = state !== undefined;
+
+    let optionsHtml = "";
+    item.options.forEach((opt, optIndex) => {
+      let optClass = "opt-btn";
+      if (isAnswered) {
+        if (optIndex === item.correct) optClass += " correct";
+        else if (optIndex === state.selectedIndex) optClass += " wrong";
+      }
+
+      optionsHtml += `
+        <button class="${optClass}" id="opt-btn-${item.id}-${optIndex}" ${isAnswered ? "disabled" : ""} onclick="handleOptionClick(${item.id}, ${optIndex})">
+          <strong>${optIndex + 1})</strong>&nbsp;${escapeHtml(opt)}
+        </button>
+      `;
+    });
+
+    let wrongListHtml = "";
+    if (item.whyWrong) {
+      for (const [wOpt, reason] of Object.entries(item.whyWrong)) {
+        wrongListHtml += `<li><strong>${escapeHtml(wOpt)}:</strong> ${escapeHtml(reason)}</li>`;
+      }
+    }
+
+    card.innerHTML = `
+      <div class="question-header">
+        <span class="q-num">Pregunta ${item.id} de 50</span>
+        <div class="q-text">${escapeHtml(item.q)}</div>
+      </div>
+
+      <div class="audio-voice-module">
+        <div class="audio-voice-header">🎧 Audición de opciones y selección por voz:</div>
+        <div class="audio-voice-controls">
+          <button class="btn btn-outline" id="audio-btn-${item.id}" onclick="toggleOptionsAudio(${item.id})">
+            🔊 Escuchar opciones
+          </button>
+          <button class="btn btn-mic" id="mic-btn-${item.id}" onclick="startVoiceRecognition(${item.id})">
+            🎤 Seleccionar por voz
+          </button>
+        </div>
+        <div class="voice-feedback" id="voice-feedback-${item.id}"></div>
+      </div>
+
+      <div class="options-grid" style="margin-top: 14px;">${optionsHtml}</div>
+      
+      <div class="explanation-panel ${isAnswered ? "show" : ""}">
+        <div class="explanation-section">
+          <div class="section-title correct-title">✓ Opción correcta (${item.correct + 1}):</div>
+          <div>${escapeHtml(item.whyCorrect)}</div>
+        </div>
+        <div class="explanation-section">
+          <div class="section-title wrong-title">✕ Por qué las otras opciones son incorrectas:</div>
+          <ul class="wrong-list">${wrongListHtml}</ul>
+        </div>
+        <div class="contrast-box">
+          <strong class="contrast-header">Análisis Gramatical Contrastivo con el Portugués Brasileño:</strong>
+          <div>${escapeHtml(item.contrast)}</div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function handleOptionClick(qId, selectedIdx) {
+  stopCurrentAudio();
+  const qData = questionsList.find(q => q.id === qId);
+  if (!qData) return;
+
+  userResponses[qId] = {
+    selectedIndex: selectedIdx,
+    isCorrect: (selectedIdx === qData.correct)
+  };
+
+  renderQuestions();
+  updateScore();
+}
+
+function updateScore() {
+  const total = questionsList.length;
+  let answered = 0;
+  let correct = 0;
+
+  questionsList.forEach(q => {
+    if (userResponses[q.id] !== undefined) {
+      answered++;
+      if (userResponses[q.id].isCorrect) correct++;
+    }
+  });
+
+  const percent = Number(((correct / total) * 100).toFixed(1));
+  document.getElementById("score-text").innerHTML = 
+    `${answered} / ${total} respondidas &nbsp;|&nbsp; <strong>${correct} aciertos (${percent}%)</strong>`;
+}
+
+function resetAllQuestions() {
+  stopCurrentAudio();
+  questionsList.forEach(q => delete userResponses[q.id]);
+  renderQuestions();
+  updateScore();
+}
+
+// ========================================================
+// 5. RESUMEN IMPRIMIBLE Y EVALUACIÓN GLOBAL DEL 75% (38/50)
+// ========================================================
+function openSummaryModal() {
+  stopCurrentAudio();
+  const blocks = [
+    { key: "B1", label: "Preguntas 1 a 10", min: 1, max: 10 },
+    { key: "B2", label: "Preguntas 11 a 20", min: 11, max: 20 },
+    { key: "B3", label: "Preguntas 21 a 30", min: 21, max: 30 },
+    { key: "B4", label: "Preguntas 31 a 40", min: 31, max: 40 },
+    { key: "B5", label: "Preguntas 41 a 50", min: 41, max: 50 }
+  ];
+
+  const tbody = document.getElementById("summary-tbody");
+  const detailsList = document.getElementById("level-details-list");
+
+  tbody.innerHTML = "";
+  detailsList.innerHTML = "";
+
+  const grandTotalQuestions = 50;
+  let grandTotalAnswered = 0;
+  let grandTotalCorrect = 0;
+
+  blocks.forEach(blk => {
+    const list = questionsList.filter(q => q.id >= blk.min && q.id <= blk.max);
+    const totalQ = list.length;
+    let answered = 0;
+    let correct = 0;
+
+    const correctIds = [];
+    const wrongIds = [];
+    const pendingIds = [];
+
+    list.forEach(q => {
+      const resp = userResponses[q.id];
+      if (resp !== undefined) {
+        answered++;
+        if (resp.isCorrect) {
+          correct++;
+          correctIds.push(q.id);
+        } else {
+          wrongIds.push(q.id);
+        }
+      } else {
+        pendingIds.push(q.id);
+      }
+    });
+
+    grandTotalAnswered += answered;
+    grandTotalCorrect += correct;
+
+    const percent = Number(((correct / totalQ) * 100).toFixed(1));
+    const isBlockCompleted = (answered === totalQ);
+    const isBlockGood = (percent >= 75);
+
+    let statusBadge = "";
+    if (isBlockCompleted) {
+      statusBadge = isBlockGood
+        ? `<span class="status-badge status-pass">Óptimo (≥ 75%)</span>`
+        : `<span class="status-badge status-fail">A reforzar (&lt; 75%)</span>`;
+    } else {
+      statusBadge = `<span class="status-badge status-pending">${answered}/${totalQ} Respondidas</span>`;
+    }
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${blk.label}</strong></td>
+      <td>${answered} / ${totalQ}</td>
+      <td><strong>${correct}</strong> / ${totalQ}</td>
+      <td><strong>${percent}%</strong></td>
+      <td>${statusBadge}</td>
+    `;
+    tbody.appendChild(tr);
+
+    const card = document.createElement("div");
+    card.className = "level-detail-card";
+
+    const renderBadges = (arr, type) => {
+      if (arr.length === 0) return '<span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">Ninguna</span>';
+      return arr.map(num => `<span class="badge-num ${type}">${num}</span>`).join(" ");
+    };
+
+    card.innerHTML = `
+      <div class="level-detail-header">
+        <span>${blk.label}</span>
+        <span>${correct} de ${totalQ} correctas (${percent}%)</span>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--correct);">✓ Correctas:</span>
+        <div>${renderBadges(correctIds, "correct")}</div>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--wrong);">✕ Incorrectas:</span>
+        <div>${renderBadges(wrongIds, "wrong")}</div>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--text-muted);">○ Sin responder:</span>
+        <div>${renderBadges(pendingIds, "pending")}</div>
+      </div>
+    `;
+    detailsList.appendChild(card);
+  });
+
+  const grandPercent = Number(((grandTotalCorrect / grandTotalQuestions) * 100).toFixed(1));
+  const isGlobalPassed = (grandTotalCorrect >= 38);
+
+  let globalBadgeHtml = "";
+  if (grandTotalAnswered === grandTotalQuestions) {
+    globalBadgeHtml = isGlobalPassed
+      ? `<span class="status-badge status-pass">APROBADO (≥ 75%)</span>`
+      : `<span class="status-badge status-fail">NO APROBADO (&lt; 75%)</span>`;
+  } else {
+    globalBadgeHtml = isGlobalPassed
+      ? `<span class="status-badge status-pass">APROBADO (${grandTotalAnswered}/50 resp.)</span>`
+      : `<span class="status-badge status-pending">En curso (mín. 38 aciertos)</span>`;
+  }
+
+  const totalTr = document.createElement("tr");
+  totalTr.className = "total-row";
+  totalTr.innerHTML = `
+    <td>TOTAL GLOBAL (1 a 50)</td>
+    <td>${grandTotalAnswered} / ${grandTotalQuestions}</td>
+    <td>${grandTotalCorrect} / ${grandTotalQuestions}</td>
+    <td>${grandPercent}%</td>
+    <td>${globalBadgeHtml}</td>
+  `;
+  tbody.appendChild(totalTr);
+
+  const now = new Date();
+  document.getElementById("report-date").textContent = "Fecha de emisión: " + now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"});
+  document.getElementById("summary-modal").classList.add("active");
+}
+
+function closeSummaryModal() {
+  document.getElementById("summary-modal").classList.remove("active");
+}
+
+function printSeparateWindow() {
+  const reportContent = document.getElementById("printable-report").innerHTML;
+  const printWindow = window.open("", "_blank", "width=920,height=850");
+  if (!printWindow) return;
+  printWindow.document.open();
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>Informe de Rendimiento - Pronombres OD y OI</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 30px; color: #0f172a; line-height: 1.5; }
+        .modal-header { border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 20px; }
+        .close-btn, .modal-footer { display: none !important; }
+        .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 26px; }
+        .summary-table th, .summary-table td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
+        .summary-table th { background-color: #f1f5f9; text-transform: uppercase; font-size: 0.8rem; }
+        .summary-table tr.total-row { font-weight: bold; background: #e2e8f0; font-size: 1rem; }
+        .status-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .status-pass { background: #dcfce7; color: #15803d; border: 1px solid #15803d; }
+        .status-fail { background: #fee2e2; color: #b91c1c; border: 1px solid #b91c1c; }
+        .status-pending { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .level-detail-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
+        .level-detail-header { font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 6px; color: #1e3a8a; }
+        .badges-list { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-bottom: 5px; }
+        .badge-label { font-weight: 600; width: 110px; font-size: 0.82rem; }
+        .badge-num { display: inline-block; font-size: 0.78rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #64748b; }
+        .badge-num.correct { background: #dcfce7; color: #15803d; border-color: #15803d; }
+        .badge-num.wrong { background: #fee2e2; color: #b91c1c; border-color: #b91c1c; }
+        .badge-num.pending { background: #f1f5f9; color: #64748b; }
+      </style>
+    </head>
+    <body>
+      ${reportContent}
+      <script>
+        window.onload = function() { window.print(); };
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  const d = document.createElement("div");
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// Inicialización al cargar
+renderQuestions();
+updateScore();
+</script>
+
+</body>
+</html>
