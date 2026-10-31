@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Vocabulario Contrastivo y Falsos Amigos (Heterosemánticos)</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --correct: #15803d;
+      --correct-bg: #dcfce7;
+      --wrong: #b91c1c;
+      --wrong-bg: #fee2e2;
+      --contrast-bg: #fefce8;
+      --contrast-border: #ca8a04;
+      --contrast-text: #854d0e;
+      --audio-bg: #f0f9ff;
+      --audio-border: #bae6fd;
+      --audio-text: #0369a1;
+      --option-hover: #f1f5f9;
+      --focus-voice: #2563eb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    .author-badge {
+      display: inline-block;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .author-badge a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .author-badge a:hover { text-decoration: underline; }
+
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 6px; }
+    header p { color: var(--text-muted); font-size: 0.95rem; max-width: 820px; margin: 0 auto; }
+
+    .top-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .tab-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
+    }
+
+    .rule-banner {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      font-size: 0.89rem;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      color: #1e3a8a;
+    }
+
+    .status-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .status-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+    }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: #f1f5f9; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: #e2e8f0; }
+
+    .btn-audio-stop {
+      background: #fee2e2 !important;
+      color: #b91c1c !important;
+      border: 1px solid #fca5a5 !important;
+    }
+    .btn-audio-stop:hover {
+      background: #fecaca !important;
+    }
+
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .question-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+    .q-num {
+      background: #eff6ff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .q-text { font-size: 1.05rem; font-weight: 600; white-space: pre-line; }
+    .options-grid { display: grid; gap: 10px; }
+    .opt-btn {
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text);
+      outline: none;
+    }
+    .opt-btn:hover:not(:disabled) { background: var(--option-hover); border-color: #94a3b8; }
+
+    .opt-btn.voice-focused {
+      border: 2px solid var(--focus-voice) !important;
+      background: #eff6ff !important;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25) !important;
+    }
+    .opt-btn.correct { background: var(--correct-bg) !important; border-color: var(--correct) !important; color: var(--correct) !important; font-weight: 600; }
+    .opt-btn.wrong { background: var(--wrong-bg) !important; border-color: var(--wrong) !important; color: var(--wrong) !important; font-weight: 600; }
+    .opt-btn:disabled { cursor: default; }
+
+    .audio-voice-module {
+      margin-top: 14px;
+      background: var(--audio-bg);
+      border: 1px solid var(--audio-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--audio-text);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .audio-voice-header {
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .audio-voice-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-mic { background: #ef4444; color: white; }
+    .btn-mic.recording {
+      animation: pulse 1s infinite alternate;
+      background: #b91c1c;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.04); opacity: 0.8; }
+    }
+    .voice-feedback {
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      border-radius: 6px;
+      display: none;
+      line-height: 1.45;
+    }
+    .voice-feedback.info {
+      display: block;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    .voice-feedback.retry {
+      display: block;
+      background: var(--wrong-bg);
+      color: var(--wrong);
+      border: 1px solid var(--wrong);
+    }
+
+    .explanation-panel {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--primary);
+      font-size: 0.92rem;
+      display: none;
+    }
+    .explanation-panel.show { display: block; }
+    .section-title { font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
+    .correct-title { color: var(--correct); }
+    .wrong-title { color: var(--wrong); margin-top: 14px; }
+    .wrong-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .wrong-list li { position: relative; padding-left: 18px; color: #334155; }
+    .wrong-list li::before { content: "✕"; position: absolute; left: 0; top: 0; color: var(--wrong); font-weight: bold; }
+    .contrast-box {
+      margin-top: 14px;
+      background: var(--contrast-bg);
+      border: 1px solid var(--contrast-border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--contrast-text);
+      font-size: 0.89rem;
+      line-height: 1.55;
+    }
+    .contrast-header { display: block; color: #713f12; font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+
+    .empty-filter-msg {
+      background: #ffffff;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 24px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 860px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
+    }
+    .close-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+
+    .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .summary-table th, .summary-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    .summary-table th { background: #f8fafc; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; }
+    .summary-table tr.total-row { font-weight: 700; background: #f1f5f9; color: var(--primary); font-size: 1.05rem; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-pass { background: #dcfce7; color: #15803d; border: 1px solid #15803d; }
+    .status-fail { background: #fee2e2; color: #b91c1c; border: 1px solid #b91c1c; }
+    .status-pending { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); }
+
+    .level-details-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .level-detail-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; background: #f8fafc; }
+    .level-detail-header { font-weight: 700; font-size: 1rem; margin-bottom: 8px; color: var(--primary); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+    .badges-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
+    .badge-label { font-weight: 600; font-size: 0.85rem; width: 120px; flex-shrink: 0; }
+    .badge-num { display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; min-width: 26px; text-align: center; }
+    .badge-num.correct { background: var(--correct-bg); color: var(--correct); border: 1px solid var(--correct); }
+    .badge-num.wrong { background: var(--wrong-bg); color: var(--wrong); border: 1px solid var(--wrong); }
+    .badge-num.pending { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); }
+
+    .modal-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; flex-wrap: wrap; }
+
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
+      .container, .modal-footer, .close-btn { display: none !important; }
+      .modal-overlay { display: block !important; position: static !important; width: 100% !important; background: none !important; padding: 0 !important; }
+      .modal-content { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+      .level-detail-card { page-break-inside: avoid !important; border: 1px solid #666 !important; margin-bottom: 12px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-actions-bar">
+    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+      📋 Cuestionario Multinivel de Falsos Amigos y Heterosemánticos (100 Preguntas)
+    </div>
+    <button class="btn btn-primary" onclick="openSummaryModal()">🖨 Finalizar y Ver Resumen</button>
+  </div>
+
+  <header>
+    <div class="author-badge">
+      Sistema desarrollado por <strong>Claudio Marcelo Budnikar</strong> — Clases Particulares de Español (<a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a>)
+    </div>
+    <h1>Simulador de Vocabulario Contrastivo y Falsos Amigos (Heterosemánticos)</h1>
+    <p>100 cuestiones multinivel centradas en falsos amigos y léxico contrastivo entre el español y el portugués brasileño.</p>
+  </header>
+
+  <div class="tabs" id="filter-tabs">
+    <button class="tab-btn active" onclick="selectFilter('ALL', this)">Ver todas (100)</button>
+    <button class="tab-btn" onclick="selectFilter('B1', this)">Preguntas 1 a 25</button>
+    <button class="tab-btn" onclick="selectFilter('B2', this)">Preguntas 26 a 50</button>
+    <button class="tab-btn" onclick="selectFilter('B3', this)">Preguntas 51 a 75</button>
+    <button class="tab-btn" onclick="selectFilter('B4', this)">Preguntas 76 a 100</button>
+    <button class="tab-btn" onclick="selectFilter('REVIEW', this)">Pendientes / Incorrectas</button>
+  </div>
+
+  <div class="rule-banner">
+    ⚖️ <strong>Criterio de Evaluación:</strong> Para <strong>aprobar</strong> la evaluación se exige alcanzar al menos el <strong>75% de respuestas correctas</strong> (mínimo <strong>75 de 100</strong> preguntas acertadas).
+  </div>
+
+  <div class="status-card">
+    <div>
+      <span id="view-title" style="font-weight: 700; font-size: 1.08rem; color: var(--primary);">Progreso Global</span>: 
+      <span id="score-text">0 / 100 respondidas &nbsp;|&nbsp; <strong>0 aciertos (0%)</strong></span>
+    </div>
+    <div class="status-actions">
+      <button class="btn btn-outline" onclick="resetAllQuestions()">🔄 Reiniciar cuestionario</button>
+    </div>
+  </div>
+
+  <div id="questions-container"></div>
+
+  <footer>
+    <p><strong>Claudio Marcelo Budnikar</strong> — Profesor Particular de Español y Creador del Sistema</p>
+    <p>Consultas y clases: <a href="mailto:claudio.hispanoluso@gmail.com">claudio.hispanoluso@gmail.com</a></p>
+  </footer>
+</div>
+
+<!-- Modal de Resumen Imprimible -->
+<div class="modal-overlay" id="summary-modal">
+  <div class="modal-content" id="printable-report">
+    <div class="modal-header">
+      <div>
+        <h2 style="color: var(--primary); font-size: 1.5rem;">Informe de Rendimiento — Falsos Amigos y Vocabulario Contrastivo</h2>
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2px;">
+          Profesor: <strong>Claudio Marcelo Budnikar</strong> | <a href="mailto:claudio.hispanoluso@gmail.com" style="color: var(--primary); text-decoration: none;">claudio.hispanoluso@gmail.com</a>
+        </div>
+        <small id="report-date" style="color: var(--text-muted); display: block; margin-top: 6px;"></small>
+      </div>
+      <button class="close-btn" onclick="closeSummaryModal()">&times;</button>
+    </div>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Bloque de Preguntas</th>
+          <th>Respondidas</th>
+          <th>Aciertos / Total</th>
+          <th>% Obtenido</th>
+          <th>Rendimiento (≥ 75%)</th>
+        </tr>
+      </thead>
+      <tbody id="summary-tbody"></tbody>
+    </table>
+
+    <h3 style="font-size: 1.15rem; color: var(--primary); margin-bottom: 12px;">Desglose Numérico por Pregunta (1 a 100)</h3>
+    <div class="level-details-container" id="level-details-list"></div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeSummaryModal()">Cerrar</button>
+      <button class="btn btn-outline" onclick="printSeparateWindow()">📄 Abrir en Nueva Pestaña para PDF</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========================================================
+// 1. BANCO DE 100 PREGUNTAS DE FALSOS AMIGOS (HETEROSEMÁNTICOS)
+//    Posiciones de respuesta correcta (0, 1, 2, 3) variadas y equilibradas
+// ========================================================
+const questionsList = [
+  {
+    id: 1,
+    q: "- Cuando me caí frente a todos los invitados en la fiesta, me quedé muy ___.",
+    options: ["embarazada", "avergonzada", "constipada", "embaraçada"],
+    correct: 1,
+    expectedVoice: "avergonzada",
+    whyCorrect: "'Avergonzada' (o 'apenada' en América) expresa el sentimiento de vergüenza o incomodidad social.",
+    whyWrong: {
+      "embarazada": "En español significa exclusivamente 'grávida' (que espera un bebé).",
+      "constipada": "En español significa estar resfriado (tener catarro nasal).",
+      "embaraçada": "Palabra en portugués, inexistente en español."
+    },
+    contrast: "FALSO AMIGO CLÁSICO: En portugués \"embaraçada\" significa avergonzada o confundida. En español 'embarazada' significa únicamente \"grávida\". Para decir \"sem graça / envergonhada\", se usa 'avergonzada'."
+  },
+  {
+    id: 2,
+    q: "A - ¿Qué te pareció el plato principal que preparó el chef?\nB - ¡Me encantó! Estaba realmente ___.",
+    options: ["esquisito", "espantoso", "exquisito", "raro"],
+    correct: 2,
+    expectedVoice: "exquisito",
+    whyCorrect: "'Exquisito' en español significa delicioso, de extraordinaria calidad o refinamiento.",
+    whyWrong: {
+      "esquisito": "Grafía portuguesa; en español se escribe con 'x' y tiene sentido positivo.",
+      "espantoso": "En español significa horrible o que da miedo, nunca admirable.",
+      "raro": "Significa extraño o poco común, lo opuesto a un elogio gastronómico."
+    },
+    contrast: "En portugués \"esquisito\" significa extraño o raro. En español 'exquisito' es un gran elogio que equivale a \"delicioso / requintado\". Para decir \"esquisito\" en español se usa 'raro' o 'extraño'."
+  },
+  {
+    id: 3,
+    q: "- En el formulario de inmigración debes escribir tu nombre de pila y tus dos ___.",
+    options: ["apodos", "sobrenombres", "alias", "apellidos"],
+    correct: 3,
+    expectedVoice: "apellidos",
+    whyCorrect: "'Apellido' es el nombre de familia heredado de los padres (como García o Silva).",
+    whyWrong: {
+      "apodos": "Equivale al portugués 'apelido' (nombre afectivo o humorístico).",
+      "sobrenombres": "Sinónimo de apodo, no corresponde al nombre legal de familia.",
+      "alias": "Nombre ficticio o mote."
+    },
+    contrast: "PAR HETEROSSEMÁNTICO: Español 'apellido' = portugués \"sobrenome\" (nombre de familia). En cambio, el portugués \"apelido\" se traduce al español como 'apodo' o 'sobrenombre'."
+  },
+  {
+    id: 4,
+    q: "- Aunque se llama Francisco, desde niño todos sus amigos le dicen el ___ de «Pancho».",
+    options: ["apodo", "apellido", "nombre", "renombre"],
+    correct: 0,
+    expectedVoice: "apodo",
+    whyCorrect: "'Apodo' (o 'sobrenombre') es el nombre familiar o coloquial que se da a una persona en vez del suyo propio.",
+    whyWrong: {
+      "apellido": "Es el nombre legal de familia (\"sobrenome\").",
+      "nombre": "El nombre de pila oficial es Francisco.",
+      "renombre": "Significa fama o prestigio."
+    },
+    contrast: "Nunca uses 'apellido' para referirte a un nombre cariñoso o mote (\"apelido\" en Brasil). En español se dice 'apodo' o 'sobrenombre'."
+  },
+  {
+    id: 5,
+    q: "- Si te equivocas al escribir con lápiz, puedes ___ la palabra con una goma.",
+    options: ["manchar", "borrar", "emborronar", "apagar la luz"],
+    correct: 1,
+    expectedVoice: "borrar",
+    whyCorrect: "'Borrar' significa hacer desaparecer lo escrito o dibujado (o eliminar archivos digitales).",
+    whyWrong: {
+      "manchar": "Significa ensuciar (lo que en portugués es 'borrar').",
+      "emborronar": "Significa manchar con tinta haciendo borrones.",
+      "apagar la luz": "En español 'apagar' se usa para fuego, luces o aparatos eléctricos, no para lápiz."
+    },
+    contrast: "En portugués \"borrar\" significa manchar o correr la tinta/maquillaje (\"borrou o batom\"), mientras que \"apagar\" se usa para borrar texto. En español 'borrar' es \"apagar o que está escrito\" y manchar es 'manchar / correr el maquillaje'."
+  },
+  {
+    id: 6,
+    q: "- Espérame aquí en la recepción; vuelvo en un ___.",
+    options: ["ratón", "rata", "rato", "rápido"],
+    correct: 2,
+    expectedVoice: "rato",
+    whyCorrect: "En español 'un rato' significa un espacio corto de tiempo (unos minutos, un momento).",
+    whyWrong: {
+      "ratón": "Es el pequeño animal roedor (o el dispositivo del ordenador).",
+      "rata": "Roedor de mayor tamaño.",
+      "rápido": "Es adjetivo o adverbio, no puede ir tras 'un' en este contexto."
+    },
+    contrast: "En portugués \"rato\" es el animal roedor. En español 'rato' mide tiempo ('un rato' = \"um tempinho / um momento\"), mientras que el animal se llama 'ratón' (pequeño) o 'rata' (grande)."
+  },
+  {
+    id: 7,
+    q: "- Tuvimos que poner una trampa en la despensa porque entró un ___ a comerse el queso.",
+    options: ["rato", "oso", "conejo", "ratón"],
+    correct: 3,
+    expectedVoice: "ratón",
+    whyCorrect: "'Ratón' es el mamífero roedor pequeño que suele entrar en las casas.",
+    whyWrong: {
+      "rato": "Significa un período breve de tiempo.",
+      "oso": "Gran mamífero salvaje (\"urso\").",
+      "conejo": "Mamífero de orejas largas (\"coelho\")."
+    },
+    contrast: "Recuerda la pareja: 'pasar un buen rato' = pasar un buen momento; 'cazar un ratón' = cazar un \"rato / camundongo\"."
+  },
+  {
+    id: 8,
+    q: "- En el zoológico vimos que la leona tuvo tres ___ preciosos la semana pasada.",
+    options: ["cachorros", "perros", "canes", "gatos"],
+    correct: 0,
+    expectedVoice: "cachorros",
+    whyCorrect: "En español 'cachorro' es la cría de corta edad de cualquier mamífero (perro, león, oso, lobo).",
+    whyWrong: {
+      "perros": "Especie canina doméstica, incompatible con una leona.",
+      "canes": "Sinónimo culto de perro.",
+      "gatos": "Felino doméstico adulto."
+    },
+    contrast: "En Brasil \"cachorro\" es sinónimo general de perro de cualquier edad. En español el animal doméstico adulto es siempre 'perro', y 'cachorro' significa únicamente \"filhote\" (cría de perro o de otros mamíferos)."
+  },
+  {
+    id: 9,
+    q: "- Mi vecino sale todas las mañanas al parque a pasear a su ___.",
+    options: ["berro", "perro", "cachorro de león", "zorro"],
+    correct: 1,
+    expectedVoice: "perro",
+    whyCorrect: "'Perro' es el sustantivo general en español para el animal doméstico (\"cão / cachorro\").",
+    whyWrong: {
+      "berro": "Es una planta comestible de ensalada (\"agrião\").",
+      "cachorro de león": "Impropio como mascota urbana.",
+      "zorro": "Animal salvaje (\"raposa\")."
+    },
+    contrast: "Para referirte a tu mascota canina en general en español, usa siempre 'perro'. Solo di 'cachorro' si tiene pocos meses de vida (\"filhote\")."
+  },
+  {
+    id: 10,
+    q: "- El abogado no está en casa; todavía sigue trabajando en su ___.",
+    options: ["taller", "escritorio", "oficina", "carpeta"],
+    correct: 2,
+    expectedVoice: "oficina",
+    whyCorrect: "'Oficina' (o 'despacho') es el lugar de trabajo administrativo o profesional (\"escritório\").",
+    whyWrong: {
+      "taller": "Lugar donde se hacen reparaciones mecánicas o trabajos manuales (\"oficina mecânica\").",
+      "escritorio": "En la mayor parte del mundo hispánico 'escritorio' es el mueble (la mesa de trabajo), no la sala.",
+      "carpeta": "Utensilio para guardar papeles (\"pasta\")."
+    },
+    contrast: "TRIPLE CONTRASTE: 1) Español 'oficina' = portugués \"escritório\"; 2) Español 'taller mecánico' = portugués \"oficina mecânica\"; 3) Español 'escritorio' = el mueble (\"escrivaninha\")."
+  },
+  {
+    id: 11,
+    q: "- El coche hace un ruido extraño en el motor; tendré que llevarlo al ___.",
+    options: ["oficio", "despacho", "escritorio", "taller"],
+    correct: 3,
+    expectedVoice: "taller",
+    whyCorrect: "'Taller' (o 'taller mecánico') es el establecimiento donde se reparan vehículos.",
+    whyWrong: {
+      "oficio": "Significa profesión o documento oficial.",
+      "despacho": "Oficina privada de un profesional.",
+      "escritorio": "Mesa de trabajo."
+    },
+    contrast: "Nunca digas '*llevar el coche a la oficina'; en español eso significaría meter el automóvil dentro de un edificio administrativo. El lugar donde trabaja el mecánico es el 'taller'."
+  },
+  {
+    id: 12,
+    q: "- Los habitantes de los países escandinavos suelen tener los ojos azules y el pelo ___.",
+    options: ["rubio", "ruivo", "rojo", "morado"],
+    correct: 0,
+    expectedVoice: "rubio",
+    whyCorrect: "'Rubio' significa de cabello dorado o amarillo claro (\"loiro\").",
+    whyWrong: {
+      "ruivo": "Palabra portuguesa; en español se dice 'pelirrojo'.",
+      "rojo": "Color encarnado (\"vermelho\"); para el cabello se dice 'pelirrojo'.",
+      "morado": "Color violeta oscuro (\"roxo\")."
+    },
+    contrast: "FALSO AMIGO DE COLORES: Español 'rubio' = portugués \"loiro\" (por su fonética parecida a \"ruivo\", muchos brasileños los confunden). En cambio, portugués \"ruivo\" = español 'pelirrojo'."
+  },
+  {
+    id: 13,
+    q: "- En Escocia e Irlanda hay muchas personas ___ con pecas en la cara.",
+    options: ["rubias", "pelirrojas", "roxas", "moradas"],
+    correct: 1,
+    expectedVoice: "pelirrojas",
+    whyCorrect: "'Pelirrojo/a' describe a la persona que tiene el cabello de color rojizo o anaranjado natural (\"ruivo\").",
+    whyWrong: {
+      "rubias": "Personas de cabello amarillo/dorado (\"loiras\").",
+      "roxas": "Voz portuguesa.",
+      "moradas": "De color violeta o púrpura."
+    },
+    contrast: "No confundas la serie cromática: 'rubio' (\"loiro\"), 'pelirrojo' (\"ruivo\"), 'rojo' (\"vermelho\") y 'morado' (\"roxo\")."
+  },
+  {
+    id: 14,
+    q: "- Con el frío intenso del invierno, los labios se le pusieron de color ___.",
+    options: ["rojo", "rubio", "morado", "bermejo"],
+    correct: 2,
+    expectedVoice: "morado",
+    whyCorrect: "'Morado' (o 'violeta') es el color entre azulado y rojizo típico de las berenjenas o los hematomas (\"roxo\").",
+    whyWrong: {
+      "rojo": "Equivale al portugués 'vermelho' (como la sangre o el tomate).",
+      "rubio": "Aplicable solo al cabello dorado o al tabaco.",
+      "bermejo": "Rubio rojizo."
+    },
+    contrast: "El falso amigo fonético entre 'rojo' y \"roxo\" es constante: español 'rojo' = portugués \"vermelho\"; español 'morado / violeta' = portugués \"roxo\"."
+  },
+  {
+    id: 15,
+    q: "- Después de pasar diez días con gripe en cama, me siento muy ___ y sin fuerzas.",
+    options: ["flaco", "delgado", "ancho", "débil"],
+    correct: 3,
+    expectedVoice: "débil",
+    whyCorrect: "'Débil' significa con poca fuerza física o vigor (\"fraco\").",
+    whyWrong: {
+      "flaco": "En español 'flaco' significa delgado, de poco peso corporal (\"magro\").",
+      "delgado": "Sinónimo de flaco o esbelto.",
+      "ancho": "Que tiene mucha anchura (\"largo\")."
+    },
+    contrast: "Cuidado con 'flaco' vs. \"fraco\": en español 'flaco' significa \"magro\" (de pocas carnes), mientras que para indicar falta de fuerza o energía (\"fraco\") se usa siempre 'débil'."
+  },
+  {
+    id: 16,
+    q: "- Como hizo mucha dieta y ejercicio todo el año, ahora está muy ___.",
+    options: ["flaco", "débil", "flojo", "fraco"],
+    correct: 0,
+    expectedVoice: "flaco",
+    whyCorrect: "'Flaco' (o 'delgado') indica que una persona tiene poco peso o poca grasa corporal.",
+    whyWrong: {
+      "débil": "Significa sin fuerza o enfermizo.",
+      "flojo": "Significa suelto, perezoso o poco apretado.",
+      "fraco": "Palabra portuguesa."
+    },
+    contrast: "En español, llamar a alguien 'flaco/flaca' es incluso un apelativo afectivo común en varios países hispanos para referirse a alguien delgado (\"magro\")."
+  },
+  {
+    id: 17,
+    q: "- Este sofá es demasiado ___ y no pasa por la puerta estrecha del salón.",
+    options: ["largo", "ancho", "comprido", "amplio de longitud"],
+    correct: 1,
+    expectedVoice: "ancho",
+    whyCorrect: "'Ancho' designa la dimensión transversal o anchura (\"largo\" en portugués), opuesta a 'estrecho'.",
+    whyWrong: {
+      "largo": "En español 'largo' significa 'comprido' (de gran longitud), opuesto a 'corto'.",
+      "comprido": "Voz portuguesa; en español existe 'cumplido' pero con el sentido de cortés o completo.",
+      "amplio de longitud": "Expresión contradictoria."
+    },
+    contrast: "FALSO AMIGO DIMENSIONAL: Español 'largo' = portugués \"comprido\" (opuesto a 'corto'). Español 'ancho' = portugués \"largo\" (opuesto a 'estrecho' / 'angosto')."
+  },
+  {
+    id: 18,
+    q: "- El río Amazonas es extremadamente ___: recorre miles de kilómetros hasta el océano.",
+    options: ["corto", "estrecho", "largo", "cumplido"],
+    correct: 2,
+    expectedVoice: "largo",
+    whyCorrect: "'Largo' indica gran longitud de un extremo a otro (\"comprido\").",
+    whyWrong: {
+      "corto": "De poca longitud.",
+      "estrecho": "De poca anchura.",
+      "cumplido": "En español significa elogio o que ha llegado a su término, no largo."
+    },
+    contrast: "Para hablar de vestidos, pantalones, calles, ríos o cabellos de gran extensión longitudinal, usa siempre 'largo' (nunca '*comprido')."
+  },
+  {
+    id: 19,
+    q: "- Hace mucho calor; ¿me puedes traer un ___ de agua con hielo, por favor?",
+    options: ["copo", "florero", "inodoro", "vaso"],
+    correct: 3,
+    expectedVoice: "vaso",
+    whyCorrect: "'Vaso' es el recipiente cilíndrico, generalmente de vidrio, que se usa para beber agua, zumo o refrescos (\"copo\").",
+    whyWrong: {
+      "copo": "En español un 'copo' es una porción de nieve ('copo de nieve') o de avena ('copos de avena').",
+      "florero": "Recipiente para poner flores (\"vaso de flores\").",
+      "inodoro": "Aparato sanitario del baño (\"vaso sanitário\")."
+    },
+    contrast: "DOBLE FALSO AMIGO: Si pides '*un copo de agua' en español, estás pidiendo un cristal de nieve. Para beber agua se pide un 'vaso'; para flores se usa un 'florero / jarrón'; para plantas, una 'maceta'."
+  },
+  {
+    id: 20,
+    q: "- Durante la tormenta de invierno en la montaña caían grandes ___ de nieve.",
+    options: ["copos", "vasos", "tazas", "gotas"],
+    correct: 0,
+    expectedVoice: "copos",
+    whyCorrect: "En español se llama 'copo de nieve' a cada una de las porciones blancas de nieve que caen al nevar (\"flocos de neve\").",
+    whyWrong: {
+      "vasos": "Recipientes para beber.",
+      "tazas": "Recipientes con asa para café o té.",
+      "gotas": "Corresponden a la lluvia líquida, no a la nieve."
+    },
+    contrast: "Observa qué curioso: 'copo' en español es \"floco\" ('copos de nieve', 'copos de maíz'), mientras que el \"copo\" portugués es un 'vaso'."
+  },
+  {
+    id: 21,
+    q: "- El camarero sirvió el vino tinto reserva en dos ___ de cristal fino.",
+    options: ["tazas", "copas", "vasos de café", "jarras"],
+    correct: 1,
+    expectedVoice: "copas",
+    whyCorrect: "'Copa' es el recipiente de cristal con pie para beber vino, champán o licores (\"taça\").",
+    whyWrong: {
+      "tazas": "En español 'taza' es el recipiente pequeño con asa para tomar café o té caliente (\"xícara\").",
+      "vasos de café": "Inapropiado para vino reserva.",
+      "jarras": "Recipiente grande para servir líquido."
+    },
+    contrast: "CADENA DE RECIPIENTES: Español 'taza' = portugués \"xícara\" (para café/té); español 'copa' = portugués \"taça\" (para vino/brindis); español 'vaso' = portugués \"copo\" (para agua)."
+  },
+  {
+    id: 22,
+    q: "- Todas las mañanas desayuno una ___ de café con leche bien caliente.",
+    options: ["copa", "vasija", "taza", "chícara"],
+    correct: 2,
+    expectedVoice: "taza",
+    whyCorrect: "'Taza' es el recipiente con asa donde se sirven infusiones, café o chocolate caliente.",
+    whyWrong: {
+      "copa": "Recipiente de cristal con pie para vino o cócteles.",
+      "vasija": "Recipiente de barro o cerámica para conservar líquidos.",
+      "chícara": "Arcaísmo en desuso en español estándar frente a 'taza'."
+    },
+    contrast: "Si pides '*una taza de vino' en un restaurante hispano, te traerán una \"xícara\" de desayuno. Para el café pide 'una taza'; para el vino, 'una copa'."
+  },
+  {
+    id: 23,
+    q: "- El dentista me recomendó cambiar mi ___ de dientes cada tres meses.",
+    options: ["escoba", "escobilla", "peine", "cepillo"],
+    correct: 3,
+    expectedVoice: "cepillo",
+    whyCorrect: "En español el utensilio para limpiarse los dientes o peinar el cabello se llama 'cepillo' ('cepillo de dientes', 'cepillo de pelo').",
+    whyWrong: {
+      "escoba": "Utensilio con palo largo para barrer el suelo (\"vassoura\").",
+      "escobilla": "Se usa principalmente para limpiar el inodoro ('escobilla del baño').",
+      "peine": "Utensilio plano con púas para desenredar el pelo (\"pente\")."
+    },
+    contrast: "ERROR MUY CÓMICO: En portugués se dice \"escova de dentes\". Si en español pides una 'escoba' para los dientes, ¡estás pidiendo una \"vassoura\" de barrer el piso! En español: 'escoba' = \"vassoura\"; 'cepillo' = \"escova\"."
+  },
+  {
+    id: 24,
+    q: "- Pásame la ___ y el recogedor para barrer las migas que cayeron al suelo.",
+    options: ["escoba", "cepillo", "fregona", "alfombra"],
+    correct: 0,
+    expectedVoice: "escoba",
+    whyCorrect: "'Escoba' es el instrumento de mango largo que se utiliza para barrer el piso.",
+    whyWrong: {
+      "cepillo": "Utensilio para dientes, ropa o cabello.",
+      "fregona": "Utensilio para fregar el suelo con agua (\"esfregão / rodo com pano\").",
+      "alfombra": "Tejido que cubre el piso (\"tapete\")."
+    },
+    contrast: "Recuerda siempre: en español se barre el suelo con la 'escoba' (\"vassoura\") y se cepillan los dientes con el 'cepillo' (\"escova\")."
+  },
+  {
+    id: 25,
+    q: "- En aquel restaurante gallego probamos el famoso ___ a la gallega con pimentón y patatas.",
+    options: ["polvo", "pulpo", "calamar", "tiburón"],
+    correct: 1,
+    expectedVoice: "pulpo",
+    whyCorrect: "'Pulpo' es el molusco marino de ocho tentáculos (\"polvo\" en portugués).",
+    whyWrong: {
+      "polvo": "En español 'polvo' significa tierra muy fina o suciedad acumulada en los muebles (\"poeira / pó\").",
+      "calamar": "Otro cefalópodo distinto (\"lula\").",
+      "tiburón": "Gran pez marino depredador (\"tubarão\")."
+    },
+    contrast: "Si en un restaurante en España o Hispanoamérica pides un plato de '*polvo', el camarero entenderá que quieres comer \"poeira / pó\". El animal marino se llama 'pulpo'."
+  },
+  {
+    id: 26,
+    q: "- Tengo alergia a los ácaros, así que debo limpiar el ___ de las estanterías todos los días.",
+    options: ["pulpo", "humo", "polvo", "barro"],
+    correct: 2,
+    expectedVoice: "polvo",
+    whyCorrect: "'Polvo' designa las partículas diminutas de tierra que flotan en el aire y se depositan sobre los objetos (\"poeira / pó\").",
+    whyWrong: {
+      "pulpo": "Animal marino de ocho tentáculos.",
+      "humo": "Vapor que sale del fuego (\"fumaça\").",
+      "barro": "Mezcla de tierra y agua (\"lama\")."
+    },
+    contrast: "También se usa 'en polvo' para productos molidos: 'leche en polvo' (\"leite em pó\"), 'azúcar en polvo', 'jabón en polvo'."
+  },
+  {
+    id: 27,
+    q: "- El perro enterró un ___ en el jardín de la casa.",
+    options: ["oso", "cuello", "hueco", "hueso"],
+    correct: 3,
+    expectedVoice: "hueso",
+    whyCorrect: "'Hueso' es cada una de las piezas duras que forman el esqueleto de los vertebrados (\"osso\").",
+    whyWrong: {
+      "oso": "Gran mamífero carnívoro de pelo espeso (\"urso\").",
+      "cuello": "Parte del cuerpo que une la cabeza con el tronco (\"pescoço\").",
+      "hueco": "Espacio vacío o agujero."
+    },
+    contrast: "Por la diptongación de la 'o' breve latina en 'ue', el portugués \"osso\" corresponde al español 'hueso'. En cambio, la palabra española 'oso' significa \"urso\"."
+  },
+  {
+    id: 28,
+    q: "- En los bosques de Canadá es posible avistar al ___ pardo buscando salmones en el río.",
+    options: ["oso", "hueso", "conejo", "cachorro"],
+    correct: 0,
+    expectedVoice: "oso",
+    whyCorrect: "'Oso' es el gran mamífero plantígrado de pelaje abundante (\"urso\").",
+    whyWrong: {
+      "hueso": "Pieza del esqueleto (\"osso\").",
+      "conejo": "Pequeño mamífero herbívoro (\"coelho\").",
+      "cachorro": "Cría de mamífero."
+    },
+    contrast: "Pronunciación y significado: 'oso' (con una sola 's' sonora sorda en español) = \"urso\"; 'hueso' = \"osso\"."
+  },
+  {
+    id: 29,
+    q: "- Dormí en una mala postura en el avión y ahora me duele muchísimo el ___.",
+    options: ["conejo", "cuello", "codo", "hombro de la cabeza"],
+    correct: 1,
+    expectedVoice: "cuello",
+    whyCorrect: "'Cuello' es la parte del cuerpo que une la cabeza con el tronco (\"pescoço\"), y también la parte superior de las camisas ('el cuello de la camisa').",
+    whyWrong: {
+      "conejo": "Animal mamífero de orejas largas (\"coelho\").",
+      "codo": "Articulación media del brazo (\"cotovelo\").",
+      "hombro de la cabeza": "Expresión inexistente."
+    },
+    contrast: "FALSO AMIGO FONÉTICO: 'Cuello' suena parecido al portugués \"coelho\", pero significa \"pescoço\" (o \"gola\" de camisa). El animal \"coelho\" en español se llama 'conejo'."
+  },
+  {
+    id: 30,
+    q: "- El mago sacó un ___ blanco de su sombrero de copa.",
+    options: ["cuello", "rato", "conejo", "polvo"],
+    correct: 2,
+    expectedVoice: "conejo",
+    whyCorrect: "'Conejo' es el mamífero roedor/lagomorfo de orejas largas (\"coelho\").",
+    whyWrong: {
+      "cuello": "Parte del cuerpo (\"pescoço\").",
+      "rato": "Momento breve de tiempo.",
+      "polvo": "Tierra fina (\"poeira\")."
+    },
+    contrast: "No confundas nunca 'cuello' (\"pescoço\") con 'conejo' (\"coelho\")."
+  },
+  {
+    id: 31,
+    q: "- La ___ más emocionante de la película ocurre cuando los protagonistas se reencuentran en la estación.",
+    options: ["cena", "merienda", "obra", "escena"],
+    correct: 3,
+    expectedVoice: "escena",
+    whyCorrect: "'Escena' es cada una de las partes de una película, obra teatral o situación de la vida real (\"cena\" en portugués).",
+    whyWrong: {
+      "cena": "En español 'cena' es la última comida del día, que se toma por la noche (\"jantar\").",
+      "merienda": "Comida ligera de la tarde (\"lanche da tarde\").",
+      "obra": "Pieza teatral completa."
+    },
+    contrast: "PAR HETEROSSEMÁNTICO: Español 'cena' = portugués \"jantar\" (comida nocturna). Español 'escena' = portugués \"cena\" (de teatro o cine)."
+  },
+  {
+    id: 32,
+    q: "- Esta noche hemos reservado mesa a las nueve para una ___ romántica en el restaurante italiano.",
+    options: ["cena", "escena", "almuerzo", "desayuno"],
+    correct: 0,
+    expectedVoice: "cena",
+    whyCorrect: "'Cena' es la comida nocturna (\"jantar\"), y el verbo correspondiente es 'cenar'.",
+    whyWrong: {
+      "escena": "Secuencia de una película o teatro.",
+      "almuerzo": "Comida del mediodía.",
+      "desayuno": "Primera comida de la mañana (\"café da manhã\")."
+    },
+    contrast: "Las cuatro comidas en español son: 'el desayuno' (\"café da manhã\"), 'el almuerzo / la comida' (\"almoço\"), 'la merienda' (\"lanche da tarde\") y 'la cena' (\"jantar\")."
+  },
+  {
+    id: 33,
+    q: "- ¿Quieres que le ponga ___ de tomate y queso rallado a los espaguetis?",
+    options: ["perejil", "salsa", "caldo", "ensalada"],
+    correct: 1,
+    expectedVoice: "salsa",
+    whyCorrect: "En español 'salsa' (además del género musical caribeño) significa condimento líquido para acompañar las comidas (\"molho\").",
+    whyWrong: {
+      "perejil": "Hierba aromática verde (\"salsa / salsinha\" en portugués).",
+      "caldo": "Líquido resultante de cocer alimentos en agua.",
+      "ensalada": "Plato de hortalizas frescas (\"salada\")."
+    },
+    contrast: "FALSO AMIGO CULINARIO: En portugués \"salsa / salsinha\" es la hierba aromática verde, que en español se llama 'perejil'. En cambio, 'salsa' en español es cualquier \"molho\" ('salsa de tomate', 'salsa picante', 'salsa blanca')."
+  },
+  {
+    id: 34,
+    q: "- Para decorar el pescado al horno, pica un poco de ajo y ___ fresco por encima.",
+    options: ["salsa", "berro", "perejil", "pastel"],
+    correct: 2,
+    expectedVoice: "perejil",
+    whyCorrect: "'Perejil' es la planta herbácea de hojas verdes muy usada como condimento (\"salsinha\").",
+    whyWrong: {
+      "salsa": "Equivale a 'molho'.",
+      "berro": "Hortaliza de hoja para ensaladas (\"agrião\").",
+      "pastel": "Dulce de cumpleaños o tarta (\"bolo\")."
+    },
+    contrast: "Recuerda la dupla en la cocina: 'salsa' = \"molho\"; 'perejil' = \"salsa / salsinha\"."
+  },
+  {
+    id: 35,
+    q: "- Para el cumpleaños de mi sobrino compramos un ___ de chocolate con veinte velas.",
+    options: ["empanadilla", "bollo", "bocadillo", "pastel"],
+    correct: 3,
+    expectedVoice: "pastel",
+    whyCorrect: "En español 'pastel' (o 'tarta' / 'torta') es el dulce grande de masa horneada que en Brasil se llama \"bolo\".",
+    whyWrong: {
+      "empanadilla": "Masa rellena frita o al horno (equivalente al \"pastel de feira\" brasileño).",
+      "bollo": "Panecillo dulce individual de panadería (\"pãozinho doce\").",
+      "bocadillo": "Sándwich hecho con pan de barra (\"sanduíche\")."
+    },
+    contrast: "En Brasil el \"pastel\" es una masa frita salada (que en español es una 'empanada' o 'empanadilla'), y el dulce de cumpleaños es el \"bolo\". En español 'pastel' o 'tarta' es el \"bolo de aniversário\", mientras que 'bollo' es un panecillo tierno."
+  },
+  {
+    id: 36,
+    q: "- La policía detuvo ayer al ___ autor del robo al banco, aunque aún no hay pruebas definitivas.",
+    options: ["presunto", "jamón", "supuesto fiambre", "asunto"],
+    correct: 0,
+    expectedVoice: "presunto",
+    whyCorrect: "En español 'presunto' es un adjetivo que significa supuesto o sospechoso de algo ('presunto culpable', 'presunto autor').",
+    whyWrong: {
+      "jamón": "Es el alimento procedente de la pata trasera del cerdo (\"presunto\" en portugués).",
+      "supuesto fiambre": "Sin sentido jurídico.",
+      "asunto": "Tema o cuestión."
+    },
+    contrast: "FALSO AMIGO FAMOSÍSIMO: En portugués \"presunto\" es el fiambre de cerdo. En español 'presunto' significa \"suposto / suspeito\" (del verbo 'presumir' = suponer). Para pedir el alimento en español debes decir 'jamón' ('jamón cocido / jamón de York' o 'jamón serrano')."
+  },
+  {
+    id: 37,
+    q: "- Me gustaría desayunar un sándwich mixto de ___ y queso fundido.",
+    options: ["presunto", "jamón", "salero", "berro"],
+    correct: 1,
+    expectedVoice: "jamón",
+    whyCorrect: "'Jamón' es el nombre en español de la carne curada o cocida de la pierna del cerdo (\"presunto\").",
+    whyWrong: {
+      "presunto": "Significa 'supuesto' o 'sospechoso'.",
+      "salero": "Recipiente para la sal.",
+      "berro": "Vegetal de hoja verde (\"agrião\")."
+    },
+    contrast: "Si pides '*un bocadillo de presunto y queso' en España o América Latina, estarás pidiendo un sándwich de \"suposto e queijo\". Pide siempre 'jamón y queso'."
+  },
+  {
+    id: 38,
+    q: "- El servicio del camarero fue tan atento que le dejamos una buena ___ sobre la mesa.",
+    options: ["coima", "soborno", "propina", "multa"],
+    correct: 2,
+    expectedVoice: "propina",
+    whyCorrect: "En español 'propina' es la gratificación voluntaria y legal en dinero que se da a un camarero, taxista o repartidor por un buen servicio (\"gorjeta\").",
+    whyWrong: {
+      "coima": "En varios países hispanos significa soborno ilegal.",
+      "soborno": "Dinero ilegal entregado para corromper a un funcionario o autoridad (\"propina / suborno\" en Brasil).",
+      "multa": "Sanción económica por una infracción."
+    },
+    contrast: "CUIDADO CON EL CONTEXTO LEGAL: En portugués de Brasil \"propina\" significa dinero ilegal de corrupción (\"suborno\"). En español 'propina' es algo 100% honesto y cotidiano: la \"gorjeta\" del restaurante. Al dinero ilegal de corrupción en español se le llama 'soborno', 'coima' o 'mordida'."
+  },
+  {
+    id: 39,
+    q: "- El funcionario corrupto fue procesado por aceptar un ___ millonario de la empresa constructora.",
+    options: ["propina", "aguinaldo", "descuento", "soborno"],
+    correct: 3,
+    expectedVoice: "soborno",
+    whyCorrect: "'Soborno' (o 'coima' en el Cono Sur) es la dádiva ilegal con que se corrompe a alguien.",
+    whyWrong: {
+      "propina": "Gratificación voluntaria y lícita por un servicio (\"gorjeta\").",
+      "aguinaldo": "Paga extraordinaria de Navidad (\"décimo terceiro salário\").",
+      "descuento": "Rebaja en un precio."
+    },
+    contrast: "Recuerda la inversión: portugués \"gorjeta\" = español 'propina'; portugués \"propina\" = español 'soborno / coima'."
+  },
+  {
+    id: 40,
+    q: "- Debemos educar a los jóvenes en la tolerancia para eliminar todo tipo de ___ racial o social.",
+    options: ["prejuicio", "perjuicio", "daño", "preconcepto"],
+    correct: 0,
+    expectedVoice: "prejuicio",
+    whyCorrect: "'Prejuicio' (con 're-') es el juicio u opinión preconcebida, generalmente negativa y discriminatoria, hacia personas o grupos (\"preconceito\").",
+    whyWrong: {
+      "perjuicio": "Con 'per-' significa daño material, económico o moral (\"prejuízo\").",
+      "daño": "Sinónimo de perjuicio físico o material.",
+      "preconcepto": "Calco poco frecuente frente al término estándar 'prejuicio'."
+    },
+    contrast: "PARÓNIMOS Y FALSOS AMIGOS: Español 'prejuicio' (pre + juicio) = portugués \"preconceito\" (como en la novela *Orgullo y prejuicio*). Español 'perjuicio' (per + juicio) = portugués \"prejuízo / dano\"."
+  },
+  {
+    id: 41,
+    q: "- La fuerte granizada causó graves ___ económicos a los agricultores de la región.",
+    options: ["prejuicios", "perjuicios", "conceptos", "defectos"],
+    correct: 1,
+    expectedVoice: "perjuicios",
+    whyCorrect: "'Perjuicio' significa detrimento, pérdida financiera o daño material sufrido (\"prejuízo\").",
+    whyWrong: {
+      "prejuicios": "Ideas preconcebidas o discriminación (\"preconceitos\").",
+      "conceptos": "Ideas o nociones.",
+      "defectos": "Imperfecciones."
+    },
+    contrast: "Fíjate en la posición de la 'r': 'PREjuicio' = juzgar antes (\"preconceito\"); 'PERjuicio' = perder o sufrir daño (\"prejuízo\")."
+  },
+  {
+    id: 42,
+    q: "- Sé que nos vimos en el congreso del año pasado, pero no ___ de tu nombre.",
+    options: ["me despierto", "acuerdo", "me acuerdo", "recuerdo de"],
+    correct: 2,
+    expectedVoice: "me acuerdo",
+    whyCorrect: "El verbo pronominal 'acordarse de algo/alguien' significa traer a la memoria o recordar (\"lembrar-se\").",
+    whyWrong: {
+      "me despierto": "Dejar de dormir (\"acordar\" en portugués).",
+      "acuerdo": "Sin el pronombre 'me' y sin preposición, 'acordar' significa pactar o decidir en común.",
+      "recuerdo de": "En español 'recordar' es transitivo directo ('no recuerdo tu nombre', sin 'de'), mientras que 'acordarse' lleva 'de' ('no me acuerdo de tu nombre')."
+    },
+    contrast: "FALSO AMIGO VERBAL ESENCIAL: En portugués \"acordar\" es dejar de dormir. En español: 1) 'despertar(se)' = dejar de dormir; 2) 'acordarse de' = \"lembrar-se de\"; 3) 'acordar' (sin pronombre) = llegar a un acuerdo o pacto."
+  },
+  {
+    id: 43,
+    q: "- Mañana tengo que ___ a las seis de la mañana para tomar el primer vuelo.",
+    options: ["acordarme", "recordar", "acordar", "despertarme"],
+    correct: 3,
+    expectedVoice: "despertarme",
+    whyCorrect: "'Despertarse' es interrumpir el sueño o dejar de dormir.",
+    whyWrong: {
+      "acordarme": "Significa recordar algo (\"lembrar-se\").",
+      "recordar": "Traer a la memoria.",
+      "acordar": "Pactar o convenir una decisión."
+    },
+    contrast: "Si dices en español '*Mañana me acuerdo a las seis', un hispanohablante te preguntará: «¿De qué cosa te vas a acordar a las seis?». Para salir del sueño se usa siempre 'despertarse'."
+  },
+  {
+    id: 44,
+    q: "- Por favor, ___ los zapatos sucios de barro antes de pisar la alfombra blanca.",
+    options: ["quítate", "tírate", "sáldate", "liquídate"],
+    correct: 0,
+    expectedVoice: "quítate",
+    whyCorrect: "'Quitarse' (la ropa, los zapatos, las gafas) significa despojarse de una prenda o apartar algo de un lugar (\"tirar\").",
+    whyWrong: {
+      "tírate": "'Tirarse' significa arrojarse o lanzarse al suelo/agua (\"jogar-se / atirar-se\").",
+      "sáldate": "De saldar una cuenta.",
+      "liquídate": "De liquidar."
+    },
+    contrast: "CADENA DE FALSOS AMIGOS ('QUITAR' vs. 'TIRAR'): En portugués \"quitar uma dívida\" es pagar una deuda (en español: 'saldar / liquidar una deuda'). En cambio, en español 'quitar' significa \"tirar / remover\" ('quitar la mesa', 'quitarse la ropa'). Y 'tirar' en español significa \"jogar fora / atirar\" ('tirar a la basura')."
+  },
+  {
+    id: 45,
+    q: "- No dejes esos papeles viejos sobre la mesa; ___ a la papelera de reciclaje.",
+    options: ["quítalos", "tíralos", "sácalos una foto", "pégalos"],
+    correct: 1,
+    expectedVoice: "tíralos",
+    whyCorrect: "'Tirar' en español significa arrojar, lanzar o desechar algo en la basura (\"jogar fora / atirar\").",
+    whyWrong: {
+      "quítalos": "'Quitar' exige indicar de dónde se aparta algo, pero para desechar en la basura el verbo idiomático es 'tirar'.",
+      "sácalos una foto": "Para fotografías se usa 'sacar / hacer / tomar una foto'.",
+      "pégalos": "Significa adherirlos con pegamento o golpearlos."
+    },
+    contrast: "Observa cómo se traduce el portugués \"tirar\" según el contexto en español: \"tirar a roupa\" = 'quitarse la ropa'; \"tirar uma foto\" = 'sacar / hacer una foto'; \"tirar uma dúvida\" = 'aclarar / despejar una duda'. Y 'tirar' en español se reserva para \"jogar / atirar\"."
+  },
+  {
+    id: 46,
+    q: "- Necesito pegamento en barra para ___ este sello postal en el sobre.",
+    options: ["colar", "agarrar", "pegar", "tomar"],
+    correct: 2,
+    expectedVoice: "pegar",
+    whyCorrect: "En español 'pegar' significa unir o adherir una cosa con otra mediante pegamento o cola (\"colar\"), además de significar dar golpes (\"bater\").",
+    whyWrong: {
+      "colar": "En español 'colar' significa pasar un líquido por un colador/filtro (\"coar café\") o entrar sin hacer fila ('colarse').",
+      "agarrar": "Sujetar o tomar con la mano (\"pegar\" en portugués).",
+      "tomar": "Coger o beber."
+    },
+    contrast: "DOBLE CRUCE VERBAL ('PEGAR' y 'COLAR'): 1) Portugués \"pegar o ônibus / pegar o livro\" = español 'tomar el autobús / agarrar o coger el libro'. 2) Español 'pegar' = \"colar com cola\" o \"bater em alguém\". 3) Español 'colar' = \"coar um líquido\" o \"furar a fila\" ('colarse')."
+  },
+  {
+    id: 47,
+    q: "- ¿Me pasas el filtro de tela para ___ el café recién hecho?",
+    options: ["pegar", "cerrar", "borrar", "colar"],
+    correct: 3,
+    expectedVoice: "colar",
+    whyCorrect: "'Colar' es hacer pasar un líquido por un colador o filtro para retener las partículas sólidas (\"coar\").",
+    whyWrong: {
+      "pegar": "Adherir con pegamento o golpear.",
+      "cerrar": "Bloquear una puerta o abertura (\"fechar\").",
+      "borrar": "Eliminar lo escrito."
+    },
+    contrast: "También existe el reflexivo 'colarse en la fila' (\"furar a fila\") o 'colarse en una fiesta' (entrar sin invitación)."
+  },
+  {
+    id: 48,
+    q: "- Antes de salir de viaje, asegúrate de ___ bien con llave todas las puertas y ventanas.",
+    options: ["cerrar", "fechar", "serrar", "quitar"],
+    correct: 0,
+    expectedVoice: "cerrar",
+    whyCorrect: "'Cerrar' es el verbo español que equivale al portugués \"fechar\".",
+    whyWrong: {
+      "fechar": "En español 'fechar' existe, pero significa exclusivamente 'poner la fecha (data) en un documento o carta'.",
+      "serrar": "Cortar madera con una sierra.",
+      "quitar": "Apartar o remover algo."
+    },
+    contrast: "FALSO AMIGO DIRECTO: Español 'cerrar' = portugués \"fechar\". Español 'fechar' = portugués \"datar\" (poner la 'fecha' = \"data\" en una carta o contrato)."
+  },
+  {
+    id: 49,
+    q: "- El notario olvidó ___ y firmar la última página del contrato de alquiler.",
+    options: ["cerrar", "fechar", "datar con llave", "contestar"],
+    correct: 1,
+    expectedVoice: "fechar",
+    whyCorrect: "'Fechar' un documento significa escribir en él la fecha (el día, mes y año en que se otorga).",
+    whyWrong: {
+      "cerrar": "Significa clausurar o juntar las hojas, no poner la fecha.",
+      "datar con llave": "Incoherente.",
+      "contestar": "Responder."
+    },
+    contrast: "En español \"data\" se dice 'fecha' ('¿Cuál es la fecha de hoy?'), y de ahí deriva el verbo 'fechar un documento' (\"datar um documento\")."
+  },
+  {
+    id: 50,
+    q: "- Te llamé tres veces por teléfono al mediodía, pero nadie ___.",
+    options: ["impugnó", "logró", "contestó", "fechó"],
+    correct: 2,
+    expectedVoice: "contestó",
+    whyCorrect: "'Contestar' en español significa responder a una pregunta, a una carta o atender el teléfono.",
+    whyWrong: {
+      "impugnó": "Rebatir o contradecir legalmente (lo que en portugués es 'contestar').",
+      "logró": "Conseguir o alcanzar una meta.",
+      "fechó": "Poner la fecha."
+    },
+    contrast: "En portugués \"contestar\" significa objetar, refutar o impugnar algo (\"contestar o resultado\"). En español 'contestar' es simplemente \"responder\" ('contestar el teléfono', 'contestar una pregunta'). Para decir \"contestar\" (impugnar), en español se usa 'impugnar', 'rebatir' o 'refutar'."
+  },
+  {
+    id: 51,
+    q: "- Después de años de esfuerzo y estudio, finalmente ___ aprobar la oposición con el primer puesto.",
+    options: ["engañó", "estafó", "asistió", "logró"],
+    correct: 3,
+    expectedVoice: "logró",
+    whyCorrect: "'Lograr' significa conseguir o alcanzar lo que se intenta o desea.",
+    whyWrong: {
+      "engañó": "Inducir a error (acepción coloquial brasileña de 'lograr').",
+      "estafó": "Robar mediante engaño.",
+      "asistió": "Acudir o estar presente en un lugar."
+    },
+    contrast: "Aunque en el portugués formal existe \"lograr êxito\", en el portugués brasileño hablado \"lograr alguém\" significa engañar o burlar a alguien. En español 'lograr' es siempre positivo y equivale a 'conseguir / alcanzar un objetivo'."
+  },
+  {
+    id: 52,
+    q: "- La nueva gira internacional de la cantante fue un rotundo ___ de taquilla.",
+    options: ["éxito", "suceso", "salida", "azar"],
+    correct: 0,
+    expectedVoice: "éxito",
+    whyCorrect: "'Éxito' significa resultado feliz y triunfal de un negocio o actuación (\"sucesso\").",
+    whyWrong: {
+      "suceso": "En el español general 'suceso' significa simplemente un hecho, acontecimiento o incluso un accidente policial ('la página de sucesos' del diario).",
+      "salida": "Confusión con el inglés 'exit'.",
+      "azar": "Casualidad o suerte."
+    },
+    contrast: "DIVERGENCIA CLAVE: Portugués \"sucesso\" = español 'éxito'. Español 'suceso' = portugués \"acontecimento / fato / ocorrência policial\"."
+  },
+  {
+    id: 53,
+    q: "- El periódico local dedica dos páginas a los ___ policiales y accidentes ocurridos durante el fin de semana.",
+    options: ["éxitos", "sucesos", "logros", "triunfos"],
+    correct: 1,
+    expectedVoice: "sucesos",
+    whyCorrect: "En la prensa hispana, la sección de 'sucesos' recoge los acontecimientos, crímenes o accidentes del día (\"ocorrências policiais\").",
+    whyWrong: {
+      "éxitos": "Triunfos o resultados favorables.",
+      "logros": "Metas alcanzadas.",
+      "triunfos": "Victorias."
+    },
+    contrast: "Por eso nunca debes decir '*Tu fiesta fue un gran suceso' queriendo decir \"foi um grande sucesso\"; di siempre 'fue un gran éxito'."
+  },
+  {
+    id: 54,
+    q: "- Los domingos por la tarde nos gusta quedarnos en el sofá para ___ una serie en la televisión.",
+    options: ["asistir", "asistir a", "ver", "atender"],
+    correct: 2,
+    expectedVoice: "ver",
+    whyCorrect: "Para la televisión, el cine, vídeos o partidos por pantalla, en español se usan los verbos 'ver' o 'mirar', nunca 'asistir'.",
+    whyWrong: {
+      "asistir": "En español 'asistir a alguién' es socorrer o ayudar a un enfermo.",
+      "asistir a": "En español 'asistir a un lugar' significa acudir físicamente en persona ('asistir a clase', 'asistir a una reunión').",
+      "atender": "Prestar atención o recibir a un cliente."
+    },
+    contrast: "INTERFERENCIA MUY FRECUENTE: En portugués se dice \"assistir televisão / assistir um filme em casa\". En español NO se puede 'asistir' a la televisión: se dice 'ver la televisión / ver una película'. 'Asistir a' solo se usa cuando vas físicamente al evento ('asistir al congreso')."
+  },
+  {
+    id: 55,
+    q: "- Más de quinientos médicos ___ presencialmente al congreso de cardiología celebrado en Madrid.",
+    options: ["miraron", "vieron", "atendieron", "asistieron"],
+    correct: 3,
+    expectedVoice: "asistieron",
+    whyCorrect: "'Asistir a un evento' significa concurrir o estar físicamente presente en una reunión, clase, conferencia o espectáculo.",
+    whyWrong: {
+      "miraron": "Dirigir la vista.",
+      "vieron": "Percibir con los ojos.",
+      "atendieron": "Cuidar pacientes o prestar atención, pero no rige 'al congreso'."
+    },
+    contrast: "Resumen práctico: 'asistir a clase / al concierto' = ir y estar presente (\"comparecer / frequentar\"); 'ver una película en casa' = \"assistir a um filme\"."
+  },
+  {
+    id: 56,
+    q: "- Para el almuerzo del domingo la abuela preparó un delicioso ___ de carne con patatas y zanahorias.",
+    options: ["estofado", "tapizado", "sofá", "acolchado"],
+    correct: 0,
+    expectedVoice: "estofado",
+    whyCorrect: "'Estofado' en español es un guiso de carne y verduras cocinado a fuego lento en una cazuela cerrada.",
+    whyWrong: {
+      "tapizado": "Revestimiento de tela o cuero de un mueble (lo que en Brasil es 'estofado').",
+      "sofá": "Mueble para sentarse.",
+      "acolchado": "Relleno blando."
+    },
+    contrast: "FALSO AMIGO CURIOSO: En portugués brasileño \"estofado\" es el sofá o el acolchado de los asientos del coche. En español 'estofado' es un plato de comida (\"ensopado / carne de panela\"), mientras que el recubrimiento de los muebles se llama 'tapizado' o 'tapicería'."
+  },
+  {
+    id: 57,
+    q: "- Guardé todos los documentos e informes impresos dentro de una ___ azul.",
+    options: ["alfombra", "carpeta", "moqueta", "tapete"],
+    correct: 1,
+    expectedVoice: "carpeta",
+    whyCorrect: "'Carpeta' en español es el utensilio de cartón o plástico (o directorio informático) donde se guardan documentos (\"pasta\").",
+    whyWrong: {
+      "alfombra": "Tejido que cubre el suelo (\"tapete\").",
+      "moqueta": "Revestimiento textil que cubre todo el piso de pared a pared (\"carpete\" en Brasil).",
+      "tapete": "En España es un paño pequeño para muebles; en partes de América es alfombra."
+    },
+    contrast: "TRÍO DE FALSOS AMIGOS: 1) Español 'carpeta' = portugués \"pasta de arquivos\"; 2) Portugués \"carpete\" (de piso) = español 'moqueta' o 'alfombra'; 3) Portugués \"pasta de dentes\" = español 'pasta de dientes'."
+  },
+  {
+    id: 58,
+    q: "- Metí la carta de invitación dentro del ___ blanco y le puse el sello postal.",
+    options: ["carpeta", "bolsillo", "sobre", "papel"],
+    correct: 2,
+    expectedVoice: "sobre",
+    whyCorrect: "En español el sustantivo masculino 'el sobre' designa la cubierta de papel en que se incluye una carta o tarjeta (\"envelope\").",
+    whyWrong: {
+      "carpeta": "Para archivar folios (\"pasta\").",
+      "bolsillo": "Parte de la ropa para guardar objetos pequeños (\"bolso da calça\").",
+      "papel": "Hoja para escribir."
+    },
+    contrast: "Además de la preposición 'sobre' (encima de), en español 'el sobre' es un sustantivo que significa \"o envelope\" ('un sobre de carta', 'sopa de sobre')."
+  },
+  {
+    id: 59,
+    q: "- Al terminar la ópera, todos los cantantes salieron al ___ para recibir los aplausos del público.",
+    options: ["palco", "camarote", "balcón", "escenario"],
+    correct: 3,
+    expectedVoice: "escenario",
+    whyCorrect: "'Escenario' es la parte del teatro o auditorio donde actúan los artistas (\"palco\" en portugués).",
+    whyWrong: {
+      "palco": "En español un 'palco' es el balcón o localidad exclusiva donde se sientan los espectadores VIP a ver el espectáculo (\"camarote\").",
+      "camarote": "En español un 'camarote' es la habitación para dormir dentro de un barco o tren (\"cabine de navio\").",
+      "balcón": "Ventana abierta al exterior con barandilla (\"sacada\")."
+    },
+    contrast: "CADENA TEATRAL Y NÁUTICA: 1) Portugués \"palco\" (donde actúa el artista) = español 'escenario'; 2) Español 'palco' (donde se sienta el público VIP) = portugués \"camarote\"; 3) Español 'camarote' = habitación de un barco (\"cabine\")."
+  },
+  {
+    id: 60,
+    q: "- El presidente y los invitados de honor presenciaron la función desde el ___ real del teatro.",
+    options: ["palco", "escenario", "sótano", "desván"],
+    correct: 0,
+    expectedVoice: "palco",
+    whyCorrect: "'Palco' es el compartimento con barandilla en un teatro o estadio reservado para ciertos espectadores.",
+    whyWrong: {
+      "escenario": "Plataforma donde actúan los artistas.",
+      "sótano": "Planta subterránea de un edificio (\"porão\").",
+      "desván": "Parte más alta bajo el tejado (\"sótão\")."
+    },
+    contrast: "Si un cantante brasileño dice en español '*Subí al palco a cantar', el público hispano imaginará que se subió a los balcones de los espectadores en vez de salir al 'escenario'."
+  },
+  {
+    id: 61,
+    q: "- Bajamos las escaleras hasta el ___ subterráneo del edificio para buscar las cajas antiguas.",
+    options: ["desván", "sótano", "ático", "tejado"],
+    correct: 1,
+    expectedVoice: "sótano",
+    whyCorrect: "'Sótano' es el recinto subterráneo situado debajo del nivel de la calle en un edificio (\"porão\" o \"subsolo\").",
+    whyWrong: {
+      "desván": "Es la parte más alta de la casa, inmediatamente debajo del tejado (lo que en portugués es \"sótão\").",
+      "ático": "Último piso de un edificio.",
+      "tejado": "Cubierta exterior de la casa."
+    },
+    contrast: "OPUESTOS VERTICALES: En portugués \"sótão\" está arriba, bajo el techo. En español 'sótano' está ABAJO, bajo tierra (\"porão\"). Para referirte a la parte bajo el tejado en español se usa 'desván', 'buhardilla' o 'altillo'."
+  },
+  {
+    id: 62,
+    q: "- Subimos por una escalera de madera hasta el ___ bajo el tejado, donde guardaban muebles viejos.",
+    options: ["sótano", "subsuelo", "desván", "mostrador"],
+    correct: 2,
+    expectedVoice: "desván",
+    whyCorrect: "'Desván' (o 'buhardilla') es el espacio más alto de la casa, justo debajo del tejado (\"sótão\").",
+    whyWrong: {
+      "sótano": "Queda bajo tierra (\"porão\").",
+      "subsuelo": "Bajo el nivel del suelo.",
+      "mostrador": "Mesa larga de atención en las tiendas (\"balcão\")."
+    },
+    contrast: "Recuerda la inversión vertical: español 'sótano' = abajo (\"porão\"); español 'desván / buhardilla' = arriba (\"sótão\")."
+  },
+  {
+    id: 63,
+    q: "- En la farmacia me acerqué al ___ para entregarle la receta médica al dependiente.",
+    options: ["balcón", "terraza", "escaparate", "mostrador"],
+    correct: 3,
+    expectedVoice: "mostrador",
+    whyCorrect: "'Mostrador' (o 'barra' en un bar) es la mesa alargada tras la cual atienden los vendedores en un comercio (\"balcão de atendimento\").",
+    whyWrong: {
+      "balcón": "En español 'balcón' es exclusivamente la plataforma con barandilla que sobresale en la fachada de un piso o apartamento (\"sacada / varanda\").",
+      "terraza": "Espacio abierto al aire libre.",
+      "escaparate": "Vitrina exterior de una tienda que da a la calle (\"vitrine\")."
+    },
+    contrast: "FALSO AMIGO ARQUITECTÓNICO Y COMERCIAL: Español 'balcón' = portugués \"sacada\" (en la ventana del edificio). Español 'mostrador' (en tiendas) o 'barra' (en bares) = portugués \"balcão\"."
+  },
+  {
+    id: 64,
+    q: "- Nuestro apartamento del quinto piso tiene un ___ lleno de macetas con vistas al mar.",
+    options: ["balcón", "mostrador", "escaparate", "palco"],
+    correct: 0,
+    expectedVoice: "balcón",
+    whyCorrect: "'Balcón' es el hueco abierto al exterior desde el suelo de la habitación con barandilla saliente (\"sacada\").",
+    whyWrong: {
+      "mostrador": "Mesa para atender clientes en una tienda.",
+      "escaparate": "Vitrina de exhibición comercial.",
+      "palco": "Localidad de teatro."
+    },
+    contrast: "En español 'asomarse al balcón' equivale a \"ir até a sacada\"."
+  },
+  {
+    id: 65,
+    q: "- Para Navidad le compramos a nuestro hijo un camión de madera y otros ___ educativos.",
+    options: ["brincos", "juguetes", "pendientes", "juegos de oreja"],
+    correct: 1,
+    expectedVoice: "juguetes",
+    whyCorrect: "'Juguete' es el objeto con el que juegan los niños (\"brinquedo\").",
+    whyWrong: {
+      "brincos": "En español un 'brinco' es un salto en el aire ('dar un brinco' = \"dar um pulo\").",
+      "pendientes": "Joyas que se llevan en el lóbulo de las orejas (\"brincos\" en portugués).",
+      "juegos de oreja": "Inexistente."
+    },
+    contrast: "CONEXIÓN LÉXICA IMPORTANTE: En español los niños 'juegan' (\"brincam\") con 'juguetes' (\"brinquedos\"). En cambio, 'dar un brinco' es dar un salto, y las joyas de las orejas (\"brincos\") se llaman 'pendientes' (en España) o 'aros / aretes' (en América)."
+  },
+  {
+    id: 66,
+    q: "- Para la boda se puso un collar de perlas y unos ___ de oro en las orejas.",
+    options: ["juguetes", "brincos de saltar", "pendientes", "guantes"],
+    correct: 2,
+    expectedVoice: "pendientes",
+    whyCorrect: "'Pendientes' (también llamados 'aretes' o 'aros' en Hispanoamérica) son los adornos que se colocan en las orejas (\"brincos\").",
+    whyWrong: {
+      "juguetes": "Objetos para que jueguen los niños (\"brinquedos\").",
+      "brincos de saltar": "'Brinco' en español general significa salto.",
+      "guantes": "Prendas para cubrir las manos (\"luvas\")."
+    },
+    contrast: "Nunca digas '*Me compré unos juguetes de plata' ni uses 'brincos' en España o el Cono Sur para las joyas de las orejas: usa 'pendientes', 'aretes' o 'aros'."
+  },
+  {
+    id: 67,
+    q: "- Los abuelos estaban emocionadísimos porque nació su primer ___.",
+    options: ["neto", "líquido", "bruto", "nieto"],
+    correct: 3,
+    expectedVoice: "nieto",
+    whyCorrect: "'Nieto' (con diptongo '-ie-') es el hijo del hijo o de la hija de una persona (\"neto\").",
+    whyWrong: {
+      "neto": "En español 'neto' significa limpio, puro o resultante después de deducir impuestos y gastos ('sueldo neto', 'peso neto' = \"peso líquido\").",
+      "líquido": "Estado de la materia o saldo contable.",
+      "bruto": "Sin descontar impuestos ('sueldo bruto')."
+    },
+    contrast: "FALSO AMIGO POR DIPTONGACIÓN: Portugués \"neto\" (familiar) = español 'nieto'. Español 'neto' = portugués \"líquido\" en economía y comercio ('beneficio neto', 'peso neto')."
+  },
+  {
+    id: 68,
+    q: "- Según la etiqueta del envase, el peso ___ del producto sin contar la lata es de 400 gramos.",
+    options: ["neto", "nieto", "flaco", "vago"],
+    correct: 0,
+    expectedVoice: "neto",
+    whyCorrect: "'Peso neto' es el peso exclusivo del contenido tras descontar la tara o envase (\"peso líquido\").",
+    whyWrong: {
+      "nieto": "Hijo del hijo.",
+      "flaco": "Delgado.",
+      "vago": "Perezoso."
+    },
+    contrast: "Del mismo modo, 'salario neto' en español equivale al \"salário líquido\" en Brasil (lo que realmente cobras en mano tras las retenciones)."
+  },
+  {
+    id: 69,
+    q: "- Metí las monedas y las llaves dentro del ___ de mi pantalón vaquero.",
+    options: ["bolso", "bolsillo", "cartera", "saco"],
+    correct: 1,
+    expectedVoice: "bolsillo",
+    whyCorrect: "'Bolsillo' es la pequeña bolsa cosida en los pantalones, camisas o chaquetas (\"bolso da roupa\").",
+    whyWrong: {
+      "bolso": "En español 'el bolso' (o 'la cartera' en América) es el accesorio de cuero o tela con asas que se lleva al hombro o en la mano (\"bolsa de mão\").",
+      "cartera": "Billetera para documentos/dinero o bolso de mano femenino.",
+      "saco": "Costal grande o chaqueta de vestir (en América)."
+    },
+    contrast: "INTERCAMBIO ENTRE 'BOLSO' Y 'BOLSILLO': 1) Portugués \"bolso\" (de la ropa) = español 'bolsillo' ('dinero de bolsillo'); 2) Portugués \"bolsa\" (accesorio de mano) = español 'bolso' (en España) o 'cartera' (en América); 3) Portugués \"bolsa de estudos\" = español 'beca'."
+  },
+  {
+    id: 70,
+    q: "- María dejó su teléfono móvil y el pintalabios dentro de su ___ de cuero sobre la silla.",
+    options: ["bolsillo del pantalón", "beca", "bolso", "guante"],
+    correct: 2,
+    expectedVoice: "bolso",
+    whyCorrect: "'El bolso' (masculino en español) es la bolsa de mano o de hombro donde se llevan objetos personales (\"a bolsa\").",
+    whyWrong: {
+      "bolsillo del pantalón": "Incoherente con 'de cuero sobre la silla'.",
+      "beca": "Ayuda económica para estudiar (\"bolsa de estudos\").",
+      "guante": "Prenda para las manos (\"luva\")."
+    },
+    contrast: "En España se distingue entre 'el bolso' (accesorio de mano: \"a bolsa\") y 'la bolsa' (bolsa de plástico o papel del supermercado: \"sacola\")."
+  },
+  {
+    id: 71,
+    q: "- Gracias a sus excelentes calificaciones, obtuvo una ___ completa para estudiar el máster en Salamanca.",
+    options: ["bolsa de mano", "firma", "asignatura", "beca"],
+    correct: 3,
+    expectedVoice: "beca",
+    whyCorrect: "'Beca' es la subvención o ayuda económica concedida a un estudiante para realizar estudios o investigaciones (\"bolsa de estudos\").",
+    whyWrong: {
+      "bolsa de mano": "Accesorio para transportar objetos.",
+      "firma": "Rúbrica o nombre escrito a mano (\"assinatura\").",
+      "asignatura": "Materia o disciplina académica (\"disciplina / matéria\")."
+    },
+    contrast: "En Brasil \"beca\" es la toga negra de graduación universitaria, mientras que la ayuda financiera es \"bolsa de estudos\". En español la ayuda financiera es siempre 'beca' (y el estudiante que la recibe es un 'becario' = \"bolsista\")."
+  },
+  {
+    id: 72,
+    q: "- Los cirujanos deben ponerse ___ de látex esterilizados antes de entrar al quirófano.",
+    options: ["guantes", "lupas", "gafas", "gorras"],
+    correct: 0,
+    expectedVoice: "guantes",
+    whyCorrect: "'Guantes' son las prendas que cubren las manos y cada uno de los dedos (\"luvas\").",
+    whyWrong: {
+      "lupas": "Lentes de aumento con mango.",
+      "gafas": "Lentes para corregir la vista (\"óculos\").",
+      "gorras": "Viseras para la cabeza (\"bonés\")."
+    },
+    contrast: "No existe '*luvas' en español; se dice 'guantes' ('guantes de invierno', 'guantes de boxeo', 'guantes de látex')."
+  },
+  {
+    id: 73,
+    q: "- Hoy prefiero no usar gafas para jugar al fútbol; me pondré las ___.",
+    options: ["lentejas", "lentillas", "lupas", "pestañas"],
+    correct: 1,
+    expectedVoice: "lentillas",
+    whyCorrect: "'Lentillas' (o 'lentes de contacto') son los pequeños discos transparentes que se colocan sobre la córnea para corregir la visión.",
+    whyWrong: {
+      "lentejas": "Son las legumbres comestibles marrones que se cocinan en guiso (\"lentilhas\").",
+      "lupas": "Cristales de aumento con mango.",
+      "pestañas": "Pelos del borde de los párpados (\"cílios\")."
+    },
+    contrast: "FALSO AMIGO DIVERTIDO: En portugués \"lentilhas\" es la legumbre que se come en Año Nuevo. En español esa legumbre se llama 'lentejas', mientras que 'lentillas' significa 'lentes de contacto' para los ojos."
+  },
+  {
+    id: 74,
+    q: "- Los viernes en invierno preparamos un plato caliente de ___ con chorizo y verduras.",
+    options: ["lentillas", "lentes de contacto", "lentejas", "almejas de monte"],
+    correct: 2,
+    expectedVoice: "lentejas",
+    whyCorrect: "'Lentejas' es la planta leguminosa de semillas pequeñas y redondas muy rica en hierro (\"lentilhas\").",
+    whyWrong: {
+      "lentillas": "Lentes de contacto oftálmicas.",
+      "lentes de contacto": "Para la vista.",
+      "almejas de monte": "Inexistente."
+    },
+    contrast: "No confundas nunca 'ponerse las lentillas' (en los ojos) con 'comerse un plato de lentejas' (en la mesa)."
+  },
+  {
+    id: 75,
+    q: "- ¿Cuál es tu ___ favorita en el primer semestre de la carrera de Derecho?",
+    options: ["firma", "suscripción", "rúbrica", "asignatura"],
+    correct: 3,
+    expectedVoice: "asignatura",
+    whyCorrect: "'Asignatura' (o 'materia') es cada una de las disciplinas que se enseñan en un centro docente o plan de estudios.",
+    whyWrong: {
+      "firma": "Nombre y apellido que una persona pone al pie de un documento (\"assinatura\").",
+      "suscripción": "Abono periódico a una revista o plataforma digital (\"assinatura de revista\").",
+      "rúbrica": "Trazo gráfico de la firma."
+    },
+    contrast: "TRIPLE CONTRASTE CON \"ASSINATURA\": En español 'asignatura' es exclusivamente una materia escolar o universitaria ('la asignatura de Historia'). Para el portugués \"assinatura\" existen dos palabras en español: 1) 'la firma' (en un papel o contrato); 2) 'la suscripción' (a Netflix, un periódico o revista)."
+  },
+  {
+    id: 76,
+    q: "- El contrato no tiene validez legal porque falta tu ___ en la última hoja.",
+    options: ["firma", "asignatura", "suscripción", "matrícula"],
+    correct: 0,
+    expectedVoice: "firma",
+    whyCorrect: "'Firma' es el trazo gráfico manuscrito o digital con que alguien valida un documento (y el verbo es 'firmar').",
+    whyWrong: {
+      "asignatura": "Materia de estudio.",
+      "suscripción": "Pago periódico por recibir una publicación o servicio.",
+      "matrícula": "Inscripción escolar o placa del vehículo."
+    },
+    contrast: "En español se dice 'firmar un contrato' y 'poner la firma' (nunca '*asinar' ni '*asignatura')."
+  },
+  {
+    id: 77,
+    q: "- Todos los alumnos ya están sentados dentro del ___ esperando a que empiece la ___ de química.",
+    options: ["clase / aula", "aula / clase", "oficina / firma", "sala / asignatura de hoy"],
+    correct: 1,
+    expectedVoice: "aula y clase",
+    whyCorrect: "En español 'el aula' es el espacio físico (el salón dotado de pupitres y pizarra: \"a sala de aula\"), mientras que 'la clase' es la lección o sesión que imparte el profesor (\"a aula\").",
+    whyWrong: {
+      "clase / aula": "Invierte los términos al modo portugués.",
+      "oficina / firma": "Falsos amigos impropios.",
+      "sala / asignatura de hoy": "Menos preciso para diferenciar recinto físico y lección."
+    },
+    contrast: "En portugués \"aula\" es la lección ('Tengo aula de español hoy' es un lusismo). En español la lección es 'la clase' ('Hoy tengo clase de español'), y 'el aula' (femenino pero con artículo 'el' en singular: 'el aula limpia') es el recinto físico (\"sala de aula\")."
+  },
+  {
+    id: 78,
+    q: "- Mi tío trabajó cuarenta años en el banco y desde el mes pasado ya está ___.",
+    options: ["aposentado en un hotel", "en huelga", "jubilado", "desempleado"],
+    correct: 2,
+    expectedVoice: "jubilado",
+    whyCorrect: "'Jubilado' es la persona que ha dejado de trabajar por haber cumplido la edad legal y recibe una pensión (\"aposentado\").",
+    whyWrong: {
+      "aposentado en un hotel": "En español 'aposentar(se)' es un verbo literario que significa alojarse o hospedarse en una habitación ('aposento').",
+      "en huelga": "En paro voluntario de protesta laboral (\"em greve\").",
+      "desempleado": "Persona en edad activa que ha perdido su empleo (\"desempregado / en el paro\")."
+    },
+    contrast: "FALSO AMIGO LABORAL: En algunos contextos brasileños \"jubilar\" significa expulsar a un alumno de la universidad por exceder el plazo. En español 'jubilarse' es siempre positivo y oficial: significa \"aposentar-se\", y la pensión es 'la jubilación'."
+  },
+  {
+    id: 79,
+    q: "- En la mesa faltan los ___: por favor, trae los tenedores, los cuchillos y las cucharas.",
+    options: ["talleres", "vasos", "platillos", "cubiertos"],
+    correct: 3,
+    expectedVoice: "cubiertos",
+    whyCorrect: "'Los cubiertos' son el conjunto de cuchara, tenedor y cuchillo que se utilizan para comer en la mesa (\"os talheres\").",
+    whyWrong: {
+      "talleres": "Lugares de trabajo mecánico o artesanal (\"oficinas\").",
+      "vasos": "Recipientes para beber.",
+      "platillos": "Platos pequeños."
+    },
+    contrast: "FONÉTICA ENGAÑOSA: El portugués \"talheres\" suena idéntico al español 'talleres' (plural de 'taller' = \"oficina mecânica\"). Para pedir cuchillo y tenedor en español se dice 'los cubiertos'."
+  },
+  {
+    id: 80,
+    q: "- El médico me aconsejó reducir el consumo de frituras y embutidos con mucha ___.",
+    options: ["grasa", "gracia", "aceite de oliva", "salsa"],
+    correct: 0,
+    expectedVoice: "grasa",
+    whyCorrect: "'Grasa' en español es el tejido adiposo o sustancia lipídica de los alimentos o del cuerpo (\"gordura\"), y también el lubricante mecánico (\"graxa\").",
+    whyWrong: {
+      "gracia": "Cualidad de ser divertido, atractivo o favor ('hacer gracia' = \"ter graça\").",
+      "aceite de oliva": "Líquido graso vegetal saludable.",
+      "salsa": "Condimento líquido (\"molho\")."
+    },
+    contrast: "DOBLE FALSO AMIGO: 1) Español 'grasa' = portugués \"gordura\" ('leche sin grasa / desnatada', 'comida con grasa') y también \"graxa\"; 2) Portugués \"graça\" (chiste o encanto) = español 'gracia' (y alguien \"engraçado\" es alguien 'gracioso / divertido', ¡nunca '*engrasado', que significa lleno de aceite de motor!)."
+  },
+  {
+    id: 81,
+    q: "- Ese comediante cuenta chistes tan buenos que a todo el público le parece muy ___.",
+    options: ["engrasado", "gracioso", "grasiento", "aburrido"],
+    correct: 1,
+    expectedVoice: "gracioso",
+    whyCorrect: "'Gracioso' (o 'divertido') significa que tiene gracia y hace reír (\"engraçado\").",
+    whyWrong: {
+      "engrasado": "Participio de 'engrasar': cubierto o lubricado con grasa o aceite mecánico (\"engraxado / lubrificado\").",
+      "grasiento": "Sucio o lleno de grasa (\"gorduroso\").",
+      "aburrido": "Que produce tedio (\"chato / entediado\")."
+    },
+    contrast: "¡Jamás le digas a un amigo hispanohablante '*Eres muy engrasado' queriendo decir \"Você é muito engraçado\"! Le estarías diciendo que está untado en grasa de máquina. Di siempre 'Eres muy gracioso / divertido'."
+  },
+  {
+    id: 82,
+    q: "- En la dieta mediterránea se aliñan las ensaladas con ___ de oliva virgen extra.",
+    options: ["aceptación", "grasa de motor", "aceite", "óleo de pintura"],
+    correct: 2,
+    expectedVoice: "aceite",
+    whyCorrect: "'Aceite' en español designa cualquier líquido graso vegetal, animal o mineral ('aceite de oliva', 'aceite de girasol', 'aceite de soja', 'aceite del motor').",
+    whyWrong: {
+      "aceptación": "Acción de aceptar un documento o propuesta (\"aceite\" en portugués comercial).",
+      "grasa de motor": "No comestible.",
+      "óleo de pintura": "En español 'óleo' se reserva para la técnica pictórica ('pintura al óleo') o los santos óleos religiosos."
+    },
+    contrast: "En portugués se distingue entre \"azeite\" (de oliva) y \"óleo\" (de soja, maíz o motor), y además existe \"o aceite\" (aceptación de una propuesta). En español todo líquido oleoso de cocina o motor se llama 'aceite', y el acto de aceptar una oferta es 'la aceptación'."
+  },
+  {
+    id: 83,
+    q: "- Preparé una ensalada verde muy fresca con hojas de rúcula y ___.",
+    options: ["grito", "perejil", "almeja", "berro"],
+    correct: 3,
+    expectedVoice: "berro",
+    whyCorrect: "'Berro' en español es la planta acuática comestible de sabor ligeramente picante que se consume en ensaladas (\"agrião\").",
+    whyWrong: {
+      "grito": "Voz muy alta y esforzada (lo que en portugués es \"berro\").",
+      "perejil": "Hierba para condimentar (\"salsinha\").",
+      "almeja": "Molusco marino bivalvo."
+    },
+    contrast: "FALSO AMIGO SORPRENDENTE: En portugués \"dar um berro\" es dar un grito fuerte. En español 'el berro' es la verdura \"agrião\" (aunque existe el verbo 'berrear' para el bramido de los becerros o el llanto estridente)."
+  },
+  {
+    id: 84,
+    q: "- De postre pedimos nata montada con ___ frescas de temporada.",
+    options: ["fresas", "morangos", "almejas", "berros"],
+    correct: 0,
+    expectedVoice: "fresas",
+    whyCorrect: "'Fresa' (llamada 'frutilla' en Argentina, Chile y Uruguay) es el fruto rojo pequeño y aromático (\"morango\").",
+    whyWrong: {
+      "morangos": "Palabra portuguesa, inexistente en español.",
+      "almejas": "Moluscos marinos con concha (\"amêijoas / mariscos\").",
+      "berros": "Hortaliza de ensalada (\"agrião\")."
+    },
+    contrast: "Además de la fruta, en México la palabra 'fresa' se usa coloquialmente como adjetivo para describir a un joven de clase alta o presumido (\"patricinha / mauricinho\")."
+  },
+  {
+    id: 85,
+    q: "- La paella marinera llevaba mejillones, calamares y ___ frescas.",
+    options: ["ciruelas", "almejas", "ameixas", "zarigüeyas"],
+    correct: 1,
+    expectedVoice: "almejas",
+    whyCorrect: "'Almeja' es el molusco bivalvo comestible que vive enterrado en la arena del mar (\"amêijoa / vôngole\").",
+    whyWrong: {
+      "ciruelas": "Es la fruta dulce del ciruelo (lo que en portugués se llama \"ameixa\").",
+      "ameixas": "Palabra portuguesa.",
+      "zarigüeyas": "Mamífero marsupial terrestre (\"gambá\")."
+    },
+    contrast: "FALSO AMIGO FONÉTICO: 'Almeja' suena muy parecido al portugués \"ameixa\" (fruta), pero en español 'almeja' es un marisco de concha, mientras que la fruta \"ameixa\" se llama 'ciruela'."
+  },
+  {
+    id: 86,
+    q: "- En la costa mediterránea es muy típico pedir una ración de ___ al ajillo.",
+    options: ["zarigüeyas", "gambás", "gambas", "ratones"],
+    correct: 2,
+    expectedVoice: "gambas",
+    whyCorrect: "En España, 'la gamba' (sin tilde en la última sílaba) es un crustáceo marino muy apreciado similar al camarón o langostino.",
+    whyWrong: {
+      "zarigüeyas": "Mamífero marsupial americano (\"gambá\").",
+      "gambás": "Plural de la voz portuguesa 'gambá'.",
+      "ratones": "Roedores terrestres."
+    },
+    contrast: "DIFERENCIA DE ACENTO Y SIGNIFICADO: En portugués brasileño \"o gambá\" (aguda) es el mamífero marsupial o mofeta (que en español se llama 'zarigüeya' o 'comadreja'). En español 'la gamba' (llana: GAM-ba) es un delicioso \"camarão\"."
+  },
+  {
+    id: 87,
+    q: "- En primavera el jardín se llena de ___ de colores que vuelan de flor en flor.",
+    options: ["polillas nocturnas", "gambas", "abejas", "mariposas"],
+    correct: 3,
+    expectedVoice: "mariposas",
+    whyCorrect: "'Mariposa' en español es el insecto diurno de alas grandes y vistosas (\"borboleta\").",
+    whyWrong: {
+      "polillas nocturnas": "'Polilla' es el insecto nocturno pequeño que ataca la lana o acude a la luz (\"mariposa / traça\" en portugués).",
+      "gambas": "Crustáceos marinos.",
+      "abejas": "Insectos productores de miel."
+    },
+    contrast: "En portugués \"borboleta\" es el insecto diurno de colores y \"mariposa\" es el insecto nocturno grisáceo. En español el insecto colorido de jardín es siempre 'mariposa', y el nocturno que come ropa es 'polilla' (y en natación el estilo \"borboleta\" se llama 'estilo mariposa')."
+  },
+  {
+    id: 88,
+    q: "- Nuestro encuentro en el aeropuerto fue puro ___: ninguno de los dos sabía que viajábamos el mismo día.",
+    options: ["azar", "mala suerte", "perjuicio", "gafe"],
+    correct: 0,
+    expectedVoice: "azar",
+    whyCorrect: "En español 'el azar' significa casualidad, caso fortuito o suerte neutra ('juegos de azar', 'al azar' = \"ao acaso / aleatoriamente\").",
+    whyWrong: {
+      "mala suerte": "En portugués 'azar' significa mala suerte, pero en este contexto fue una casualidad.",
+      "perjuicio": "Daño económico.",
+      "gafe": "Mala racha o persona que trae mala suerte."
+    },
+    contrast: "FALSO AMIGO SEMÁNTICO: En portugués \"azar\" significa exclusivamente mala suerte (\"Que azar!\"). En español 'el azar' significa \"acaso / sorte aleatória\" ('elegir un número al azar'). Para decir \"Que azar!\" en español debes decir '¡Qué mala suerte!' o '¡Qué mala pata!'."
+  },
+  {
+    id: 89,
+    q: "- El tráfico hoy estuvo ___ a causa de la tormenta; tardamos tres horas en llegar.",
+    options: ["asombroso", "espantoso", "admirable", "exquisito"],
+    correct: 1,
+    expectedVoice: "espantoso",
+    whyCorrect: "'Espantoso' en español tiene siempre sentido negativo: significa horrible, pésimo, monstruoso o que causa espanto.",
+    whyWrong: {
+      "asombroso": "Que causa admiración o asombro positivo.",
+      "admirable": "Digno de admiración.",
+      "exquisito": "Delicioso o excelente."
+    },
+    contrast: "En portugués \"espantoso\" puede usarse en sentido positivo como sinónimo de sorprendente o extraordinario (\"um crescimento espantoso\"). En español 'espantoso' es sinónimo de 'horrible / terrible'; para el sentido positivo de admiración usa 'asombroso' o 'sorprendente'."
+  },
+  {
+    id: 90,
+    q: "- Cambiemos de canal; este documental es tan lento y monótono que estoy ___.",
+    options: ["enojado", "enfadado", "aburrido", "mareado"],
+    correct: 2,
+    expectedVoice: "aburrido",
+    whyCorrect: "'Aburrido' significa con tedio o fastidio por falta de distracción ('estar aburrido' = \"estar entediado\"; 'ser aburrido' = \"ser chato\").",
+    whyWrong: {
+      "enojado": "Con ira o enfado (lo que en portugués suele ser \"aborrecido / zangado\").",
+      "enfadado": "Sinónimo de enojado.",
+      "mareado": "Con vértigo o náuseas."
+    },
+    contrast: "CADENA DE ESTADOS DE ÁNIMO: En portugués \"aborrecido\" suele significar molesto o enfadado. En español 'aburrido' significa únicamente \"entediado\" (con 'estar') o \"chato / monótono\" (con 'ser')."
+  },
+  {
+    id: 91,
+    q: "- El profesor estaba muy ___ porque la mitad del grupo llegó media hora tarde al examen.",
+    options: ["mareado", "asqueado", "aburrido de sueño", "enojado / enfadado"],
+    correct: 3,
+    expectedVoice: "enojado o enfadado",
+    whyCorrect: "'Enojado' (predominante en América) o 'enfadado' (predominante en España) significa irritado, molesto o con rabia (\"zangado / bravo / chateado\").",
+    whyWrong: {
+      "mareado": "Con náuseas o vértigo por el movimiento (\"enjoado\").",
+      "asqueado": "Que siente asco o repugnancia.",
+      "aburrido de sueño": "Incoherente."
+    },
+    contrast: "¡ATENCIÓN AL FALSO AMIGO 'ENOJADO' vs. \"ENJOADO\"!: En portugués \"enjoado\" significa con náuseas o mareo. En español 'enojado' viene de 'enojo' (ira/rabia) y significa \"bravo / irritado\". Para decir \"enjoado\" en el barco o en el coche, en español se dice 'mareado' o 'con náuseas'."
+  },
+  {
+    id: 92,
+    q: "- No puedo leer en el asiento trasero del autobús porque enseguida me pongo ___.",
+    options: ["mareado", "enojado", "enfadado", "furioso"],
+    correct: 0,
+    expectedVoice: "mareado",
+    whyCorrect: "'Mareado' es la persona que sufre mareo, vértigo o ganas de vomitar por el movimiento de un vehículo o barco (\"enjoado / tonto\").",
+    whyWrong: {
+      "enojado": "Irritado o con rabia.",
+      "enfadado": "Molesto o con ira.",
+      "furioso": "Lleno de furia."
+    },
+    contrast: "Si estás en un barco y dices en español '*Estoy muy enojado', pensarán que estás furioso con la tripulación. Di 'Estoy mareado' o 'Tengo náuseas'."
+  },
+  {
+    id: 93,
+    q: "- Ese artesano es sumamente ___ y detallista: entrega cada mueble con un acabado perfecto.",
+    options: ["caprichoso", "esmerado", "antojadizo", "vago"],
+    correct: 1,
+    expectedVoice: "esmerado",
+    whyCorrect: "'Esmerado' (o 'cuidadoso', 'minucioso', y en el Río de la Plata 'prolijo') describe a quien hace su trabajo con sumo cuidado y perfección (\"caprichoso\" en portugués).",
+    whyWrong: {
+      "caprichoso": "En español 'caprichoso' tiene sentido negativo: significa voluble, antojadizo o mimado (como un niño que llora por caprichos: \"mimado / cheio de vontades\").",
+      "antojadizo": "Sinónimo de caprichoso en español.",
+      "vago": "Perezoso."
+    },
+    contrast: "FALSO AMIGO DE CARÁCTER: En Brasil decir que un trabajador es \"muito caprichoso\" es un gran elogio (cuidadoso, perfeccionista). En español 'caprichoso' significa \"mimado / birrento / inconstante\". Para elogiar el esmero usa 'esmerado', 'cuidadoso' o 'detallista'."
+  },
+  {
+    id: 94,
+    q: "- El juez solicitó el informe de un perito ___ en seguridad informática.",
+    options: ["astuto", "pícaro", "experto", "esperto"],
+    correct: 2,
+    expectedVoice: "experto",
+    whyCorrect: "'Experto' (con 'x') significa especialista, perito o persona con grandes conocimientos técnicos en una materia (\"especialista / perito\").",
+    whyWrong: {
+      "astuto": "Sagaz o vivo para no dejarse engañar (lo que en portugués coloquial es \"esperto\").",
+      "pícaro": "Astuto con malicia.",
+      "esperto": "Palabra portuguesa, inexistente en español."
+    },
+    contrast: "Doble distinción entre 'experto' y 'listo': Portugués \"esperto\" (vivaz, sagaz, inteligente) = español 'listo', 'despierto' o 'astuto'. Español 'experto' = portugués \"perito / especialista\"."
+  },
+  {
+    id: 95,
+    q: "- Ten cuidado al negociar con él porque es muy ___ y conoce todos los trucos del mercado; además, ya está ___ para firmar hoy.",
+    options: ["experto / pronto", "pronto / listo", "vago / vacante", "listo / listo"],
+    correct: 3,
+    expectedVoice: "listo y listo",
+    whyCorrect: "En español el adjetivo 'listo' cambia de significado según el verbo copulativo: 'ser listo' significa ser inteligente o sagaz (\"ser esperto\"), mientras que 'estar listo' significa estar preparado o terminado (\"estar pronto\").",
+    whyWrong: {
+      "experto / pronto": "En español 'pronto' es un adverbio temporal que significa 'temprano' o 'dentro de poco tiempo', nunca 'preparado'.",
+      "pronto / listo": "Invierte e introduce el falso amigo 'pronto'.",
+      "vago / vacante": "Incoherente."
+    },
+    contrast: "REGLA FUNDAMENTAL DE 'SER/ESTAR LISTO' Y 'PRONTO': 1) 'Ser listo' = \"ser inteligente / esperto\"; 2) 'Estar listo' = \"estar pronto / preparado\"; 3) Español 'pronto' = adverbio de tiempo \"cedo / em breve\" ('Llegó pronto', 'Hasta pronto'). Nunca digas '*La comida ya está pronta'; di 'La comida ya está lista'."
+  },
+  {
+    id: 96,
+    q: "- En el restaurante pedimos una botella de vino tinto de ___ envejecido dos años en barrica de roble, mientras los ___ jugaban en el jardín.",
+    options: ["crianza / niños", "niños / crianzas", "cosecha / criaturas", "crianza / crianzas"],
+    correct: 0,
+    expectedVoice: "crianza y niños",
+    whyCorrect: "En español 'crianza' designa el cuidado y educación de los hijos o el proceso de envejecimiento del vino ('vino de crianza'), pero NUNCA significa niño. Para \"crianças\" se usa siempre 'niños'.",
+    whyWrong: {
+      "niños / crianzas": "Invierte los conceptos.",
+      "cosecha / criaturas": "'Criatura' solo se usa para bebés recién nacidos o con matiz compasivo.",
+      "crianza / crianzas": "Incurre en el lusismo de llamar '*crianzas' a los niños."
+    },
+    contrast: "FALSO AMIGO CLÁSICO: Portugués \"as crianças\" = español 'los niños / los chicos'. En español 'la crianza' es el acto de criar o el 'vino de crianza' madurado en barrica."
+  },
+  {
+    id: 97,
+    q: "- Su hermano no quiere estudiar ni buscar trabajo; se pasa el día durmiendo porque es muy ___.",
+    options: ["vacante", "vago", "libre", "desocupado de asiento"],
+    correct: 1,
+    expectedVoice: "vago",
+    whyCorrect: "En español, aplicado a una persona, 'ser un vago' significa ser perezoso, holgazán o poco amigo del trabajo (\"preguiçoso / vagabundo\").",
+    whyWrong: {
+      "vacante": "Se aplica a un puesto o cargo sin ocupar.",
+      "libre": "Disponible.",
+      "desocupado de asiento": "Inexistente."
+    },
+    contrast: "DOBLE FALSO AMIGO DE 'VAGO': En portugués \"o assento está vago\" o \"há uma vaga de emprego\" significa libre o disponible. En español, llamar 'vago' a alguien significa llamarle \"preguiçoso\"."
+  },
+  {
+    id: 98,
+    q: "- Disculpe, ¿está ___ este asiento a su lado o está ocupado?",
+    options: ["vago", "flojo", "libre", "ancho"],
+    correct: 2,
+    expectedVoice: "libre",
+    whyCorrect: "Para preguntar si un asiento, una habitación de hotel o un taxi están disponibles, en español se usa 'libre' o 'desocupado' (y para un puesto de trabajo, 'una vacante').",
+    whyWrong: {
+      "vago": "En español 'vago' significa perezoso (para personas) o impreciso ('un recuerdo vago'), nunca 'desocupado'.",
+      "flojo": "Suelto o perezoso.",
+      "ancho": "Amplio."
+    },
+    contrast: "En un estacionamiento en Brasil se busca \"uma vaga\"; en español se busca 'un sitio libre', 'una plaza libre' o 'un lugar para aparcar / estacionar'. Y en una empresa se ofrece 'una vacante' (\"uma vaga de emprego\")."
+  },
+  {
+    id: 99,
+    q: "- ¡Date prisa! El espectáculo empieza muy ___ y todavía no hemos comprado las entradas.",
+    options: ["listo", "preparado", "terminado", "pronto"],
+    correct: 3,
+    expectedVoice: "pronto",
+    whyCorrect: "'Pronto' en español es un adverbio de tiempo que significa 'dentro de poco tiempo' (\"em breve / logo\") o 'temprano' (\"cedo\").",
+    whyWrong: {
+      "listo": "Significa preparado ('estar listo').",
+      "preparado": "Dispuesto.",
+      "terminado": "Acabado."
+    },
+    contrast: "Recuerda el saludo de despedida '¡Hasta pronto!' = \"Até logo / Até breve!\". En cambio, \"Já estou pronto!\" se dice en español '¡Ya estoy listo!'."
+  },
+  {
+    id: 100,
+    q: "- Son las diez de la noche y el avión ___ no ha aterrizado; ___, la compañía aérea asegura que llegará en quince minutos.",
+    options: [
+      "todavía / sin embargo",
+      "sin embargo / todavía",
+      "aún / todavía así",
+      "incluso / todavía"
+    ],
+    correct: 0,
+    expectedVoice: "todavía y sin embargo",
+    whyCorrect: "En español 'todavía' (sinónimo de 'aún') es un adverbio de tiempo que significa \"ainda\" ('todavía no ha llegado'). En cambio, para el conector adversativo portugués \"todavia\" ('porém / contudo'), el español usa 'sin embargo' o 'no obstante'.",
+    whyWrong: {
+      "sin embargo / todavía": "Invierte por completo el valor temporal y el valor adversativo por interferencia del portugués.",
+      "aún / todavía así": "Para decir 'mesmo assim' se usa 'aun así', no '*todavía así'.",
+      "incluso / todavía": "Usa 'todavía' como adversativo al estilo portugués."
+    },
+    contrast: "BROCHE DE ORO DE LOS HETEROSSEMÁNTICOS: En portugués formal \"todavia\" es una conjunción adversativa que equivale a \"porém / no entanto\". En español 'todavía' NUNCA es adversativo: significa exclusivamente \"ainda\" ('Todavía estoy aquí' = \"Ainda estou aqui\"). Para decir \"todavia / porém\" en español, usa siempre 'sin embargo' o 'no obstante'."
+  }
+];
+
+// ========================================================
+// 2. MOTOR DE AUDIO (COLA SECUENCIAL WEB SPEECH API)
+// ========================================================
+let availableVoices = [];
+let audioQueue = [];
+let isAudioRunning = false;
+let currentlyPlayingQId = null;
+
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    const all = window.speechSynthesis.getVoices();
+    availableVoices = all.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+    if (availableVoices.length === 0 && all.length > 0) {
+      availableVoices = all;
+    }
+  }
+}
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function resetAudioButton(qId) {
+  if (qId !== null) {
+    const btn = document.getElementById(`audio-btn-${qId}`);
+    if (btn) {
+      btn.className = "btn btn-outline";
+      btn.innerHTML = "🔊 Escuchar opciones";
+    }
+  }
+  currentlyPlayingQId = null;
+  isAudioRunning = false;
+  audioQueue = [];
+}
+
+function stopCurrentAudio() {
+  if ('speechSynthesis' in window) {
+    audioQueue = [];
+    isAudioRunning = false;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+  }
+  if (currentlyPlayingQId !== null) {
+    resetAudioButton(currentlyPlayingQId);
+  }
+}
+
+function playNextInQueue() {
+  if (audioQueue.length === 0) {
+    resetAudioButton(currentlyPlayingQId);
+    return;
+  }
+
+  isAudioRunning = true;
+  const item = audioQueue.shift();
+
+  const utterance = new SpeechSynthesisUtterance(item.text);
+  utterance.lang = 'es-ES';
+  utterance.rate = item.rate || 0.92;
+  utterance.pitch = item.pitch || 1.0;
+
+  if (item.voice) {
+    utterance.voice = item.voice;
+  } else if (availableVoices.length > 0) {
+    utterance.voice = availableVoices[0];
+  }
+
+  utterance.onend = () => {
+    playNextInQueue();
+  };
+
+  utterance.onerror = () => {
+    playNextInQueue();
+  };
+
+  window.speechSynthesis.speak(utterance);
+  window.speechSynthesis.resume();
+}
+
+function toggleOptionsAudio(qId) {
+  if (!('speechSynthesis' in window)) {
+    return;
+  }
+
+  if (currentlyPlayingQId === qId) {
+    stopCurrentAudio();
+    return;
+  }
+
+  stopCurrentAudio();
+  loadVoices();
+
+  const qData = questionsList.find(q => q.id === qId);
+  if (!qData) return;
+
+  currentlyPlayingQId = qId;
+  const audioBtn = document.getElementById(`audio-btn-${qId}`);
+  if (audioBtn) {
+    audioBtn.className = "btn btn-audio-stop";
+    audioBtn.innerHTML = "⏹️ Detener audio";
+  }
+
+  const isDialogue = qData.q.includes("A -") && qData.q.includes("B -");
+  audioQueue = [];
+
+  qData.options.forEach((opt, idx) => {
+    const optNum = idx + 1;
+
+    audioQueue.push({
+      text: `Opción ${optNum}.`,
+      rate: 0.95,
+      pitch: 1.0,
+      voice: availableVoices.length > 0 ? availableVoices[0] : null
+    });
+
+    if (isDialogue) {
+      const lines = qData.q.split("\n");
+      lines.forEach(line => {
+        let cleanLine = line.trim();
+        let speaker = "";
+
+        if (cleanLine.startsWith("A -") || cleanLine.startsWith("A:")) {
+          speaker = "A";
+          cleanLine = cleanLine.replace(/^A\s*[-–—:]\s*/, "");
+        } else if (cleanLine.startsWith("B -") || cleanLine.startsWith("B:")) {
+          speaker = "B";
+          cleanLine = cleanLine.replace(/^B\s*[-–—:]\s*/, "");
+        }
+
+        if (cleanLine.includes("___")) {
+          cleanLine = cleanLine.replace(/___+/g, opt);
+        }
+
+        let voiceToUse = availableVoices.length > 0 ? availableVoices[0] : null;
+        let pitchToUse = 1.0;
+
+        if (speaker === "A") {
+          pitchToUse = 1.15;
+        } else if (speaker === "B") {
+          if (availableVoices.length > 1) {
+            voiceToUse = availableVoices[1];
+            pitchToUse = 1.0;
+          } else {
+            pitchToUse = 0.85;
+          }
+        }
+
+        audioQueue.push({
+          text: cleanLine,
+          rate: 0.9,
+          pitch: pitchToUse,
+          voice: voiceToUse
+        });
+      });
+    } else {
+      let sentence = qData.q.replace(/^[A-Z]\s*[-–—:]\s*/gm, "").replace(/^-\s*/gm, "").trim();
+      if (sentence.includes("___")) {
+        const parts = opt.split(" / ");
+        let blanksCount = (sentence.match(/___+/g) || []).length;
+        if (blanksCount >= 2 && parts.length >= 2) {
+          let pIdx = 0;
+          sentence = sentence.replace(/___+/g, () => parts[pIdx++] || opt);
+        } else {
+          sentence = sentence.replace(/___+/g, opt);
+        }
+      } else {
+        sentence = opt;
+      }
+
+      audioQueue.push({
+        text: sentence,
+        rate: 0.9,
+        pitch: 1.0,
+        voice: availableVoices.length > 0 ? availableVoices[0] : null
+      });
+    }
+  });
+
+  playNextInQueue();
+}
+
+// ========================================================
+// 3. MOTOR DE RECONOCIMIENTO DE VOZ
+// ========================================================
+function normalizeText(text) {
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()¿?¡!«»]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let persistentRecognizer = null;
+let currentActiveQId = null;
+
+if (SpeechRecognitionAPI) {
+  persistentRecognizer = new SpeechRecognitionAPI();
+  persistentRecognizer.lang = 'es-ES';
+  persistentRecognizer.interimResults = false;
+  persistentRecognizer.maxAlternatives = 1;
+
+  persistentRecognizer.onresult = (event) => {
+    if (currentActiveQId === null) return;
+    const qId = currentActiveQId;
+    const qData = questionsList.find(q => q.id === qId);
+    const micBtn = document.getElementById(`mic-btn-${qId}`);
+    const feedbackBox = document.getElementById(`voice-feedback-${qId}`);
+
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+
+    const speechResult = event.results[0][0].transcript;
+    const normSpoken = normalizeText(speechResult);
+
+    if (!qData) return;
+
+    let matchedIndex = -1;
+    const numberWords = [
+      ["1", "uno", "primera", "primero"],
+      ["2", "dos", "segunda", "segundo"],
+      ["3", "tres", "tercera", "tercero"],
+      ["4", "cuatro", "cuarta", "cuarto"]
+    ];
+
+    numberWords.forEach((wordList, idx) => {
+      if (idx < qData.options.length) {
+        wordList.forEach(w => {
+          if (
+            normSpoken === w ||
+            normSpoken === `opcion ${w}` ||
+            normSpoken === `la ${w}` ||
+            normSpoken === `numero ${w}` ||
+            normSpoken === `opcion numero ${w}`
+          ) {
+            matchedIndex = idx;
+          }
+        });
+      }
+    });
+
+    if (matchedIndex === -1) {
+      qData.options.forEach((opt, idx) => {
+        const normOpt = normalizeText(opt);
+        if (normOpt && (normSpoken.includes(normOpt) || normOpt.includes(normSpoken))) {
+          matchedIndex = idx;
+        }
+      });
+    }
+
+    if (matchedIndex === -1 && qData.expectedVoice) {
+      const normExp = normalizeText(qData.expectedVoice);
+      if (normSpoken.includes(normExp) || normExp.includes(normSpoken)) {
+        matchedIndex = qData.correct;
+      }
+    }
+
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+
+      if (matchedIndex !== -1) {
+        const optButtons = document.querySelectorAll(`#card-${qId} .opt-btn`);
+        optButtons.forEach(btn => btn.classList.remove("voice-focused"));
+
+        const targetBtn = document.getElementById(`opt-btn-${qId}-${matchedIndex}`);
+        if (targetBtn) {
+          targetBtn.classList.add("voice-focused");
+          targetBtn.focus();
+        }
+
+        feedbackBox.className = "voice-feedback info";
+        feedbackBox.innerHTML = `
+          🎤 <strong>Voz captada:</strong> "${escapeHtml(speechResult)}".<br>
+          📍 Se ha posicionado en la <strong>Opción ${matchedIndex + 1}</strong>.<br>
+          👉 <strong>Presiona la tecla Enter o haz clic sobre ella para confirmar tu respuesta.</strong>
+        `;
+      } else {
+        feedbackBox.className = "voice-feedback retry";
+        feedbackBox.innerHTML = `
+          🎤 <strong>Voz captada:</strong> "${escapeHtml(speechResult)}".<br>
+          ✕ No se reconoció la opción. Puedes decir por ejemplo: <em>"Opción 1"</em>, <em>"Opción 2"</em> o la palabra de la respuesta.
+        `;
+      }
+    }
+  };
+
+  persistentRecognizer.onerror = (event) => {
+    if (currentActiveQId === null) return;
+    const micBtn = document.getElementById(`mic-btn-${currentActiveQId}`);
+    const feedbackBox = document.getElementById(`voice-feedback-${currentActiveQId}`);
+
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+      feedbackBox.className = "voice-feedback retry";
+      feedbackBox.textContent = `Aviso del micrófono: ${event.error}`;
+    }
+  };
+
+  persistentRecognizer.onend = () => {
+    if (currentActiveQId !== null) {
+      const micBtn = document.getElementById(`mic-btn-${currentActiveQId}`);
+      if (micBtn) {
+        micBtn.classList.remove("recording");
+        micBtn.textContent = "🎤 Seleccionar por voz";
+      }
+    }
+  };
+}
+
+function startVoiceRecognition(qId) {
+  const feedbackBox = document.getElementById(`voice-feedback-${qId}`);
+  if (!persistentRecognizer) {
+    if (feedbackBox) {
+      feedbackBox.style.display = "block";
+      feedbackBox.className = "voice-feedback retry";
+      feedbackBox.textContent = "El reconocimiento de voz requiere Google Chrome, Microsoft Edge o Safari compatible.";
+    }
+    return;
+  }
+
+  stopCurrentAudio();
+
+  try { persistentRecognizer.abort(); } catch (e) {}
+
+  currentActiveQId = qId;
+  const micBtn = document.getElementById(`mic-btn-${qId}`);
+  if (micBtn) {
+    micBtn.classList.add("recording");
+    micBtn.textContent = "🎙️ Escuchando... Di tu opción";
+  }
+
+  try {
+    persistentRecognizer.start();
+  } catch (err) {
+    if (micBtn) {
+      micBtn.classList.remove("recording");
+      micBtn.textContent = "🎤 Seleccionar por voz";
+    }
+  }
+}
+
+// ========================================================
+// 4. CONTROL DE FILTROS, RENDERIZADO Y PUNTUACIÓN
+// ========================================================
+let currentFilter = "ALL";
+const userResponses = {};
+
+function getFilteredQuestions() {
+  if (currentFilter === "ALL") return questionsList;
+  if (currentFilter === "B1") return questionsList.filter(q => q.id >= 1 && q.id <= 25);
+  if (currentFilter === "B2") return questionsList.filter(q => q.id >= 26 && q.id <= 50);
+  if (currentFilter === "B3") return questionsList.filter(q => q.id >= 51 && q.id <= 75);
+  if (currentFilter === "B4") return questionsList.filter(q => q.id >= 76 && q.id <= 100);
+  if (currentFilter === "REVIEW") {
+    return questionsList.filter(q => {
+      const r = userResponses[q.id];
+      return r === undefined || !r.isCorrect;
+    });
+  }
+  return questionsList;
+}
+
+function selectFilter(filterKey, btnElement) {
+  stopCurrentAudio();
+  currentFilter = filterKey;
+
+  document.querySelectorAll("#filter-tabs .tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  if (btnElement) {
+    btnElement.classList.add("active");
+  }
+
+  renderQuestions();
+  updateScore();
+}
+
+function renderQuestions() {
+  const container = document.getElementById("questions-container");
+  container.innerHTML = "";
+  const list = getFilteredQuestions();
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-filter-msg">
+        🎉 <strong>¡Excelente trabajo!</strong> No tienes preguntas pendientes ni incorrectas en esta vista.
+      </div>
+    `;
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "question-card";
+    card.id = `card-${item.id}`;
+
+    const state = userResponses[item.id];
+    const isAnswered = state !== undefined;
+
+    let optionsHtml = "";
+    item.options.forEach((opt, optIndex) => {
+      let optClass = "opt-btn";
+      if (isAnswered) {
+        if (optIndex === item.correct) optClass += " correct";
+        else if (optIndex === state.selectedIndex) optClass += " wrong";
+      }
+
+      optionsHtml += `
+        <button class="${optClass}" id="opt-btn-${item.id}-${optIndex}" ${isAnswered ? "disabled" : ""} onclick="handleOptionClick(${item.id}, ${optIndex})">
+          <strong>${optIndex + 1})</strong>&nbsp;${escapeHtml(opt)}
+        </button>
+      `;
+    });
+
+    let wrongListHtml = "";
+    if (item.whyWrong) {
+      for (const [wOpt, reason] of Object.entries(item.whyWrong)) {
+        wrongListHtml += `<li><strong>${escapeHtml(wOpt)}:</strong> ${escapeHtml(reason)}</li>`;
+      }
+    }
+
+    card.innerHTML = `
+      <div class="question-header">
+        <span class="q-num">Pregunta ${item.id} de 100</span>
+        <div class="q-text">${escapeHtml(item.q)}</div>
+      </div>
+
+      <div class="audio-voice-module">
+        <div class="audio-voice-header">🎧 Audición de opciones y selección por voz:</div>
+        <div class="audio-voice-controls">
+          <button class="btn btn-outline" id="audio-btn-${item.id}" onclick="toggleOptionsAudio(${item.id})">
+            🔊 Escuchar opciones
+          </button>
+          <button class="btn btn-mic" id="mic-btn-${item.id}" onclick="startVoiceRecognition(${item.id})">
+            🎤 Seleccionar por voz
+          </button>
+        </div>
+        <div class="voice-feedback" id="voice-feedback-${item.id}"></div>
+      </div>
+
+      <div class="options-grid" style="margin-top: 14px;">${optionsHtml}</div>
+      
+      <div class="explanation-panel ${isAnswered ? "show" : ""}">
+        <div class="explanation-section">
+          <div class="section-title correct-title">✓ Opción correcta (${item.correct + 1}):</div>
+          <div>${escapeHtml(item.whyCorrect)}</div>
+        </div>
+        <div class="explanation-section">
+          <div class="section-title wrong-title">✕ Por qué las otras opciones son incorrectas:</div>
+          <ul class="wrong-list">${wrongListHtml}</ul>
+        </div>
+        <div class="contrast-box">
+          <strong class="contrast-header">Análisis Léxico Contrastivo con el Portugués Brasileño:</strong>
+          <div>${escapeHtml(item.contrast)}</div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function handleOptionClick(qId, selectedIdx) {
+  stopCurrentAudio();
+  const qData = questionsList.find(q => q.id === qId);
+  if (!qData) return;
+
+  userResponses[qId] = {
+    selectedIndex: selectedIdx,
+    isCorrect: (selectedIdx === qData.correct)
+  };
+
+  renderQuestions();
+  updateScore();
+}
+
+function updateScore() {
+  const total = questionsList.length;
+  let answered = 0;
+  let correct = 0;
+
+  questionsList.forEach(q => {
+    if (userResponses[q.id] !== undefined) {
+      answered++;
+      if (userResponses[q.id].isCorrect) correct++;
+    }
+  });
+
+  const percent = Number(((correct / total) * 100).toFixed(1));
+  document.getElementById("score-text").innerHTML = 
+    `${answered} / ${total} respondidas &nbsp;|&nbsp; <strong>${correct} aciertos (${percent}%)</strong>`;
+}
+
+function resetAllQuestions() {
+  stopCurrentAudio();
+  questionsList.forEach(q => delete userResponses[q.id]);
+  renderQuestions();
+  updateScore();
+}
+
+// ========================================================
+// 5. RESUMEN IMPRIMIBLE Y EVALUACIÓN GLOBAL DEL 75% (75/100)
+// ========================================================
+function openSummaryModal() {
+  stopCurrentAudio();
+  const blocks = [
+    { key: "B1", label: "Preguntas 1 a 25", min: 1, max: 25 },
+    { key: "B2", label: "Preguntas 26 a 50", min: 26, max: 50 },
+    { key: "B3", label: "Preguntas 51 a 75", min: 51, max: 75 },
+    { key: "B4", label: "Preguntas 76 a 100", min: 76, max: 100 }
+  ];
+
+  const tbody = document.getElementById("summary-tbody");
+  const detailsList = document.getElementById("level-details-list");
+
+  tbody.innerHTML = "";
+  detailsList.innerHTML = "";
+
+  const grandTotalQuestions = 100;
+  let grandTotalAnswered = 0;
+  let grandTotalCorrect = 0;
+
+  blocks.forEach(blk => {
+    const list = questionsList.filter(q => q.id >= blk.min && q.id <= blk.max);
+    const totalQ = list.length;
+    let answered = 0;
+    let correct = 0;
+
+    const correctIds = [];
+    const wrongIds = [];
+    const pendingIds = [];
+
+    list.forEach(q => {
+      const resp = userResponses[q.id];
+      if (resp !== undefined) {
+        answered++;
+        if (resp.isCorrect) {
+          correct++;
+          correctIds.push(q.id);
+        } else {
+          wrongIds.push(q.id);
+        }
+      } else {
+        pendingIds.push(q.id);
+      }
+    });
+
+    grandTotalAnswered += answered;
+    grandTotalCorrect += correct;
+
+    const percent = Number(((correct / totalQ) * 100).toFixed(1));
+    const isBlockCompleted = (answered === totalQ);
+    const isBlockGood = (percent >= 75);
+
+    let statusBadge = "";
+    if (isBlockCompleted) {
+      statusBadge = isBlockGood
+        ? `<span class="status-badge status-pass">Óptimo (≥ 75%)</span>`
+        : `<span class="status-badge status-fail">A reforzar (&lt; 75%)</span>`;
+    } else {
+      statusBadge = `<span class="status-badge status-pending">${answered}/${totalQ} Respondidas</span>`;
+    }
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${blk.label}</strong></td>
+      <td>${answered} / ${totalQ}</td>
+      <td><strong>${correct}</strong> / ${totalQ}</td>
+      <td><strong>${percent}%</strong></td>
+      <td>${statusBadge}</td>
+    `;
+    tbody.appendChild(tr);
+
+    const card = document.createElement("div");
+    card.className = "level-detail-card";
+
+    const renderBadges = (arr, type) => {
+      if (arr.length === 0) return '<span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">Ninguna</span>';
+      return arr.map(num => `<span class="badge-num ${type}">${num}</span>`).join(" ");
+    };
+
+    card.innerHTML = `
+      <div class="level-detail-header">
+        <span>${blk.label}</span>
+        <span>${correct} de ${totalQ} correctas (${percent}%)</span>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--correct);">✓ Correctas:</span>
+        <div>${renderBadges(correctIds, "correct")}</div>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--wrong);">✕ Incorrectas:</span>
+        <div>${renderBadges(wrongIds, "wrong")}</div>
+      </div>
+      <div class="badges-list">
+        <span class="badge-label" style="color: var(--text-muted);">○ Sin responder:</span>
+        <div>${renderBadges(pendingIds, "pending")}</div>
+      </div>
+    `;
+    detailsList.appendChild(card);
+  });
+
+  const grandPercent = Number(((grandTotalCorrect / grandTotalQuestions) * 100).toFixed(1));
+  const isGlobalPassed = (grandTotalCorrect >= 75);
+
+  let globalBadgeHtml = "";
+  if (grandTotalAnswered === grandTotalQuestions) {
+    globalBadgeHtml = isGlobalPassed
+      ? `<span class="status-badge status-pass">APROBADO (≥ 75%)</span>`
+      : `<span class="status-badge status-fail">NO APROBADO (&lt; 75%)</span>`;
+  } else {
+    globalBadgeHtml = isGlobalPassed
+      ? `<span class="status-badge status-pass">APROBADO (${grandTotalAnswered}/100 resp.)</span>`
+      : `<span class="status-badge status-pending">En curso (mín. 75 aciertos)</span>`;
+  }
+
+  const totalTr = document.createElement("tr");
+  totalTr.className = "total-row";
+  totalTr.innerHTML = `
+    <td>TOTAL GLOBAL (1 a 100)</td>
+    <td>${grandTotalAnswered} / ${grandTotalQuestions}</td>
+    <td>${grandTotalCorrect} / ${grandTotalQuestions}</td>
+    <td>${grandPercent}%</td>
+    <td>${globalBadgeHtml}</td>
+  `;
+  tbody.appendChild(totalTr);
+
+  const now = new Date();
+  document.getElementById("report-date").textContent = "Fecha de emisión: " + now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"});
+  document.getElementById("summary-modal").classList.add("active");
+}
+
+function closeSummaryModal() {
+  document.getElementById("summary-modal").classList.remove("active");
+}
+
+function printSeparateWindow() {
+  const reportContent = document.getElementById("printable-report").innerHTML;
+  const printWindow = window.open("", "_blank", "width=920,height=850");
+  if (!printWindow) return;
+  printWindow.document.open();
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>Informe de Rendimiento - Falsos Amigos y Vocabulario Contrastivo</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 30px; color: #0f172a; line-height: 1.5; }
+        .modal-header { border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 20px; }
+        .close-btn, .modal-footer { display: none !important; }
+        .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 26px; }
+        .summary-table th, .summary-table td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
+        .summary-table th { background-color: #f1f5f9; text-transform: uppercase; font-size: 0.8rem; }
+        .summary-table tr.total-row { font-weight: bold; background: #e2e8f0; font-size: 1rem; }
+        .status-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .status-pass { background: #dcfce7; color: #15803d; border: 1px solid #15803d; }
+        .status-fail { background: #fee2e2; color: #b91c1c; border: 1px solid #b91c1c; }
+        .status-pending { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+        .level-detail-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
+        .level-detail-header { font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 6px; color: #1e3a8a; }
+        .badges-list { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-bottom: 5px; }
+        .badge-label { font-weight: 600; width: 110px; font-size: 0.82rem; }
+        .badge-num { display: inline-block; font-size: 0.78rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #64748b; }
+        .badge-num.correct { background: #dcfce7; color: #15803d; border-color: #15803d; }
+        .badge-num.wrong { background: #fee2e2; color: #b91c1c; border-color: #b91c1c; }
+        .badge-num.pending { background: #f1f5f9; color: #64748b; }
+      </style>
+    </head>
+    <body>
+      ${reportContent}
+      <script>
+        window.onload = function() { window.print(); };
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  const d = document.createElement("div");
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// Inicialización al cargar
+renderQuestions();
+updateScore();
+</script>
+
+</body>
+</html>
