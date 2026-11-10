@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso y Gestión — La Escuela - Dojo de Español</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --accent: #2563eb;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --correct: #15803d;
+      --correct-bg: #dcfce7;
+      --wrong: #b91c1c;
+      --wrong-bg: #fee2e2;
+      --warning: #ca8a04;
+      --warning-bg: #fefce8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1120px; margin: 0 auto; }
+    .auth-wrapper {
+      max-width: 480px;
+      margin: 40px auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      text-align: center;
+    }
+    .logo-img {
+      width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+      border: 2px solid #bfdbfe; margin: 0 auto 12px auto; display: block;
+    }
+    .badge {
+      display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe;
+      color: var(--primary); padding: 4px 12px; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;
+    }
+    h1 { font-size: 1.55rem; color: var(--primary); margin-bottom: 4px; }
+    .subtitle { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; }
+    .auth-tabs {
+      display: flex; gap: 8px; margin-bottom: 20px; background: #f8fafc;
+      padding: 5px; border-radius: 10px; border: 1px solid var(--border);
+    }
+    .auth-tab {
+      flex: 1; padding: 9px; border: none; background: transparent;
+      border-radius: 8px; font-weight: 700; font-size: 0.88rem;
+      color: var(--text-muted); cursor: pointer;
+    }
+    .auth-tab.active { background: var(--primary); color: #ffffff; }
+    .form-group { text-align: left; margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.84rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.92rem; font-family: inherit; background: #ffffff; color: var(--text);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: 2px solid var(--accent); border-color: transparent;
+    }
+    .btn {
+      padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; border: none; display: inline-flex; align-items: center;
+      justify-content: center; gap: 6px; transition: all 0.15s ease; text-decoration: none;
+    }
+    .btn-block { width: 100%; padding: 12px; font-size: 0.96rem; }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--correct); color: #ffffff; }
+    .btn-success:hover { opacity: 0.92; }
+    .btn-danger { background: var(--wrong); color: #ffffff; }
+    .btn-danger:hover { opacity: 0.92; }
+    .btn-outline { background: #f1f5f9; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: #e2e8f0; }
+    .alert-msg {
+      padding: 10px 12px; border-radius: 8px; font-size: 0.86rem;
+      font-weight: 600; margin-bottom: 14px; display: none;
+    }
+    .alert-msg.error { display: block; background: var(--wrong-bg); color: var(--wrong); border: 1px solid #fca5a5; }
+    .alert-msg.success { display: block; background: var(--correct-bg); color: var(--correct); border: 1px solid #86efac; }
+    .panel-view { display: none; }
+    .panel-view.active { display: block; }
+    .topbar {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px 22px; margin-bottom: 20px; display: flex; flex-wrap: wrap;
+      gap: 14px; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px; margin-bottom: 20px;
+    }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+    .stat-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .stat-val { font-size: 1.55rem; font-weight: 800; color: var(--primary); margin-top: 4px; }
+    .card-box {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #eff6ff;
+    }
+    .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.76rem; }
+    tr:hover { background: #f8fafc; }
+    .status-pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+    .status-active { background: var(--correct-bg); color: var(--correct); }
+    .status-pending { background: var(--warning-bg); color: var(--warning); }
+    .status-blocked { background: var(--wrong-bg); color: var(--wrong); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(3px); z-index: 1000;
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #ffffff; border-radius: 16px; max-width: 820px; width: 100%;
+      max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.18);
+    }
+    .json-editor {
+      width: 100%; min-height: 280px; font-family: "Courier New", Courier, monospace;
+      font-size: 0.85rem; background: #0f172a; color: #e2e8f0; padding: 14px;
+      border-radius: 10px; border: 1px solid #334155; line-height: 1.45;
+    }
+    .cred-box {
+      margin-top: 16px; padding: 10px 14px; background: #f8fafc;
+      border: 1px dashed var(--border); border-radius: 8px; font-size: 0.8rem;
+      color: var(--text-muted); text-align: left;
+    }
+    footer {
+      text-align: center; margin-top: 30px; padding-top: 16px;
+      border-top: 1px solid var(--border); font-size: 0.84rem; color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 1. VISTA DE ACCESO -->
+  <div id="view-login" class="panel-view active">
+    <div class="auth-wrapper">
+      <img src="la_escuela_dojo_logo.jpg" alt="La Escuela - Dojo de Español" class="logo-img" onerror="this.style.display='none'">
+      <span class="badge">Control de Acceso</span>
+      <h1>La Escuela - Dojo de Español</h1>
+      <p class="subtitle">Ingresa con tu correo y contraseña para acceder al Portal Educativo (<code>index.html</code>)</p>
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" id="tab-btn-student" onclick="switchAuthTab('student')">🎓 Acceso Alumno</button>
+        <button type="button" class="auth-tab" id="tab-btn-admin" onclick="switchAuthTab('admin')">👨‍🏫 Gestión Profesor</button>
+      </div>
+      <div id="login-alert" class="alert-msg"></div>
+      <!-- Formulario Alumno -->
+      <form id="form-login-student" onsubmit="handleStudentLogin(event)">
+        <div class="form-group">
+          <label for="login-email">📧 Correo Electrónico (E-mail):</label>
+          <input type="email" id="login-email" required placeholder="tu.correo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label for="login-pass">🔑 Contraseña (Senha):</label>
+          <input type="password" id="login-pass" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">🚀 Entrar al Dojo de Español</button>
+        <div class="cred-box">
+          <strong>Alumnos de prueba precargados:</strong><br>
+          • <code>rodrigo.costa@gmail.com</code> | Senha: <code>dojo123</code><br>
+          • <code>mariana.santos@gmail.com</code> | Senha: <code>espanol2026</code>
+        </div>
+      </form>
+      <!-- Formulario Profesor / Administrador -->
+      <form id="form-login-admin" style="display:none;" onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label for="admin-email">📧 E-mail del Profesor:</label>
+          <input type="email" id="admin-email" value="claudio.hispanoluso@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label for="admin-pass">🔑 Contraseña de Administrador:</label>
+          <input type="password" id="admin-pass" value="dojo2026" required placeholder="Contraseña del Sensei">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">⚙️ Abrir Panel de Alumnos, Pagos y JSON</button>
+        <div class="cred-box">
+          <strong>Acceso directo precompletado:</strong><br>
+          • E-mail: <code>claudio.hispanoluso@gmail.com</code><br>
+          • Contraseña: <code>dojo2026</code> (Puedes cambiarla dentro del JSON)
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- 2. VISTA DEL ALUMNO AUTENTICADO -->
+  <div id="view-student-portal" class="panel-view">
+    <div class="topbar">
+      <div>
+        <span class="badge">Sesión Iniciada</span>
+        <h2 style="color:var(--primary); font-size:1.35rem;" id="st-welcome-name">¡Bienvenido/a!</h2>
+        <p style="font-size:0.86rem; color:var(--text-muted);" id="st-welcome-meta"></p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="index.html" class="btn btn-success" style="font-size:1rem; padding:12px 22px;">🚪 Ir al Portal Principal (index.html) &rarr;</a>
+        <button type="button" class="btn btn-outline" onclick="logout()">🔒 Salir</button>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card-box">
+        <div class="card-header"><span class="card-title">👤 Mis Datos Registrados</span></div>
+        <div id="st-profile-details" style="font-size:0.92rem; line-height:1.75;"></div>
+      </div>
+      <div class="card-box">
+        <div class="card-header"><span class="card-title">💳 Historial de Mensualidades y Pagos</span></div>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Mes / Referencia</th><th>Fecha</th><th>Importe</th><th>Método</th><th>Estado</th></tr></thead>
+            <tbody id="st-payments-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 3. VISTA DEL PROFESOR -->
+  <div id="view-admin" class="panel-view">
+    <div class="topbar">
+      <div>
+        <span class="badge">Panel de Administración y Finanzas</span>
+        <h2 style="color:var(--primary); font-size:1.4rem;">Sensei Claudio Marcelo Budnikar — Gestión del Dojo</h2>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" onclick="openStudentModal()">➕ Nuevo Alumno</button>
+        <button type="button" class="btn btn-outline" onclick="exportDatabaseJson()">📥 Descargar .JSON</button>
+        <label class="btn btn-outline" style="margin:0;">
+          📂 Cargar .JSON <input type="file" accept=".json" style="display:none;" onchange="importDatabaseJson(event)">
+        </label>
+        <button type="button" class="btn btn-success" onclick="saveFullStandaloneHtml()">💾 Guardar este HTML Actualizado</button>
+        <a href="index.html" class="btn btn-outline">🌐 Ir a index.html</a>
+        <button type="button" class="btn btn-danger" onclick="logout()">🔒 Salir</button>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total de Alumnos</div><div class="stat-val" id="stat-total-students">0</div></div>
+      <div class="stat-card"><div class="stat-label">Alumnos Activos</div><div class="stat-val" id="stat-active-students" style="color:var(--correct);">0</div></div>
+      <div class="stat-card"><div class="stat-label">Pagos Registrados (Cant.)</div><div class="stat-val" id="stat-total-payments">0</div></div>
+      <div class="stat-card"><div class="stat-label">Total Recibido Acumulado</div><div class="stat-val" id="stat-total-revenue" style="color:var(--correct);">R$ 0,00</div></div>
+    </div>
+    <div class="card-box">
+      <div class="card-header">
+        <span class="card-title">📋 Base de Alumnos Registrados y Pagos Mensuales</span>
+        <input type="text" id="admin-search" placeholder="🔍 Buscar por nombre, e-mail, ciudad, WhatsApp..." style="padding:7px 12px; border:1px solid var(--border); border-radius:8px; min-width:260px;" oninput="renderAdminTable()">
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre / E-mail / Senha</th>
+              <th>Residencia / Nacionalidad</th>
+              <th>Edad / Sexo</th>
+              <th>WhatsApp / Redes</th>
+              <th>Estado</th>
+              <th>Pagos Recibidos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="admin-students-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="card-header">
+        <span class="card-title">🛠️ Editor Directo de Base de Datos JSON (Insertar, Editar o Borrar Manualmente)</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-outline" onclick="formatJsonEditor()">✨ Formatear JSON</button>
+          <button type="button" class="btn btn-primary" onclick="applyManualJsonChanges()">💾 Aplicar y Guardar Cambios del JSON</button>
+        </div>
+      </div>
+      <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:10px;">
+        Aquí puedes ver y editar libremente toda la estructura JSON (credenciales de administrador, lista de alumnos, datos personales y el array <code>pagamentos</code> de cada estudiante). Al pulsar <strong>"Aplicar y Guardar Cambios del JSON"</strong>, la tabla y el sistema se actualizan de inmediato.
+      </p>
+      <div id="json-alert" class="alert-msg"></div>
+      <textarea id="raw-json-textarea" class="json-editor" spellcheck="false"></textarea>
+    </div>
+  </div>
+</div>
+<!-- MODAL 1: CREAR / EDITAR ALUMNO -->
+<div class="modal-overlay" id="modal-student">
+  <div class="modal-box">
+    <div class="card-header">
+      <span class="card-title" id="modal-student-title">➕ Registrar Alumno</span>
+      <button type="button" class="btn btn-outline" onclick="closeStudentModal()">✕</button>
+    </div>
+    <form id="form-student" onsubmit="saveStudentFromModal(event)">
+      <input type="hidden" id="st-id">
+      <div class="grid-2">
+        <div class="form-group"><label>Nombre Completo *</label><input type="text" id="st-nombre" required placeholder="Ej.: Ana Beatriz Souza"></div>
+        <div class="form-group"><label>E-mail de Acceso *</label><input type="email" id="st-email" required placeholder="ana.souza@gmail.com"></div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><label>Contraseña (Senha) *</label><input type="text" id="st-senha" required placeholder="Ej.: espanol123"></div>
+        <div class="form-group"><label>Edad</label><input type="number" id="st-edad" min="5" max="110" placeholder="Ej.: 34"></div>
+        <div class="form-group">
+          <label>Sexo / Género</label>
+          <select id="st-sexo">
+            <option value="Femenino">Femenino</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Otro / Prefiere no decir">Otro / Prefiere no decir</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>Residencia (Ciudad / Estado / Barrio)</label><input type="text" id="st-residencia" placeholder="Ej.: Florianópolis, SC - Centro"></div>
+        <div class="form-group"><label>Nacionalidad</label><input type="text" id="st-nacionalidad" placeholder="Ej.: Brasileña"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label>WhatsApp / Teléfono</label><input type="text" id="st-whatsapp" placeholder="Ej.: +55 48 99999-0000"></div>
+        <div class="form-group"><label>Redes Sociales (Instagram, LinkedIn, etc.)</label><input type="text" id="st-redes" placeholder="Ej.: @anabeatriz_sc"></div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><label>Nivel / Grupo en el Dojo</label><input type="text" id="st-nivel" placeholder="Ej.: Intermedio B1 - Grupo Martes"></div>
+        <div class="form-group"><label>Cuota Mensual Acordada (R$)</label><input type="number" step="0.01" id="st-cuota" placeholder="Ej.: 250.00"></div>
+        <div class="form-group">
+          <label>Estado de Acceso al Portal</label>
+          <select id="st-estado">
+            <option value="Activo">Activo (Acceso permitido)</option>
+            <option value="Pendiente">Pendiente (Aviso de pago)</option>
+            <option value="Bloqueado">Bloqueado (Sin acceso)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Observaciones Pedagógicas / Administrativas</label>
+        <textarea id="st-notas" rows="2" placeholder="Objetivos del alumno, horarios, preferencias..."></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+        <button type="button" class="btn btn-outline" onclick="closeStudentModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">💾 Guardar Alumno</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- MODAL 2: GESTIONAR PAGOS MENSUALES -->
+<div class="modal-overlay" id="modal-payments">
+  <div class="modal-box">
+    <div class="card-header">
+      <span class="card-title" id="modal-payments-title">💳 Pagos Mensuales del Alumno</span>
+      <button type="button" class="btn btn-outline" onclick="closePaymentsModal()">✕</button>
+    </div>
+    <form id="form-add-payment" onsubmit="addPaymentToStudent(event)" style="background:#f8fafc; padding:14px; border-radius:10px; border:1px solid var(--border); margin-bottom:16px;">
+      <input type="hidden" id="pay-student-id">
+      <div style="font-weight:700; font-size:0.88rem; color:var(--primary); margin-bottom:10px;">➕ Registrar Nuevo Pago Mensual Recibido</div>
+      <div class="grid-3">
+        <div class="form-group"><label>Mes / Referencia *</label><input type="text" id="pay-mes" required placeholder="Ej.: Noviembre 2026"></div>
+        <div class="form-group"><label>Fecha del Pago *</label><input type="date" id="pay-fecha" required></div>
+        <div class="form-group"><label>Valor Recibido (R$) *</label><input type="number" step="0.01" id="pay-valor" required placeholder="Ej.: 250.00"></div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group">
+          <label>Método de Pago</label>
+          <select id="pay-metodo">
+            <option value="PIX">PIX</option>
+            <option value="Transferencia">Transferencia Bancaria</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado del Pago</label>
+          <select id="pay-estado">
+            <option value="Pagado">Pagado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Parcial">Parcial</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Comprobante / Nota</label><input type="text" id="pay-obs" placeholder="Ej.: PIX recibido día 05"></div>
+      </div>
+      <button type="submit" class="btn btn-success">➕ Añadir Pago al Historial</button>
+    </form>
+    <div class="table-responsive">
+      <table>
+        <thead><tr><th>Mes / Ref.</th><th>Fecha</th><th>Valor (R$)</th><th>Método</th><th>Estado</th><th>Observación</th><th>Borrar</th></tr></thead>
+        <tbody id="modal-payments-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<footer>
+  <p>&copy; <strong>Claudio Marcelo Budnikar</strong> — Sistema de Acceso y Gestión JSON | La Escuela - Dojo de Español</p>
+</footer>
+<script id="dojo-embedded-json" type="application/json">
+{
+  "adminConfig": {
+    "email": "claudio.hispanoluso@gmail.com",
+    "senha": "dojo2026",
+    "portalDestino": "index.html"
+  },
+  "alumnos": [
+    {
+      "id": "alu_001",
+      "nombre": "Rodrigo Almeida Costa",
+      "email": "rodrigo.costa@gmail.com",
+      "senha": "dojo123",
+      "residencia": "Florianópolis, SC - Trindade",
+      "nacionalidad": "Brasileña",
+      "edad": 32,
+      "sexo": "Masculino",
+      "whatsapp": "+55 48 99123-4567",
+      "redes": "@rodrigocosta_fln",
+      "nivel": "B1 Intermedio - Grupo Dojo",
+      "cuotaMensual": 280.00,
+      "estado": "Activo",
+      "notas": "Especial interés en fonética contrastiva y canciones de Serrat.",
+      "pagamentos": [
+        {
+          "idPago": "pag_101",
+          "mesReferencia": "Octubre 2026",
+          "fecha": "2026-10-05",
+          "valor": 280.00,
+          "metodo": "PIX",
+          "estado": "Pagado",
+          "observacion": "Pago puntual vía PIX"
+        },
+        {
+          "idPago": "pag_102",
+          "mesReferencia": "Noviembre 2026",
+          "fecha": "2026-11-05",
+          "valor": 280.00,
+          "metodo": "PIX",
+          "estado": "Pagado",
+          "observacion": "Mensualidad de noviembre confirmada"
+        }
+      ]
+    },
+    {
+      "id": "alu_002",
+      "nombre": "Mariana Ferreira Santos",
+      "email": "mariana.santos@gmail.com",
+      "senha": "espanol2026",
+      "residencia": "Florianópolis, SC - Saco Grande",
+      "nacionalidad": "Brasileña",
+      "edad": 28,
+      "sexo": "Femenino",
+      "whatsapp": "+55 48 99876-5432",
+      "redes": "@mari_ferreira_sc",
+      "nivel": "A2 Básico - Conversación",
+      "cuotaMensual": 250.00,
+      "estado": "Activo",
+      "notas": "Preparación para viaje de trabajo a Madrid y Buenos Aires.",
+      "pagamentos": [
+        {
+          "idPago": "pag_201",
+          "mesReferencia": "Octubre 2026",
+          "fecha": "2026-10-10",
+          "valor": 250.00,
+          "metodo": "PIX",
+          "estado": "Pagado",
+          "observacion": "Comprobante enviado por WhatsApp"
+        },
+        {
+          "idPago": "pag_202",
+          "mesReferencia": "Noviembre 2026",
+          "fecha": "2026-11-10",
+          "valor": 250.00,
+          "metodo": "Transferencia",
+          "estado": "Pendiente",
+          "observacion": "Programado para el día 12"
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+const STORAGE_KEY = "dojo_alumnos_pagos_db_v2";
+let db = null;
+let currentLoggedStudent = null;
+
+function loadDatabase() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      db = JSON.parse(saved);
+      return;
+    } catch (e) {}
+  }
+  const embeddedEl = document.getElementById("dojo-embedded-json");
+  db = JSON.parse(embeddedEl.textContent);
+  saveDatabase();
+}
+
+function saveDatabase() {
+  if (!db) return;
+  const jsonStr = JSON.stringify(db, null, 2);
+  localStorage.setItem(STORAGE_KEY, jsonStr);
+  const embeddedEl = document.getElementById("dojo-embedded-json");
+  if (embeddedEl) embeddedEl.textContent = jsonStr;
+  const rawTextarea = document.getElementById("raw-json-textarea");
+  if (rawTextarea) rawTextarea.value = jsonStr;
+}
+
+function switchAuthTab(mode) {
+  document.getElementById("login-alert").className = "alert-msg";
+  document.getElementById("tab-btn-student").classList.toggle("active", mode === "student");
+  document.getElementById("tab-btn-admin").classList.toggle("active", mode === "admin");
+  document.getElementById("form-login-student").style.display = mode === "student" ? "block" : "none";
+  document.getElementById("form-login-admin").style.display = mode === "admin" ? "block" : "none";
+}
+
+function showLoginAlert(msg, type) {
+  const el = document.getElementById("login-alert");
+  el.textContent = msg;
+  el.className = "alert-msg " + type;
+}
+
+function handleStudentLogin(e) {
+  e.preventDefault();
+  if (!db) loadDatabase();
+  const email = document.getElementById("login-email").value.trim().toLowerCase();
+  const pass = document.getElementById("login-pass").value.trim();
+  const student = (db.alumnos || []).find(a => a.email.toLowerCase() === email && String(a.senha) === pass);
+  if (!student) {
+    showLoginAlert("✕ Correo o contraseña incorrectos. Verifica tus datos con el profesor.", "error");
+    return;
+  }
+  if (student.estado === "Bloqueado") {
+    showLoginAlert("⚠️ Tu cuenta se encuentra temporalmente inactiva. Contacta al profesor Claudio.", "error");
+    return;
+  }
+  currentLoggedStudent = student;
+  sessionStorage.setItem("dojo_active_user", JSON.stringify({
+    id: student.id, nombre: student.nombre, email: student.email, nivel: student.nivel
+  }));
+  renderStudentPortal(student);
+  showView("view-student-portal");
+}
+
+function handleAdminLogin(e) {
+  e.preventDefault();
+  if (!db) loadDatabase();
+  const email = document.getElementById("admin-email").value.trim().toLowerCase();
+  const pass = document.getElementById("admin-pass").value.trim();
+  const cfgEmail = (db.adminConfig && db.adminConfig.email ? db.adminConfig.email : "claudio.hispanoluso@gmail.com").toLowerCase();
+  const cfgPass = String(db.adminConfig && db.adminConfig.senha ? db.adminConfig.senha : "dojo2026");
+  if (email === cfgEmail && pass === cfgPass) {
+    renderAdminDashboard();
+    showView("view-admin");
+  } else {
+    showLoginAlert("✕ Credenciales de administrador incorrectas.", "error");
+  }
+}
+
+function showView(viewId) {
+  document.querySelectorAll(".panel-view").forEach(v => v.classList.remove("active"));
+  document.getElementById(viewId).classList.add("active");
+}
+
+function logout() {
+  currentLoggedStudent = null;
+  sessionStorage.removeItem("dojo_active_user");
+  showView("view-login");
+}
+
+function renderStudentPortal(st) {
+  document.getElementById("st-welcome-name").textContent = "¡Hola, " + st.nombre + "!";
+  document.getElementById("st-welcome-meta").textContent = (st.nivel || "Estudiante del Dojo") + " · Estado: " + st.estado;
+  document.getElementById("st-profile-details").innerHTML =
+    "<div><strong>📧 E-mail:</strong> " + escapeHtml(st.email) + "</div>" +
+    "<div><strong>🏠 Residencia:</strong> " + escapeHtml(st.residencia || "-") + "</div>" +
+    "<div><strong>🌎 Nacionalidad:</strong> " + escapeHtml(st.nacionalidad || "-") + "</div>" +
+    "<div><strong>🎂 Edad / Sexo:</strong> " + escapeHtml(String(st.edad || "-")) + " años · " + escapeHtml(st.sexo || "-") + "</div>" +
+    "<div><strong>📱 WhatsApp:</strong> " + escapeHtml(st.whatsapp || "-") + "</div>" +
+    "<div><strong>🌐 Redes Sociales:</strong> " + escapeHtml(st.redes || "-") + "</div>" +
+    "<div><strong>💰 Mensualidad Acordada:</strong> R$ " + Number(st.cuotaMensual || 0).toFixed(2) + "</div>";
+
+  const tbody = document.getElementById("st-payments-tbody");
+  tbody.innerHTML = "";
+  const pagos = st.pagamentos || [];
+  if (pagos.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='5' style='color:var(--text-muted);'>No hay pagos registrados aún.</td></tr>";
+    return;
+  }
+  pagos.forEach(p => {
+    const pillCls = p.estado === "Pagado" ? "status-active" : "status-pending";
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td><strong>" + escapeHtml(p.mesReferencia) + "</strong></td>" +
+      "<td>" + escapeHtml(p.fecha) + "</td>" +
+      "<td>R$ " + Number(p.valor || 0).toFixed(2) + "</td>" +
+      "<td>" + escapeHtml(p.metodo || "-") + "</td>" +
+      "<td><span class='status-pill " + pillCls + "'>" + escapeHtml(p.estado) + "</span></td>";
+    tbody.appendChild(tr);
+  });
+}
+
+function renderAdminDashboard() {
+  saveDatabase();
+  renderAdminStats();
+  renderAdminTable();
+}
+
+function renderAdminStats() {
+  const list = db.alumnos || [];
+  const activeCount = list.filter(a => a.estado === "Activo").length;
+  let totalPaymentsCount = 0;
+  let totalRevenue = 0;
+  list.forEach(a => {
+    (a.pagamentos || []).forEach(p => {
+      totalPaymentsCount++;
+      if (p.estado === "Pagado") totalRevenue += Number(p.valor || 0);
+    });
+  });
+  document.getElementById("stat-total-students").textContent = list.length;
+  document.getElementById("stat-active-students").textContent = activeCount;
+  document.getElementById("stat-total-payments").textContent = totalPaymentsCount;
+  document.getElementById("stat-total-revenue").textContent = "R$ " + totalRevenue.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function renderAdminTable() {
+  const q = (document.getElementById("admin-search").value || "").toLowerCase().trim();
+  const tbody = document.getElementById("admin-students-tbody");
+  tbody.innerHTML = "";
+  (db.alumnos || []).forEach(st => {
+    const searchable = (st.nombre + " " + st.email + " " + st.residencia + " " + st.nacionalidad + " " + st.whatsapp + " " + st.redes).toLowerCase();
+    if (q && !searchable.includes(q)) return;
+    const pagos = st.pagamentos || [];
+    const pagadosSum = pagos.filter(p => p.estado === "Pagado").reduce((acc, p) => acc + Number(p.valor || 0), 0);
+    let statusClass = "status-active";
+    if (st.estado === "Pendiente") statusClass = "status-pending";
+    if (st.estado === "Bloqueado") statusClass = "status-blocked";
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td><div style='font-weight:700; color:var(--primary);'>" + escapeHtml(st.nombre) + "</div>" +
+      "<div style='font-size:0.8rem; color:var(--text-muted);'>📧 " + escapeHtml(st.email) + "</div>" +
+      "<div style='font-size:0.78rem; color:var(--text-muted);'>🔑 Senha: <code>" + escapeHtml(st.senha) + "</code></div></td>" +
+      "<td><div>" + escapeHtml(st.residencia || "-") + "</div><div style='font-size:0.78rem; color:var(--text-muted);'>🌎 " + escapeHtml(st.nacionalidad || "-") + "</div></td>" +
+      "<td><div>" + escapeHtml(String(st.edad || "-")) + " años</div><div style='font-size:0.78rem; color:var(--text-muted);'>" + escapeHtml(st.sexo || "-") + "</div></td>" +
+      "<td><div>📱 " + escapeHtml(st.whatsapp || "-") + "</div><div style='font-size:0.78rem; color:var(--text-muted);'>🌐 " + escapeHtml(st.redes || "-") + "</div></td>" +
+      "<td><span class='status-pill " + statusClass + "'>" + escapeHtml(st.estado || "Activo") + "</span><div style='font-size:0.76rem; color:var(--text-muted); margin-top:3px;'>" + escapeHtml(st.nivel || "") + "</div></td>" +
+      "<td><div style='font-weight:700; color:var(--correct);'>R$ " + pagadosSum.toFixed(2) + "</div><div style='font-size:0.78rem; color:var(--text-muted);'>" + pagos.length + " registro(s)</div>" +
+      "<button type='button' class='btn btn-outline' style='padding:4px 8px; font-size:0.76rem; margin-top:4px;' onclick='openPaymentsModal(\"" + st.id + "\")'>💳 Ver / Añadir Pagos</button></td>" +
+      "<td><div style='display:flex; gap:6px; flex-wrap:wrap;'>" +
+      "<button type='button' class='btn btn-outline' style='padding:6px 10px; font-size:0.78rem;' onclick='openStudentModal(\"" + st.id + "\")'>✏️ Editar</button>" +
+      "<button type='button' class='btn btn-danger' style='padding:6px 10px; font-size:0.78rem;' onclick='deleteStudent(\"" + st.id + "\")'>🗑️ Borrar</button></div></td>";
+    tbody.appendChild(tr);
+  });
+}
+
+function openStudentModal(studentId) {
+  const form = document.getElementById("form-student");
+  form.reset();
+  if (studentId) {
+    const st = db.alumnos.find(a => a.id === studentId);
+    if (!st) return;
+    document.getElementById("modal-student-title").textContent = "✏️ Editar Datos del Alumno";
+    document.getElementById("st-id").value = st.id;
+    document.getElementById("st-nombre").value = st.nombre || "";
+    document.getElementById("st-email").value = st.email || "";
+    document.getElementById("st-senha").value = st.senha || "";
+    document.getElementById("st-edad").value = st.edad || "";
+    document.getElementById("st-sexo").value = st.sexo || "Femenino";
+    document.getElementById("st-residencia").value = st.residencia || "";
+    document.getElementById("st-nacionalidad").value = st.nacionalidad || "";
+    document.getElementById("st-whatsapp").value = st.whatsapp || "";
+    document.getElementById("st-redes").value = st.redes || "";
+    document.getElementById("st-nivel").value = st.nivel || "";
+    document.getElementById("st-cuota").value = st.cuotaMensual || "";
+    document.getElementById("st-estado").value = st.estado || "Activo";
+    document.getElementById("st-notas").value = st.notas || "";
+  } else {
+    document.getElementById("modal-student-title").textContent = "➕ Registrar Nuevo Alumno";
+    document.getElementById("st-id").value = "";
+    document.getElementById("st-nacionalidad").value = "Brasileña";
+    document.getElementById("st-estado").value = "Activo";
+  }
+  document.getElementById("modal-student").classList.add("active");
+}
+
+function closeStudentModal() {
+  document.getElementById("modal-student").classList.remove("active");
+}
+
+function saveStudentFromModal(e) {
+  e.preventDefault();
+  const id = document.getElementById("st-id").value;
+  const studentObj = {
+    id: id || ("alu_" + Date.now()),
+    nombre: document.getElementById("st-nombre").value.trim(),
+    email: document.getElementById("st-email").value.trim(),
+    senha: document.getElementById("st-senha").value.trim(),
+    residencia: document.getElementById("st-residencia").value.trim(),
+    nacionalidad: document.getElementById("st-nacionalidad").value.trim(),
+    edad: Number(document.getElementById("st-edad").value) || null,
+    sexo: document.getElementById("st-sexo").value,
+    whatsapp: document.getElementById("st-whatsapp").value.trim(),
+    redes: document.getElementById("st-redes").value.trim(),
+    nivel: document.getElementById("st-nivel").value.trim(),
+    cuotaMensual: Number(document.getElementById("st-cuota").value) || 0,
+    estado: document.getElementById("st-estado").value,
+    notas: document.getElementById("st-notas").value.trim()
+  };
+  if (id) {
+    const idx = db.alumnos.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      studentObj.pagamentos = db.alumnos[idx].pagamentos || [];
+      db.alumnos[idx] = studentObj;
+    }
+  } else {
+    studentObj.pagamentos = [];
+    db.alumnos.push(studentObj);
+  }
+  closeStudentModal();
+  renderAdminDashboard();
+}
+
+function deleteStudent(studentId) {
+  const st = db.alumnos.find(a => a.id === studentId);
+  if (!st) return;
+  if (!confirm("¿Seguro que deseas eliminar a " + st.nombre + " y todo su historial de pagos?")) return;
+  db.alumnos = db.alumnos.filter(a => a.id !== studentId);
+  renderAdminDashboard();
+}
+
+function openPaymentsModal(studentId) {
+  const st = db.alumnos.find(a => a.id === studentId);
+  if (!st) return;
+  document.getElementById("pay-student-id").value = st.id;
+  document.getElementById("modal-payments-title").textContent = "💳 Pagos Mensuales — " + st.nombre;
+  document.getElementById("pay-valor").value = st.cuotaMensual || "";
+  document.getElementById("pay-fecha").value = new Date().toISOString().split("T")[0];
+  document.getElementById("pay-mes").value = "";
+  document.getElementById("pay-obs").value = "";
+  renderPaymentsModalTable(st);
+  document.getElementById("modal-payments").classList.add("active");
+}
+
+function closePaymentsModal() {
+  document.getElementById("modal-payments").classList.remove("active");
+}
+
+function renderPaymentsModalTable(st) {
+  const tbody = document.getElementById("modal-payments-tbody");
+  tbody.innerHTML = "";
+  const pagos = st.pagamentos || [];
+  if (pagos.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='7' style='color:var(--text-muted);'>Sin pagos registrados para este alumno.</td></tr>";
+    return;
+  }
+  pagos.forEach(p => {
+    const pillCls = p.estado === "Pagado" ? "status-active" : "status-pending";
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td><strong>" + escapeHtml(p.mesReferencia) + "</strong></td>" +
+      "<td>" + escapeHtml(p.fecha) + "</td>" +
+      "<td>R$ " + Number(p.valor || 0).toFixed(2) + "</td>" +
+      "<td>" + escapeHtml(p.metodo || "-") + "</td>" +
+      "<td><span class='status-pill " + pillCls + "'>" + escapeHtml(p.estado) + "</span></td>" +
+      "<td>" + escapeHtml(p.observacion || "-") + "</td>" +
+      "<td><button type='button' class='btn btn-danger' style='padding:4px 8px; font-size:0.75rem;' onclick='deletePayment(\"" + st.id + "\", \"" + p.idPago + "\")'>🗑️</button></td>";
+    tbody.appendChild(tr);
+  });
+}
+
+function addPaymentToStudent(e) {
+  e.preventDefault();
+  const stId = document.getElementById("pay-student-id").value;
+  const st = db.alumnos.find(a => a.id === stId);
+  if (!st) return;
+  if (!st.pagamentos) st.pagamentos = [];
+  st.pagamentos.push({
+    idPago: "pag_" + Date.now(),
+    mesReferencia: document.getElementById("pay-mes").value.trim(),
+    fecha: document.getElementById("pay-fecha").value,
+    valor: Number(document.getElementById("pay-valor").value) || 0,
+    metodo: document.getElementById("pay-metodo").value,
+    estado: document.getElementById("pay-estado").value,
+    observacion: document.getElementById("pay-obs").value.trim()
+  });
+  renderPaymentsModalTable(st);
+  renderAdminDashboard();
+  document.getElementById("pay-mes").value = "";
+  document.getElementById("pay-obs").value = "";
+}
+
+function deletePayment(studentId, pagoId) {
+  const st = db.alumnos.find(a => a.id === studentId);
+  if (!st) return;
+  st.pagamentos = (st.pagamentos || []).filter(p => p.idPago !== pagoId);
+  renderPaymentsModalTable(st);
+  renderAdminDashboard();
+}
+
+function formatJsonEditor() {
+  const area = document.getElementById("raw-json-textarea");
+  const alertBox = document.getElementById("json-alert");
+  try {
+    const parsed = JSON.parse(area.value);
+    area.value = JSON.stringify(parsed, null, 2);
+    alertBox.textContent = "✓ JSON válido y formateado correctamente.";
+    alertBox.className = "alert-msg success";
+  } catch (err) {
+    alertBox.textContent = "✕ Error de sintaxis en el JSON: " + err.message;
+    alertBox.className = "alert-msg error";
+  }
+}
+
+function applyManualJsonChanges() {
+  const area = document.getElementById("raw-json-textarea");
+  const alertBox = document.getElementById("json-alert");
+  try {
+    const parsed = JSON.parse(area.value);
+    if (!parsed.alumnos || !Array.isArray(parsed.alumnos)) {
+      throw new Error("El JSON debe incluir la propiedad 'alumnos' como un array [].");
+    }
+    db = parsed;
+    renderAdminDashboard();
+    alertBox.textContent = "✓ ¡Cambios manuales del JSON aplicados y guardados con éxito!";
+    alertBox.className = "alert-msg success";
+  } catch (err) {
+    alertBox.textContent = "✕ No se pudo guardar. Error en el JSON: " + err.message;
+    alertBox.className = "alert-msg error";
+  }
+}
+
+function exportDatabaseJson() {
+  const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "dojo_alumnos_pagos.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function importDatabaseJson(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.alumnos || !Array.isArray(parsed.alumnos)) {
+        alert("El archivo JSON no tiene el formato esperado (falta el array 'alumnos').");
+        return;
+      }
+      db = parsed;
+      renderAdminDashboard();
+      alert("✓ Archivo JSON cargado y actualizado correctamente.");
+    } catch (err) {
+      alert("Error al leer el archivo JSON: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function saveFullStandaloneHtml() {
+  saveDatabase();
+  const doctype = "<!DOCTYPE html>";
+  const htmlContent = doctype + "\n" + document.documentElement.outerHTML;
+  const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "acceso_dojo.html";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadDatabase();
+});
+</script>
+</body>
+</html>
