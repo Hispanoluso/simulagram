@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="kiln">
+  <title>La Escuela – Dojo de Español · Compêndio de Princípios e Prática</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Kiln palette & surface tokens */
+      --background: #f4f1ea;
+      --surface-container-low: #ebe6db;
+      --surface-container: #e3ddd0;
+      --surface-container-high: #d9d1c2;
+
+      /* Ink */
+      --on-surface: #1c1b18;
+      --on-surface-variant: #5e5a51;
+
+      /* Rules */
+      --outline: #1c1b18;
+      --outline-variant: #d2cbbd;
+
+      /* Accents */
+      --primary: #1c1b18;
+      --on-primary: #f4f1ea;
+      --primary-container: #ebe6db;
+      --on-primary-container: #1c1b18;
+      --secondary: #4a5d46;
+      --tertiary: #9e3b2b;
+      --error: #9e2a22;
+      --on-error: #f4f1ea;
+
+      /* Data series */
+      --data-1: #4a5d46;
+      --data-2: #9e3b2b;
+      --data-3: #1c1b18;
+      --data-4: #8a6f48;
+      --data-context: #c7bfb0;
+
+      /* Fonts */
+      --font-headline: 'Shippori Mincho', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.125rem;
+      --rounded-full: 0.125rem;
+
+      /* Style effects */
+      --rule-sumi-left: 2px solid var(--outline);
+      --rule-moss-left: 2px solid var(--secondary);
+      --rule-cinnabar-left: 2px solid var(--tertiary);
+      --rule-sumi: 1px solid var(--outline);
+      --rule-linen: 1px solid var(--outline-variant);
+      --rule-cinnabar: 1px solid var(--tertiary);
+      --label-tracking: 0.14em;
+
+      /* SVG / Canvas chart tokens */
+      --chart-grid: var(--outline-variant);
+      --chart-axis: var(--outline);
+      --chart-ink: var(--on-surface);
+      --chart-muted: var(--on-surface-variant);
+      --chart-series-1: var(--data-1);
+      --chart-series-2: var(--data-2);
+      --chart-fill: var(--surface-container-low);
+
+      /* 3. Shared semantic, scale, spacing & motion tokens */
+      --positive: #4a5d46;
+      --warning: #8a6f48;
+      --focus: #1c1b18;
+
+      /* Narrative type scale */
+      --display-size: clamp(2.35rem, 1.4rem + 3.6vw, 4.25rem);
+      --headline-size: clamp(1.65rem, 1.2rem + 1.8vw, 2.35rem);
+      --subhead-size: clamp(1.18rem, 1.05rem + 0.5vw, 1.4rem);
+      --body-size: clamp(1.03rem, 0.98rem + 0.2vw, 1.125rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.65;
+      scroll-behavior: smooth;
+    }
+    header { position: static !important; }
+    button, input, select, textarea { font-family: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Typography */
+    .label {
+      font-family: var(--font-label);
+      font-weight: 500;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--secondary);
+      display: block;
+    }
+
+    .label-muted {
+      font-family: var(--font-label);
+      font-weight: 400;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--on-surface-variant);
+    }
+
+    .display {
+      font-family: var(--font-headline);
+      font-weight: 500;
+      font-size: var(--display-size);
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      color: var(--on-surface);
+      margin: var(--space-sm) 0 var(--space-md);
+    }
+
+    .subhead-moss {
+      font-family: var(--font-headline);
+      font-weight: 500;
+      font-size: var(--subhead-size);
+      line-height: 1.38;
+      color: var(--secondary);
+      margin: 0 0 var(--space-md);
+      max-width: 62ch;
+    }
+
+    h2.chapter-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--headline-size);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0 var(--space-sm);
+    }
+
+    h3.module-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--subhead-size);
+      line-height: 1.3;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm);
+    }
+
+    p {
+      margin: 0 0 var(--space-md);
+      max-width: 65ch;
+      color: var(--on-surface);
+    }
+
+    .lead-prose {
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      max-width: 65ch;
+    }
+
+    /* Title block with Hanko seal stamp */
+    .title-block {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-lg);
+      align-items: start;
+      padding-bottom: var(--space-xl);
+      border-bottom: var(--rule-sumi);
+    }
+
+    .seal-stamp {
+      border: var(--rule-cinnabar);
+      color: var(--tertiary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      padding: var(--space-sm) var(--space-xs);
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1.2;
+      justify-self: end;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-lg);
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: var(--rule-linen);
+    }
+
+    /* Washi cards */
+    .washi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .washi-card {
+      background: var(--surface-container-low);
+      border-left: var(--rule-sumi-left);
+      border-radius: var(--rounded);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .washi-card.moss-spine {
+      border-left: var(--rule-moss-left);
+    }
+
+    .washi-card.cinnabar-spine {
+      border-left: var(--rule-cinnabar-left);
+    }
+
+    .washi-card .value {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--headline-size);
+      line-height: 1.15;
+      font-variant-numeric: lining-nums tabular-nums;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0;
+    }
+
+    .washi-card .note {
+      color: var(--secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Indexed directory & search */
+    .index-section {
+      background: var(--surface-container-low);
+      border-left: var(--rule-sumi-left);
+      border-radius: var(--rounded);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .index-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--on-surface);
+      font-weight: 500;
+    }
+
+    .text-input {
+      background: var(--background);
+      border: var(--rule-sumi);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.95rem;
+      min-height: 44px;
+      width: 100%;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      cursor: pointer;
+      border: var(--rule-sumi);
+      background: var(--background);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn:hover {
+      background: var(--surface-container-high);
+    }
+
+    .btn.is-active,
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .btn-secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: var(--rule-sumi);
+    }
+
+    .btn-cinnabar {
+      border-color: var(--tertiary);
+      color: var(--tertiary);
+      background: var(--background);
+    }
+
+    .btn-cinnabar:hover,
+    .btn-cinnabar.is-active {
+      background: var(--tertiary);
+      color: var(--on-primary);
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .index-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-sm);
+      align-items: start;
+      text-align: left;
+      background: var(--background);
+      border: var(--rule-linen);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      min-height: 44px;
+      cursor: pointer;
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .index-item:hover {
+      background: var(--surface-container);
+      border-color: var(--outline);
+    }
+
+    .index-item.is-dimmed {
+      opacity: 0.38;
+    }
+
+    .index-num {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      color: var(--tertiary);
+      padding-top: var(--space-xs);
+    }
+
+    .index-item-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      color: var(--on-surface);
+      display: block;
+    }
+
+    .index-item-tag {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--secondary);
+      margin-top: var(--space-xs);
+      display: block;
+    }
+
+    .empty-state {
+      background: var(--background);
+      border: var(--rule-linen);
+      padding: var(--space-md);
+      display: none;
+      gap: var(--space-sm);
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .empty-state.is-visible {
+      display: flex;
+    }
+
+    /* Timeline strip */
+    .timeline-band {
+      padding: var(--space-lg) 0;
+      border-top: var(--rule-linen);
+      border-bottom: var(--rule-linen);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .timeline-track {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .timeline-node {
+      background: var(--surface-container-low);
+      border-top: var(--rule-sumi-left);
+      padding: var(--space-md);
+      cursor: pointer;
+      text-align: left;
+      border-right: none;
+      border-bottom: none;
+      border-left: none;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .timeline-node:hover {
+      background: var(--surface-container);
+    }
+
+    .timeline-node.is-active {
+      background: var(--surface-container-high);
+      border-top: 2px solid var(--tertiary);
+    }
+
+    .timeline-detail {
+      background: var(--surface-container-low);
+      border-left: var(--rule-moss-left);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    /* Chapter layout */
+    .chapter {
+      padding-top: var(--space-2xl);
+      border-top: var(--rule-linen);
+      display: grid;
+      gap: var(--space-lg);
+      opacity: 1;
+      transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
+    }
+
+    .chapter.is-highlighted {
+      background: var(--surface-container-low);
+      padding: var(--space-lg);
+      border-left: var(--rule-cinnabar-left);
+    }
+
+    .chapter-header {
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .chapter-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .chapter-split.reverse {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    }
+
+    .interactive-panel {
+      background: var(--surface-container-low);
+      border-left: var(--rule-sumi-left);
+      border-radius: var(--rounded);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .quote-block {
+      border-left: var(--rule-moss-left);
+      padding: var(--space-xs) 0 var(--space-xs) var(--space-md);
+      margin: var(--space-md) 0;
+      color: var(--on-surface-variant);
+      font-family: var(--font-headline);
+      font-size: 1.08rem;
+      line-height: 1.55;
+      max-width: 58ch;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: var(--rounded);
+      border: var(--rule-linen);
+      background: var(--surface-container-low);
+      color: var(--secondary);
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      padding: var(--space-xs) var(--space-sm);
+    }
+
+    /* Tables (Kiln style: 1px sumi above/below header, linen between rows, no vertical rules) */
+    .kiln-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    .kiln-table thead th {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--secondary);
+      text-align: left;
+      padding: var(--space-sm) var(--space-sm);
+      border-top: var(--rule-sumi);
+      border-bottom: var(--rule-sumi);
+      font-weight: 500;
+    }
+
+    .kiln-table tbody td {
+      padding: var(--space-sm) var(--space-sm);
+      border-bottom: var(--rule-linen);
+      vertical-align: top;
+    }
+
+    /* Interactive Zanshin SVG box */
+    .viz-frame {
+      background: var(--background);
+      border: var(--rule-linen);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      min-height: 180px;
+    }
+
+    .viz-frame svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* False cognates laboratory */
+    .cognate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(155px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .cognate-btn {
+      text-align: left;
+      background: var(--background);
+      border: var(--rule-linen);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      cursor: pointer;
+      display: grid;
+      gap: var(--space-xs);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .cognate-btn:hover {
+      background: var(--surface-container);
+    }
+
+    .cognate-btn.is-active {
+      background: var(--surface-container-high);
+      border-color: var(--outline);
+      border-left: var(--rule-cinnabar-left);
+    }
+
+    .cognate-word {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .cognate-reveal {
+      background: var(--background);
+      border: var(--rule-linen);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .comparison-pair {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .pair-box {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border-left: var(--rule-sumi-left);
+    }
+
+    .pair-box.trap {
+      border-left: var(--rule-cinnabar-left);
+    }
+
+    .pair-box.safe {
+      border-left: var(--rule-moss-left);
+    }
+
+    /* Grice x Kata matrix */
+    .kata-stage-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-xs);
+    }
+
+    /* Prosody status & audio feedback */
+    .audio-status {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--secondary);
+      min-height: 1.4em;
+    }
+
+    /* Publication collective preview */
+    .dossier-preview {
+      background: var(--background);
+      border: var(--rule-sumi);
+      padding: var(--space-md) var(--space-lg);
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    /* Back to index floating-free inline bar */
+    .chapter-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding-top: var(--space-sm);
+    }
+
+    .back-link {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--secondary);
+      background: none;
+      border: none;
+      padding: var(--space-xs) 0;
+      min-height: 44px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .back-link:hover {
+      color: var(--tertiary);
+    }
+
+    .colophon {
+      margin-top: var(--space-xl);
+      padding-top: var(--space-lg);
+      border-top: var(--rule-sumi);
+      display: grid;
+      gap: var(--space-sm);
+      color: var(--on-surface-variant);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 840px) {
+      .chapter-split,
+      .chapter-split.reverse {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md);
+        gap: var(--space-lg);
+      }
+      .title-block {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .seal-stamp {
+        writing-mode: horizontal-tb;
+        justify-self: start;
+      }
+      .index-controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .kata-stage-bar {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid" id="topo">
+
+    <!-- OPENING TITLE BLOCK -->
+    <header class="title-block">
+      <div>
+        <span class="label">Compêndio de Princípios · Florianópolis, Brasil · Novembro de 2026</span>
+        <h1 class="display">La Escuela – Dojo de Español</h1>
+        <p class="subhead-moss">Dos tatames à língua espanhola: escuta atenta, treino cooperativo entre pares, linguística aplicada e coautoria pública</p>
+        <p class="lead-prose">
+          Aprender a se comunicar com plenitude em uma língua estrangeira não é acumular regras gramaticais em isolamento, mas compartilhar um espaço vivo de treinamento, escuta mútua e construção coletiva. Este compêndio organiza e indexa os oito pilares conceituais nascidos da trajetória marcial, informática e acadêmica do Prof. Claudio Marcelo Budnikar.
+        </p>
+        <div class="meta-row">
+          <span class="label-muted">Coordenação: Prof. Claudio Marcelo Budnikar (Sensei e moderador)</span>
+          <span class="label-muted">Modalidade: Comunidade Virtual 100% em Espanhol</span>
+        </div>
+      </div>
+      <div class="seal-stamp" aria-label="Selo de catálogo Dojo 2026">DOJO · 2026</div>
+    </header>
+
+    <!-- KEY GROUNDING METRICS -->
+    <section aria-label="Números e marcos fundamentais do projeto">
+      <div class="washi-grid">
+        <article class="washi-card">
+          <span class="label">Experiência Marcial</span>
+          <div class="value">20+ anos</div>
+          <p class="note">Prática e docência em Karatê e Aikidô antes da síntese pedagógica em língua espanhola</p>
+        </article>
+        <article class="washi-card cinnabar-spine">
+          <span class="label">Acervo de Falsos Cognatos</span>
+          <div class="value">700+ linhas</div>
+          <p class="note">Registro empírico de termos do «portunhol perigoso» reunidos entre Brasil e países hispânicos</p>
+        </article>
+        <article class="washi-card moss-spine">
+          <span class="label">Imersão Comunicativa</span>
+          <div class="value">100% ES</div>
+          <p class="note">Sessões on-line conduzidas em espanhol desde o primeiro dia, por projetos negociados</p>
+        </article>
+        <article class="washi-card">
+          <span class="label">Pilares do Compêndio</span>
+          <div class="value">08 eixos</div>
+          <p class="note">De Zanshin e Grice à emancipação de Jacotot e às publicações coletivas abertas</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- INDEXED DIRECTORY & SEARCH -->
+    <section class="index-section" id="indice" aria-label="Índice interativo de conceitos">
+      <div>
+        <span class="label">Índice Geral do Compêndio</span>
+        <h2 class="chapter-title">Mapa Organizado dos Oito Conceitos</h2>
+        <p style="margin-bottom: 0;">Filtre por palavra-chave ou eixo temático e salte diretamente para qualquer capítulo e seu laboratório interativo.</p>
+      </div>
+
+      <div class="index-controls">
+        <div class="field-group">
+          <label class="field-label" for="concept-search">Buscar conceito, autor ou palavra-chave</label>
+          <input class="text-input" type="search" id="concept-search" placeholder="Ex.: Zanshin, Grice, Jacotot, prosódia, cognatos…" oninput="filterIndex()">
+        </div>
+        <div class="field-group">
+          <span class="field-label">Ações rápidas</span>
+          <button type="button" class="btn btn-secondary" onclick="resetIndexFilters()">Limpar filtros</button>
+        </div>
+      </div>
+
+      <div class="filter-row" role="group" aria-label="Filtrar por eixo temático">
+        <button type="button" class="btn is-active" data-cat="todos" onclick="setCategoryFilter('todos', this)">Todos (08)</button>
+        <button type="button" class="btn" data-cat="marcial" onclick="setCategoryFilter('marcial', this)">Filosofia Marcial &amp; Dojo</button>
+        <button type="button" class="btn" data-cat="linguistica" onclick="setCategoryFilter('linguistica', this)">Linguística &amp; Fala</button>
+        <button type="button" class="btn" data-cat="pedagogia" onclick="setCategoryFilter('pedagogia', this)">Pedagogia &amp; Coautoria</button>
+      </div>
+
+      <div class="index-grid" id="index-grid">
+        <button type="button" class="index-item" data-cat="marcial" data-keywords="zanshin escuta atenta antecipacao karate aikido godel atencao" onclick="jumpToConcept('conceito-01')">
+          <span class="index-num">01</span>
+          <div>
+            <span class="index-item-title">Zanshin e a Escuta Atenta</span>
+            <span class="index-item-tag">Filosofia Marcial · Antecipação</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="marcial" data-keywords="sensei moderador professor coordenacao projetos democraticos letras" onclick="jumpToConcept('conceito-02')">
+          <span class="index-num">02</span>
+          <div>
+            <span class="index-item-title">O Papel do Sensei como Moderador</span>
+            <span class="index-item-tag">Filosofia Marcial · Coordenação</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="marcial" data-keywords="sempai kohai cooperativo duplas nao-resistencia harmonizacao tatame" onclick="jumpToConcept('conceito-03')">
+          <span class="index-num">03</span>
+          <div>
+            <span class="index-item-title">Treino Cooperativo: Sempai e Kohai</span>
+            <span class="index-item-tag">Filosofia Marcial · Não-resistência</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="linguistica" data-keywords="portunhol perigoso falsos cognatos 700 planilha desarmamento" onclick="jumpToConcept('conceito-04')">
+          <span class="index-num">04</span>
+          <div>
+            <span class="index-item-title">Desarmamento do «Portunhol Perigoso»</span>
+            <span class="index-item-tag">Linguística · Falsos Cognatos</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="linguistica" data-keywords="maximas de grice katas pragmatica qualidade quantidade relevancia modo" onclick="jumpToConcept('conceito-05')">
+          <span class="index-num">05</span>
+          <div>
+            <span class="index-item-title">Máximas de Grice e Katas</span>
+            <span class="index-item-tag">Linguística · Pragmática Corporal</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="linguistica" data-keywords="prosodia entonacao pergunta cortesia musse torres curva voz" onclick="jumpToConcept('conceito-06')">
+          <span class="index-num">06</span>
+          <div>
+            <span class="index-item-title">Treino de Prosódia e Entonação</span>
+            <span class="index-item-tag">Linguística · Fonética e Ritmo</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="pedagogia" data-keywords="joseph jacotot mestre ignorante ranciere paulo freire relevancia gramatica" onclick="jumpToConcept('conceito-07')">
+          <span class="index-num">07</span>
+          <div>
+            <span class="index-item-title">Método de Joseph Jacotot &amp; Freire</span>
+            <span class="index-item-tag">Pedagogia · Emancipação</span>
+          </div>
+        </button>
+        <button type="button" class="index-item" data-cat="pedagogia" data-keywords="publicacoes coletivas autoria compartilhada acesso aberto papers cadernos" onclick="jumpToConcept('conceito-08')">
+          <span class="index-num">08</span>
+          <div>
+            <span class="index-item-title">Publicações Coletivas e Coautoria</span>
+            <span class="index-item-tag">Pedagogia · Acesso Aberto</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="empty-state" id="index-empty">
+        <span>Nenhum conceito corresponde ao termo digitado no índice.</span>
+        <button type="button" class="btn btn-secondary" onclick="resetIndexFilters()">Mostrar todos os 08 conceitos</button>
+      </div>
+    </section>
+
+    <!-- BIOGRAPHICAL / INTELLECTUAL ARC -->
+    <section class="timeline-band" aria-label="Trajetória do autor que originou o método">
+      <div>
+        <span class="label">Gênese da Metodologia</span>
+        <h2 class="chapter-title">Da Periferia de Buenos Aires ao Dojo Virtual em Florianópolis</h2>
+        <p style="margin-bottom: 0;">Clique em qualquer marco para ler como a experiência vivida gerou cada fundamento pedagógico de <em>La Escuela</em>.</p>
+      </div>
+
+      <div class="timeline-track" role="tablist" aria-label="Marcos biográficos">
+        <button type="button" class="timeline-node is-active" onclick="selectTimeline(0, this)">
+          <span class="label">1961 · Infância</span>
+          <strong>San Isidro &amp; Cortázar</strong>
+        </button>
+        <button type="button" class="timeline-node" onclick="selectTimeline(1, this)">
+          <span class="label">~15 Anos · Tatame</span>
+          <strong>Karatê &amp; Paradoxo</strong>
+        </button>
+        <button type="button" class="timeline-node" onclick="selectTimeline(2, this)">
+          <span class="label">18–25 Anos · Máquinas</span>
+          <strong>Código &amp; Gödel</strong>
+        </button>
+        <button type="button" class="timeline-node" onclick="selectTimeline(3, this)">
+          <span class="label">40+ Anos · Brasil</span>
+          <strong>Aikidô &amp; Portunhol</strong>
+        </button>
+        <button type="button" class="timeline-node" onclick="selectTimeline(4, this)">
+          <span class="label">2026 · Síntese</span>
+          <strong>Letras &amp; La Escuela</strong>
+        </button>
+      </div>
+
+      <div class="timeline-detail" id="timeline-detail">
+        <span class="label">San Isidro, Buenos Aires · Leituras e Formação Técnica</span>
+        <p style="margin-top: var(--space-xs); margin-bottom: 0;">
+          Nascido em 11 de novembro na periferia de Buenos Aires (neto de lituanos e espanhóis), Claudio Budnikar formou-se Técnico em Eletromecânica. Aos 15 anos, a leitura em aula do conto «No se culpe a nadie», de Julio Cortázar, revelou que a literatura podia ir muito além do entretenimento.
+        </p>
+      </div>
+    </section>
+
+    <!-- CHAPTER 01: ZANSHIN -->
+    <article class="chapter" id="conceito-01">
+      <div class="chapter-header">
+        <span class="label">Conceito 01 · Filosofia Marcial &amp; Percepção</span>
+        <h2 class="chapter-title">Zanshin e a Escuta Atenta: Mover-se Antes da Regra</h2>
+        <div class="tag-row">
+          <span class="tag">Karatê &amp; Aikidô</span>
+          <span class="tag">Kurt Gödel</span>
+          <span class="tag">Antecipação Comunicativa</span>
+        </div>
+      </div>
+
+      <div class="chapter-split">
+        <div>
+          <p>
+            Na adolescência, Budnikar treinava com um mestre japonês de 60 anos — pequeno, magro e cheio de rugas — e seus dois filhos jovens. Enquanto os filhos bloqueavam golpes por pura velocidade e potência muscular, o pai idoso neutralizava qualquer ataque forte e rápido com suavidade, desequilibrando o jovem aluno sem parecer acelerar. Quando questionado, respondia apenas: <em>«Continue praticando e entenderá»</em>.
+          </p>
+          <p>
+            Vinte anos depois, já como instrutor de Aikidô ao ouvir a mesma pergunta de um aluno mais forte, Budnikar compreendeu a resposta — e a relacionou aos sistemas formais de Kurt Gödel em <em>Gödel, Escher, Bach</em>, de Douglas Hofstadter: algumas verdades não podem ser demonstradas de dentro da linguagem teórica; exigem dar um salto para fora e experimentar na prática.
+          </p>
+          <blockquote class="quote-block">
+            «O professor não se movia mais rápido, mas antes do aluno. Esse estado de alerta e sensibilidade chama-se Zanshin.»
+          </blockquote>
+          <p>
+            Na aprendizagem do espanhol, o <strong>Zanshin</strong> traduz-se em <strong>escuta atenta</strong>: em vez de reagir com atraso tentando traduzir mentalmente cada palavra ou consultar a tabela gramatical, o aprendiz cultiva presença para perceber a intenção, o ritmo e o contexto do interlocutor no instante em que o enunciado nasce.
+          </p>
+        </div>
+
+        <aside class="interactive-panel" aria-label="Simulador comparativo entre Reação Linear e Zanshin">
+          <div>
+            <span class="label">Laboratório Conceitual</span>
+            <h3 class="module-title">Dinâmica do Tempo: Reação Tardia vs. Zanshin</h3>
+          </div>
+
+          <div class="filter-row">
+            <button type="button" class="btn is-active" id="zanshin-btn-reativo" onclick="setZanshinMode('reativo')">1. Ataque &amp; Reação Linear</button>
+            <button type="button" class="btn" id="zanshin-btn-atento" onclick="setZanshinMode('zanshin')">2. Antecipação (Zanshin)</button>
+          </div>
+
+          <div class="viz-frame">
+            <svg viewBox="0 0 460 185" role="img" aria-labelledby="zanshin-svg-title">
+              <title id="zanshin-svg-title">Linha do tempo comparando reação tardia e percepção antecipatória Zanshin</title>
+              <!-- Axis -->
+              <line x1="24" y1="145" x2="436" y2="145" stroke="var(--chart-axis)" stroke-width="1.5"/>
+              <text x="24" y="168" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">T0: INTENÇÃO</text>
+              <text x="180" y="168" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">T1: IMPACTO / FALA</text>
+              <text x="342" y="168" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">T2: RESPOSTA</text>
+
+              <!-- Marker lines -->
+              <line x1="60" y1="24" x2="60" y2="145" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="3 3"/>
+              <line x1="220" y1="24" x2="220" y2="145" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="3 3"/>
+              <line x1="370" y1="24" x2="370" y2="145" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="3 3"/>
+
+              <!-- Opponent / Speaker line -->
+              <path d="M 60 55 L 220 55" stroke="var(--chart-axis)" stroke-width="2.5" fill="none"/>
+              <circle cx="60" cy="55" r="5" fill="var(--chart-axis)"/>
+              <circle cx="220" cy="55" r="5" fill="var(--chart-series-2)"/>
+              <text x="68" y="42" fill="var(--chart-ink)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Interlocutor / Atacante inicia</text>
+
+              <!-- Dynamic response group -->
+              <g id="zanshin-svg-reactive">
+                <path d="M 220 105 L 370 105" stroke="var(--chart-series-2)" stroke-width="2.5" fill="none"/>
+                <circle cx="220" cy="105" r="5" fill="var(--chart-series-2)"/>
+                <circle cx="370" cy="105" r="5" fill="var(--chart-series-2)"/>
+                <text x="228" y="92" fill="var(--chart-series-2)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Choque frontal / Tradução mental tardia</text>
+                <rect x="220" y="114" width="150" height="18" fill="var(--chart-fill)" stroke="var(--chart-series-2)" stroke-width="1"/>
+                <text x="228" y="127" fill="var(--chart-ink)" font-family="Geist Mono, monospace" font-size="9">EXIGE FORÇA / TRAVA A FLUÊNCIA</text>
+              </g>
+
+              <g id="zanshin-svg-zanshin" style="display: none;">
+                <path d="M 78 105 Q 150 72 228 105" stroke="var(--chart-series-1)" stroke-width="2.5" fill="none"/>
+                <circle cx="78" cy="105" r="5" fill="var(--chart-series-1)"/>
+                <circle cx="228" cy="105" r="5" fill="var(--chart-series-1)"/>
+                <text x="78" y="128" fill="var(--chart-series-1)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Zanshin: percebe em T0+Δ e harmoniza em curva</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="washi-card" id="zanshin-caption" style="background: var(--background);">
+            <span class="label">No Tatame e na Conversa</span>
+            <p style="margin: var(--space-xs) 0 0;">
+              <strong>Modo Reativo (Linha Reta):</strong> espera o impacto completo para só então reagir. Na língua, equivale a esperar toda a frase terminar, traduzi-la palavra por palavra ao português e buscar regras antes de responder — perdendo o ritmo do diálogo.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 01 / 08 · Baseado na prática de Karatê, Aikidô e Gödel</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 02: SENSEI AS MODERATOR -->
+    <article class="chapter" id="conceito-02">
+      <div class="chapter-header">
+        <span class="label">Conceito 02 · Governança da Comunidade</span>
+        <h2 class="chapter-title">O Papel do Sensei como Moderador: «Aquele que Nasceu Antes»</h2>
+        <div class="tag-row">
+          <span class="tag">Gestão Democrática</span>
+          <span class="tag">Embasamento Linguístico</span>
+          <span class="tag">Ponte Academia–Prática</span>
+        </div>
+      </div>
+
+      <div class="chapter-split reverse">
+        <aside class="interactive-panel" aria-label="Comparador de papéis docentes">
+          <div>
+            <span class="label">Comparador Pedagógico</span>
+            <h3 class="module-title">Curso Convencional vs. Dojo de Español</h3>
+          </div>
+
+          <div class="filter-row">
+            <button type="button" class="btn is-active" id="sensei-tab-dojo" onclick="setSenseiView('dojo')">Modelo Dojo (Moderador)</button>
+            <button type="button" class="btn" id="sensei-tab-conv" onclick="setSenseiView('convencional')">Curso Convencional</button>
+            <button type="button" class="btn" id="sensei-tab-academia" onclick="setSenseiView('academia')">Síntese Acadêmica</button>
+          </div>
+
+          <div id="sensei-panel-content" class="washi-card moss-spine" style="background: var(--background);">
+            <span class="label">Atuação do Sensei Moderador</span>
+            <p style="margin: var(--space-xs) 0;">
+              Em vez de impor um programa engessado de cima para baixo, o Sensei coordena projetos negociados democraticamente em espanhol pelo próprio grupo: análise de canções ibero-americanas, roteiros por cidades hispânicas e investigação linguística.
+            </p>
+            <p style="margin: 0;">
+              Seu papel é garantir segurança no tatame virtual e aportar rigor acadêmico em fonética, prosódia e pragmática no momento em que o grupo precisa, sem monopolizar a fala.
+            </p>
+          </div>
+        </aside>
+
+        <div>
+          <p>
+            No japonês tradicional, <em>Sensei</em> significa literalmente <strong>«aquele que nasceu antes»</strong> — não um detentor autoritário de segredos, mas alguém que percorreu o caminho por mais tempo e assume a responsabilidade de abrir o espaço de treino.
+          </p>
+          <p>
+            Ao ingressar no curso de Letras – Espanhol em uma universidade federal brasileira após anos atuando na informática e dando aulas on-line de forma intuitiva, Budnikar viveu um «banho de humildade»: descobriu que muitas de suas intuições já haviam sido teorizadas pela linguística. Ao mesmo tempo, confirmou uma crítica central: grande parte do conhecimento acadêmico raramente sai dos muros da universidade para resolver problemas reais de comunicação.
+          </p>
+          <p>
+            Em <em>La Escuela – Dojo de Español</em>, o Sensei atua justamente nessa ponte: traz o respaldo teórico da academia (semântica, pragmática, prosódia, didática) a serviço de uma comunidade horizontal onde o verdadeiro motor da aprendizagem é a cooperação entre pares.
+          </p>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 02 / 08 · Coordenação: Prof. Claudio Marcelo Budnikar</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 03: SEMPAI & KOHAI -->
+    <article class="chapter" id="conceito-03">
+      <div class="chapter-header">
+        <span class="label">Conceito 03 · Dinâmica das Sessões</span>
+        <h2 class="chapter-title">Treino Cooperativo entre Sempai e Kohai sob a Não-Resistência</h2>
+        <div class="tag-row">
+          <span class="tag">Multinível</span>
+          <span class="tag">Aikidô &amp; Harmonização</span>
+          <span class="tag">Sem Vaidades</span>
+        </div>
+      </div>
+
+      <p>
+        Diferentemente das turmas tradicionais segmentadas por nível estanque, no dojo iniciantes (<em>kohai</em> — menor experiência) e veteranos (<em>sempai</em> — maior experiência) compartilham o mesmo tatame virtual. A hierarquia não serve à vaidade nem à competição: quem tem maior caminhada consolida seu domínio acompanhando quem está começando, e quem dá os primeiros passos ganha confiança imerso na comunicação real desde o primeiro dia.
+      </p>
+
+      <div class="interactive-panel" aria-label="Protocolo interativo de aula e duplas Sempai-Kohai">
+        <div class="chapter-split">
+          <div>
+            <span class="label">Ritual do Treino em Quatro Tempos</span>
+            <h3 class="module-title">Como Funciona a Harmonização em Duplas</h3>
+            <div class="filter-row" style="margin-top: var(--space-sm);">
+              <button type="button" class="btn is-active" onclick="setDojoStep(0, this)">1. Respeito Inicial</button>
+              <button type="button" class="btn" onclick="setDojoStep(1, this)">2. Demonstração</button>
+              <button type="button" class="btn" onclick="setDojoStep(2, this)">3. Duplas &amp; Harmonização</button>
+              <button type="button" class="btn" onclick="setDojoStep(3, this)">4. Katas &amp; Rotação</button>
+            </div>
+            <div class="washi-card" id="dojo-step-output" style="background: var(--background); margin-top: var(--space-md);">
+              <span class="label">Etapa 1 · Saudação e Disposição</span>
+              <p style="margin: var(--space-xs) 0 0;">
+                Todos ingressam fazendo uma reverência diante do Sensei e de cada colega antes de treinar. No dojo virtual de espanhol, isso se traduz em escuta respeitosa, ausência de zombaria diante do erro e abandono da vaidade intelectual.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <span class="label">Perspectivas de Papel</span>
+            <h3 class="module-title">O Que Cada Integrante Faz na Dupla</h3>
+            <div class="filter-row" style="margin-top: var(--space-sm);">
+              <button type="button" class="btn btn-cinnabar is-active" onclick="setPairRole('sempai', this)">Papel do Sempai</button>
+              <button type="button" class="btn" onclick="setPairRole('kohai', this)">Papel do Kohai</button>
+              <button type="button" class="btn" onclick="setPairRole('iguais', this)">Mesmo Nível</button>
+            </div>
+            <div class="washi-card cinnabar-spine" id="pair-role-output" style="background: var(--background); margin-top: var(--space-md);">
+              <span class="label">Sempai · Quem já caminhou antes</span>
+              <p style="margin: var(--space-xs) 0 0;">
+                Não opõe resistência rígida nem desfecha «golpes linguísticos» desmedidos (como falar rápido demais para exibir fluência). Molda-se ao ritmo do <em>kohai</em> com o mínimo necessário de explicações teóricas, respondendo dúvidas pontuais com precisão e acompanhamento vivo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 03 / 08 · Cooperação multinível em sessões semanais ao vivo</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 04: PORTUNHOL PERIGOSO -->
+    <article class="chapter" id="conceito-04">
+      <div class="chapter-header">
+        <span class="label">Conceito 04 · Semântica Contrastiva</span>
+        <h2 class="chapter-title">Desarmando o «Portunhol Perigoso» e os Falsos Cognatos</h2>
+        <div class="tag-row">
+          <span class="tag">700+ Registros</span>
+          <span class="tag">Mal-entendidos Tardios</span>
+          <span class="tag">Espanhol × Português</span>
+        </div>
+      </div>
+
+      <div class="chapter-split">
+        <div>
+          <p>
+            Ao mudar-se para Florianópolis após os 40 anos e atuar na área de tecnologia, Budnikar percebeu que as linguagens de programação serviam como idioma franco com colegas e clientes — muitas vezes mais eficazes que seu português incipiente misturado ao espanhol. Porém, essa mistura revelou uma armadilha sistemática.
+          </p>
+          <p>
+            Ele começou a anotar em um caderninho de bolso todas as palavras escritas ou pronunciadas de modo quase idêntico nos dois idiomas, mas com sentidos distintos ou opostos. O caderninho encheu, migrou para uma planilha e já ultrapassa <strong>700 linhas</strong>.
+          </p>
+          <blockquote class="quote-block">
+            «O portunhol perigoso faz com que quem escuta acredite ter compreendido perfeitamente o outro — para perceber muito tempo depois que entendeu exatamente o oposto.»
+          </blockquote>
+          <p>
+            Diferentemente de um erro visível que interrompe a conversa na hora, o falso cognato produz uma <em>ilusão de transparência</em>. Desarmá-lo exige consciência semântica ativa no dojo.
+          </p>
+        </div>
+
+        <aside class="interactive-panel" aria-label="Laboratório interativo de falsos cognatos">
+          <div>
+            <span class="label">Laboratório de Desarmamento</span>
+            <h3 class="module-title">Inspetor de Falsos Cognatos (Exemplos Práticos)</h3>
+            <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-bottom: 0;">
+              Selecione um termo em espanhol abaixo para inspecionar a armadilha do «portunhol perigoso» e a forma correta equivalente.
+            </p>
+          </div>
+
+          <div class="cognate-grid" id="cognate-grid">
+            <button type="button" class="cognate-btn is-active" onclick="selectCognate(0, this)">
+              <span class="label-muted">Termo 01</span>
+              <span class="cognate-word">Embarazada</span>
+            </button>
+            <button type="button" class="cognate-btn" onclick="selectCognate(1, this)">
+              <span class="label-muted">Termo 02</span>
+              <span class="cognate-word">Exquisito</span>
+            </button>
+            <button type="button" class="cognate-btn" onclick="selectCognate(2, this)">
+              <span class="label-muted">Termo 03</span>
+              <span class="cognate-word">Propina</span>
+            </button>
+            <button type="button" class="cognate-btn" onclick="selectCognate(3, this)">
+              <span class="label-muted">Termo 04</span>
+              <span class="cognate-word">Oficina</span>
+            </button>
+            <button type="button" class="cognate-btn" onclick="selectCognate(4, this)">
+              <span class="label-muted">Termo 05</span>
+              <span class="cognate-word">Apellido</span>
+            </button>
+            <button type="button" class="cognate-btn" onclick="selectCognate(5, this)">
+              <span class="label-muted">Termo 06</span>
+              <span class="cognate-word">Rato</span>
+            </button>
+          </div>
+
+          <div class="cognate-reveal" id="cognate-reveal">
+            <div class="comparison-pair">
+              <div class="pair-box trap">
+                <span class="label" style="color: var(--tertiary);">Armadilha do Portunhol</span>
+                <p style="margin: var(--space-xs) 0 0;">Parece «embaraçada» (envergonhada, constrangida).</p>
+              </div>
+              <div class="pair-box safe">
+                <span class="label">Sentido Real em Espanhol</span>
+                <p style="margin: var(--space-xs) 0 0;">Significa <strong>grávida</strong>. Para dizer «envergonhada», usa-se <em>avergonzada</em> ou <em>incómoda</em>.</p>
+              </div>
+            </div>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+              <strong>Risco comunicativo:</strong> ambos os falantes seguem a conversa achando que falam da mesma situação — o equívoco só aparece tarde demais.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 04 / 08 · Baseado no levantamento de 700+ falsos cognatos</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 05: GRICE & KATAS -->
+    <article class="chapter" id="conceito-05">
+      <div class="chapter-header">
+        <span class="label">Conceito 05 · Pragmática &amp; Expressividade</span>
+        <h2 class="chapter-title">As Máximas de Grice e os Katas Corporais e Vocais</h2>
+        <div class="tag-row">
+          <span class="tag">Pragmática Linguística</span>
+          <span class="tag">4 Máximas</span>
+          <span class="tag">Katas como Livros Vivos</span>
+        </div>
+      </div>
+
+      <p>
+        Enquanto a semântica analisa o significado literal, a <strong>pragmática</strong> estuda a intenção de quem fala e a interpretação de quem escuta dentro de um contexto. Na universidade, Budnikar encontrou as <strong>quatro máximas conversacionais de Paul Grice</strong> — Qualidade, Quantidade, Relevância e Modo — e percebeu uma correspondência direta com os conselhos dos antigos mestres de Karatê para executar os <em>katas</em> (sequências coreografadas que preservam o legado marcial como «livros vivos»): <em>«o que fazemos com a voz ao nos comunicarmos oralmente equivale ao que fazemos com o corpo inteiro nas artes marciais»</em>.
+      </p>
+
+      <div class="interactive-panel" aria-label="Matriz interativa entre Máximas de Grice e Katas">
+        <div>
+          <span class="label">Correspondência Estrutural</span>
+          <h3 class="module-title">Explore Cada Máxima no Corpo (Kata) e na Voz (Diálogo)</h3>
+          <div class="filter-row" style="margin-top: var(--space-sm);">
+            <button type="button" class="btn is-active" onclick="selectGrice(0, this)">Qualidade</button>
+            <button type="button" class="btn" onclick="selectGrice(1, this)">Quantidade</button>
+            <button type="button" class="btn" onclick="selectGrice(2, this)">Relevância</button>
+            <button type="button" class="btn" onclick="selectGrice(3, this)">Modo</button>
+          </div>
+        </div>
+
+        <div class="comparison-pair" id="grice-pair">
+          <div class="pair-box">
+            <span class="label">Na Pragmática (Máxima de Grice)</span>
+            <p style="margin: var(--space-xs) 0 0;">
+              <strong>Qualidade:</strong> não afirmar o que se acredita falso nem aquilo para o qual faltam evidências; sustentar a veracidade da intenção comunicativa.
+            </p>
+          </div>
+          <div class="pair-box safe">
+            <span class="label">No Dojo (Execução do Kata)</span>
+            <p style="margin: var(--space-xs) 0 0;">
+              <strong>Autenticidade do gesto:</strong> cada defesa ou contra-ataque precisa ter intenção real e base física verdadeira — não pode ser uma coreografia vazia ou fingida.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <span class="label" style="margin-bottom: var(--space-xs);">Progressão do Domínio (Do Kata ao Instrumento Musical e à Língua)</span>
+          <div class="kata-stage-bar">
+            <button type="button" class="btn is-active" onclick="selectKataStage(0, this)">Estágio 1 · Contagem do Sensei</button>
+            <button type="button" class="btn" onclick="selectKataStage(1, this)">Estágio 2 · Silêncio Guiado</button>
+            <button type="button" class="btn" onclick="selectKataStage(2, this)">Estágio 3 · Expressão da Alma</button>
+          </div>
+          <p id="kata-stage-desc" style="margin: var(--space-sm) 0 0; font-size: 0.95rem; color: var(--on-surface-variant);">
+            <strong>Imitação rítmica:</strong> tal como ler partituras e repetir escalas musicais, o aluno acompanha a contagem do Sensei, internalizando a forma sem depender de longas dissertações teóricas.
+          </p>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 05 / 08 · Cooperação comunicativa e expressividade técnica</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 06: PROSODY & INTONATION -->
+    <article class="chapter" id="conceito-06">
+      <div class="chapter-header">
+        <span class="label">Conceito 06 · Fonética &amp; Ritmo da Frase</span>
+        <h2 class="chapter-title">Treino de Prosódia e Entonação: O Mistério da «Cortesia Brasileira»</h2>
+        <div class="tag-row">
+          <span class="tag">Carlos Enrique Musse Torres</span>
+          <span class="tag">Curva Entoativa</span>
+          <span class="tag">Pergunta vs. Afirmação</span>
+        </div>
+      </div>
+
+      <div class="chapter-split reverse">
+        <aside class="interactive-panel" aria-label="Explorador visual e sonoro de curvas entoativas">
+          <div>
+            <span class="label">Explorador Prosódico</span>
+            <h3 class="module-title">Curva Entoativa: Transferência PT vs. Espanhol</h3>
+          </div>
+
+          <div class="filter-row">
+            <button type="button" class="btn is-active" id="prosody-btn-compare" onclick="setProsodyView('compare')">Comparar Ambas</button>
+            <button type="button" class="btn" id="prosody-btn-es" onclick="setProsodyView('es')">Foco: Espanhol</button>
+            <button type="button" class="btn" id="prosody-btn-pt" onclick="setProsodyView('pt')">Foco: Transferência PT</button>
+          </div>
+
+          <div class="viz-frame">
+            <svg viewBox="0 0 460 190" role="img" aria-labelledby="prosody-svg-title">
+              <title id="prosody-svg-title">Comparação entre a curva entoativa plana transferida do português e a curva com pico inicial do espanhol</title>
+              <!-- Horizontal gridlines (Kiln style: horizontal outline-variant only) -->
+              <line x1="36" y1="35" x2="436" y2="35" stroke="var(--chart-grid)" stroke-width="1"/>
+              <line x1="36" y1="85" x2="436" y2="85" stroke="var(--chart-grid)" stroke-width="1"/>
+              <line x1="36" y1="135" x2="436" y2="135" stroke="var(--chart-axis)" stroke-width="1.2"/>
+
+              <text x="8" y="39" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="9">AGUDO</text>
+              <text x="8" y="89" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="9">MÉDIO</text>
+              <text x="8" y="139" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="9">GRAVE</text>
+
+              <text x="54" y="160" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">INÍCIO DA FRASE</text>
+              <text x="200" y="160" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">CORPO</text>
+              <text x="348" y="160" fill="var(--chart-muted)" font-family="Geist Mono, monospace" font-size="10">FECHO (?)</text>
+
+              <!-- Spanish interrogative contour: initial high peak + final sharp rise -->
+              <g id="curve-es">
+                <path d="M 55 100 C 82 32, 118 34, 155 86 C 210 105, 290 105, 345 92 C 378 84, 405 40, 425 32" stroke="var(--chart-series-1)" stroke-width="2.5" fill="none"/>
+                <circle cx="96" cy="46" r="4.5" fill="var(--chart-series-1)"/>
+                <circle cx="422" cy="34" r="4.5" fill="var(--chart-series-1)"/>
+                <text x="72" y="25" fill="var(--chart-series-1)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">1º Pico (ES)</text>
+                <text x="358" y="24" fill="var(--chart-series-1)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Subida Final</text>
+              </g>
+
+              <!-- Portuguese transfer: flatter, lacks first peak -->
+              <g id="curve-pt">
+                <path d="M 55 96 C 125 90, 220 96, 330 98 C 370 98, 400 84, 425 76" stroke="var(--chart-series-2)" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+                <circle cx="96" cy="93" r="4" fill="var(--chart-series-2)"/>
+                <text x="112" y="120" fill="var(--chart-series-2)" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="600">Curva PT mais plana (sem 1º pico → soa como cortesia em ES)</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="filter-row">
+            <button type="button" class="btn btn-primary" onclick="playProsodyContour('es')">Ouvir contorno ES (2 picos)</button>
+            <button type="button" class="btn btn-secondary" onclick="playProsodyContour('pt')">Ouvir contorno plano (PT)</button>
+          </div>
+          <div class="audio-status" id="prosody-audio-status" aria-live="polite">Síntese acústica opcional gerada localmente via Web Audio API.</div>
+        </aside>
+
+        <div>
+          <p>
+            Em suas aulas particulares, Budnikar notava com frequência que aprendizes brasileiros, ao formularem perguntas em espanhol, não produziam a entonação interrogativa característica — o que o obrigava a perguntar se estavam afirmando ou indagando. Intuitivamente, pedia que moldassem a voz de forma mais aguda no início e no fim da frase, exagerando o próprio modelo.
+          </p>
+          <p>
+            Mais tarde, na universidade, encontrou a confirmação científica no trabalho <em>Didáctica de la entonación de E/LE a aprendientes brasileños</em>, do professor Carlos Enrique Musse Torres (Instituto Cervantes de Brasília / UnB), que sistematizou o estudo da <strong>prosódia</strong> — o ritmo e a tonalidade das frases entendidas como unidades.
+          </p>
+          <blockquote class="quote-block">
+            «A curva entoativa do português é mais plana e carece do primeiro pico. É semelhante à entonação de cortesia do espanhol. Por isso, quando os brasileiros transferem a entonação pré-linguística de seu português para o espanhol, parecem ser corteses, mesmo sem sê-lo.»
+          </blockquote>
+          <p>
+            Treinar a prosódia no dojo permite que o falante lusófono module intencionalmente sua melodia vocal e ganhe clareza pragmática imediata.
+          </p>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 06 / 08 · Baseado em C. E. Musse Torres (Instituto Cervantes / UnB)</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 07: JACOTOT & FREIRE -->
+    <article class="chapter" id="conceito-07">
+      <div class="chapter-header">
+        <span class="label">Conceito 07 · Pedagogia da Emancipação</span>
+        <h2 class="chapter-title">O Método de Joseph Jacotot e a Relevância de Paulo Freire</h2>
+        <div class="tag-row">
+          <span class="tag">O Mestre Ignorante (1818 / 1987)</span>
+          <span class="tag">Relevância (1961)</span>
+          <span class="tag">Uso antes da Regra</span>
+        </div>
+      </div>
+
+      <p>
+        Aprofundando-se na gramática do espanhol e do português, Budnikar chegou a uma distinção decisiva: a gramática e a sintaxe são valiosas para explicar <em>por que</em> falamos como falamos (funcionam melhor sobre as consequências), mas não são o ponto de partida indispensável para <em>aprender a falar</em> (governar as causas). Tal como nos laços autorreferenciais de Hofstadter, a fluência só se adquire exercendo a comunicação antes de esgotar suas regras formais.
+      </p>
+
+      <div class="interactive-panel" aria-label="Comparação histórica e metodológica entre Jacotot, Freire e ensino tradicional">
+        <div class="filter-row">
+          <button type="button" class="btn is-active" onclick="setPedagogyFocus('jacotot', this)">Joseph Jacotot (1818)</button>
+          <button type="button" class="btn" onclick="setPedagogyFocus('freire', this)">Paulo Freire (1961)</button>
+          <button type="button" class="btn" onclick="setPedagogyFocus('comparativo', this)">Tabela: Causa vs. Consequência</button>
+        </div>
+
+        <div id="pedagogy-view">
+          <div class="washi-card moss-spine" style="background: var(--background);">
+            <span class="label">Joseph Jacotot &amp; Jacques Rancière (O Mestre Ignorante)</span>
+            <p style="margin: var(--space-xs) 0;">
+              Em 1818, o professor francês Joseph Jacotot precisou ensinar literatura francesa a estudantes que falavam apenas holandês. Sem explicar regras gramaticais, entregou-lhes uma edição bilíngue de um romance e desafiou-os a aprender pelo texto por conta própria. Os alunos aprenderam a falar e escrever em francês — experiência resgatada por Jacques Rancière em 1987 em <em>O Mestre Ignorante: Cinco Lições sobre a Emancipação Intelectual</em>.
+            </p>
+            <p style="margin: 0; color: var(--secondary); font-weight: 500;">
+              Aplicação ao Dojo: emancipar a inteligência do estudante pela imersão guiada e autonomia entre pares, superando a passividade de turmas massificadas.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 07 / 08 · Jacotot (1818), Rancière (1987) e Paulo Freire (1961)</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- CHAPTER 08: COLLECTIVE PUBLICATIONS -->
+    <article class="chapter" id="conceito-08">
+      <div class="chapter-header">
+        <span class="label">Conceito 08 · Produção de Conhecimento</span>
+        <h2 class="chapter-title">Publicações Coletivas, Acesso Aberto e Autoria Compartilhada</h2>
+        <div class="tag-row">
+          <span class="tag">Livre Distribuição</span>
+          <span class="tag">Papers &amp; Cadernos</span>
+          <span class="tag">Estudante Co-autor</span>
+        </div>
+      </div>
+
+      <div class="chapter-split">
+        <div>
+          <p>
+            O horizonte de <em>La Escuela – Dojo de Español</em> ultrapassa a conversação momentânea em aula: o propósito é que o trabalho conjunto deixe marcas duradouras e circule livremente. Ao longo de cada ciclo de estudo, as investigações do grupo transformam-se em ensaios breves, <em>papers</em> e cadernos de estudo.
+          </p>
+          <p>
+            Todas essas produções são publicadas em regime de <strong>livre distribuição e acesso aberto</strong>. Cada estudante deixa o papel de receptor passivo para atuar como pesquisador, co-autor e criador de conhecimento em língua espanhola — assinando obras que carregam o selo coletivo da comunidade ao lado do nome de todos os integrantes participantes, respaldados pela lista pública de membros.
+          </p>
+        </div>
+
+        <aside class="interactive-panel" aria-label="Explorador dos formatos de publicação e fluxo de coautoria">
+          <div>
+            <span class="label">Fluxo Editorial Aberto</span>
+            <h3 class="module-title">Formatos e Assinatura Coletiva do Dojo</h3>
+            <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-bottom: 0;">
+              Selecione um formato de produção para visualizar como o trabalho das sessões semanais se converte em publicação compartilhada.
+            </p>
+          </div>
+
+          <div class="filter-row">
+            <button type="button" class="btn is-active" onclick="selectPubFormat(0, this)">Pesquisas Linguísticas</button>
+            <button type="button" class="btn" onclick="selectPubFormat(1, this)">Traduções Comentadas</button>
+            <button type="button" class="btn" onclick="selectPubFormat(2, this)">Crônicas Virtuais</button>
+            <button type="button" class="btn" onclick="selectPubFormat(3, this)">Reflexões de Uso</button>
+          </div>
+
+          <div class="dossier-preview" id="pub-preview">
+            <span class="label">Formato 01 · Paper / Caderno de Estudo</span>
+            <strong style="font-family: var(--font-headline); font-size: 1.15rem;">Pesquisas Colaborativas em Espanhol</strong>
+            <p style="margin: 0; font-size: 0.94rem;">
+              Investigação de campo conduzida em duplas sobre falsos cognatos, variações léxicas ibero-americanas ou prosódia, redigida diretamente em espanhol com revisão cooperativa do Sensei.
+            </p>
+            <div style="border-top: var(--rule-linen); padding-top: var(--space-sm); margin-top: var(--space-xs);">
+              <span class="label-muted" style="display: block;">Assinatura Editorial:</span>
+              <span style="font-size: 0.88rem; color: var(--on-surface);">
+                <strong>La Escuela – Dojo de Español</strong> · Coautoria nominal de todos os membros participantes (Lista Pública de Membros · Acesso Aberto)
+              </span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="label-muted">Eixo 08 / 08 · Do consumidor passivo ao co-autor em língua espanhola</span>
+        <button type="button" class="back-link" onclick="jumpToConcept('indice')">Voltar ao índice ↑</button>
+      </div>
+    </article>
+
+    <!-- COLOPHON & SOURCES -->
+    <footer class="colophon" aria-label="Fontes e créditos do compêndio">
+      <span class="label">Fontes e Referências Citadas no Ensaio Base</span>
+      <p style="margin: 0; max-width: 75ch;">
+        Todo o conteúdo deste compêndio fundamenta-se no documento <em>«La Escuela – Dojo de Español: Por quê? — Dos tatames à língua espanhola: uma trajetória rumo à aprendizagem compartilhada»</em>, de autoria e coordenação do Prof. Claudio Marcelo Budnikar (Florianópolis, Santa Catarina, Brasil · Novembro de 2026).
+      </p>
+      <p style="margin: 0; max-width: 75ch;">
+        Referências mencionadas pelo autor no texto original: Joan Manuel Serrat (canção «A quien corresponda»); Julio Cortázar (conto «No se culpe a nadie»); Richard Dawkins (<em>O Gene Egoísta</em>); Douglas Hofstadter (<em>Gödel, Escher, Bach: um entrelaçamento de gênios brilhantes</em>); Joseph Jacotot e Jacques Rancière (<em>O Mestre Ignorante</em>, 1987); Paulo Freire (alfabetização em 45 dias pelo princípio da relevância, 1961); Carlos Enrique Musse Torres (<em>Didáctica de la entonación de E/LE a aprendientes brasileños</em>, Instituto Cervantes de Brasília / UnB); e Paul Grice (as quatro máximas da pragmática conversacional).
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // State for active category filter
+    var activeCategory = 'todos';
+
+    // 1. Index filtering and smooth jump
+    function filterIndex() {
+      var input = document.getElementById('concept-search');
+      var grid = document.getElementById('index-grid');
+      var empty = document.getElementById('index-empty');
+      if (!grid || !empty) return;
+
+      var query = input ? input.value.trim().toLowerCase() : '';
+      var items = grid.querySelectorAll('.index-item');
+      var visibleCount = 0;
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var cat = item.getAttribute('data-cat') || '';
+        var kw = (item.getAttribute('data-keywords') || '') + ' ' + item.textContent.toLowerCase();
+        var matchesCat = activeCategory === 'todos' || cat === activeCategory;
+        var matchesQuery = query === '' || kw.indexOf(query) !== -1;
+
+        if (matchesCat && matchesQuery) {
+          item.classList.remove('is-dimmed');
+          item.style.display = 'grid';
+          visibleCount++;
+        } else if (!matchesCat) {
+          item.style.display = 'none';
+        } else {
+          item.style.display = 'grid';
+          item.classList.add('is-dimmed');
+        }
+      }
+
+      if (visibleCount === 0) {
+        empty.classList.add('is-visible');
+      } else {
+        empty.classList.remove('is-visible');
+      }
+    }
+
+    function setCategoryFilter(cat, btnEl) {
+      activeCategory = cat;
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var buttons = group.querySelectorAll('.btn');
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].classList.remove('is-active');
+        }
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+      filterIndex();
+    }
+
+    function resetIndexFilters() {
+      var input = document.getElementById('concept-search');
+      if (input) input.value = '';
+      activeCategory = 'todos';
+      var filterButtons = document.querySelectorAll('.filter-row [data-cat]');
+      for (var i = 0; i < filterButtons.length; i++) {
+        if (filterButtons[i].getAttribute('data-cat') === 'todos') {
+          filterButtons[i].classList.add('is-active');
+        } else {
+          filterButtons[i].classList.remove('is-active');
+        }
+      }
+      filterIndex();
+    }
+
+    function jumpToConcept(id) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (id.indexOf('conceito-') === 0) {
+        var chapters = document.querySelectorAll('.chapter');
+        for (var i = 0; i < chapters.length; i++) {
+          chapters[i].classList.remove('is-highlighted');
+        }
+        target.classList.add('is-highlighted');
+      }
+    }
+
+    // 2. Biographical timeline data
+    var timelineData = [
+      {
+        label: `San Isidro, Buenos Aires · Leituras e Formação Técnica`,
+        text: `Nascido em 11 de novembro na periferia de Buenos Aires (neto de lituanos e espanhóis), Claudio Budnikar formou-se Técnico em Eletromecânica. Aos 15 anos, a leitura em aula do conto «No se culpe a nadie», de Julio Cortázar, revelou que a literatura podia ir muito além do entretenimento.`
+      },
+      {
+        label: `Dojo de Karatê · O Paradoxo da Força`,
+        text: `Ainda jovem, iniciou no Karatê tradicional com um mestre japonês de cerca de 60 anos e seus dois filhos. Descobriu que o mestre idoso neutralizava golpes velozes com suavidade — enigma que só seria compreendido 20 anos depois com o conceito de Zanshin.`
+      },
+      {
+        label: `Patagônia, Engenharia, Programação e Hofstadter`,
+        text: `Após o serviço militar no extremo sul da Argentina (onde deu aulas de defesa pessoal), cursou Engenharia e aprendeu programação de forma autônoma. Compreendeu que programar é conversar sintática e semanticamente com a máquina, e leu Dawkins e «Gödel, Escher, Bach» (laços autorreferenciais).`
+      },
+      {
+        label: `Florianópolis, Aikidô e os 700+ Falsos Cognatos`,
+        text: `Mudou-se com a família para Florianópolis após os 40 anos. Praticante e professor de Aikidô há mais de 20 anos, trouxe os círculos e a não-resistência para a vida cotidiana e iniciou um caderno — hoje planilha com mais de 700 linhas — mapeando o «portunhol perigoso».`
+      },
+      {
+        label: `Letras – Espanhol e La Escuela – Dojo de Español (2026)`,
+        text: `Incentivado pela filha, ingressou na graduação em Letras – Espanhol em universidade federal brasileira. Unindo o rigor acadêmico (Jacotot, Freire, Grice, Musse Torres) à ética do dojo, fundou La Escuela para transformar alunos em co-autores em língua espanhola.`
+      }
+    ];
+
+    function selectTimeline(index, btnEl) {
+      var nodes = document.querySelectorAll('.timeline-node');
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var detail = document.getElementById('timeline-detail');
+      var entry = timelineData[index];
+      if (!detail || !entry) return;
+      detail.innerHTML = `<span class="label">${entry.label}</span><p style="margin-top: var(--space-xs); margin-bottom: 0;">${entry.text}</p>`;
+    }
+
+    // 3. Chapter 01: Zanshin interactive toggle
+    function setZanshinMode(mode) {
+      var btnReativo = document.getElementById('zanshin-btn-reativo');
+      var btnAtento = document.getElementById('zanshin-btn-atento');
+      var svgReactive = document.getElementById('zanshin-svg-reactive');
+      var svgZanshin = document.getElementById('zanshin-svg-zanshin');
+      var caption = document.getElementById('zanshin-caption');
+      if (!svgReactive || !svgZanshin || !caption) return;
+
+      if (mode === 'zanshin') {
+        if (btnReativo) btnReativo.classList.remove('is-active');
+        if (btnAtento) btnAtento.classList.add('is-active');
+        svgReactive.style.display = 'none';
+        svgZanshin.style.display = 'block';
+        caption.innerHTML = `<span class="label">No Tatame e na Conversa</span><p style="margin: var(--space-xs) 0 0;"><strong>Modo Zanshin (Antecipação):</strong> atenção constante percebe a intenção comunicativa em T0+Δ. Não exige «força bruta» de memória gramatical, mas presença para fluir com o ritmo e o contexto da frase alheia.</p>`;
+      } else {
+        if (btnAtento) btnAtento.classList.remove('is-active');
+        if (btnReativo) btnReativo.classList.add('is-active');
+        svgReactive.style.display = 'block';
+        svgZanshin.style.display = 'none';
+        caption.innerHTML = `<span class="label">No Tatame e na Conversa</span><p style="margin: var(--space-xs) 0 0;"><strong>Modo Reativo (Linha Reta):</strong> espera o impacto completo para só então reagir. Na língua, equivale a esperar toda a frase terminar, traduzi-la palavra por palavra ao português e buscar regras antes de responder — perdendo o ritmo do diálogo.</p>`;
+      }
+    }
+
+    // 4. Chapter 02: Sensei moderator perspectives
+    var senseiViews = {
+      dojo: {
+        label: `Atuação do Sensei Moderador`,
+        p1: `Em vez de impor um programa engessado de cima para baixo, o Sensei coordena projetos negociados democraticamente em espanhol pelo próprio grupo: análise de canções ibero-americanas, roteiros por cidades hispânicas e investigação linguística.`,
+        p2: `Seu papel é garantir segurança no tatame virtual e aportar rigor acadêmico em fonética, prosódia e pragmática no momento em que o grupo precisa, sem monopolizar a fala.`
+      },
+      convencional: {
+        label: `Limites do Curso Convencional`,
+        p1: `Centrado em um programa rígido e na figura do professor como único transmissor, trata a gramática normativa como pré-requisito antes da fala real e separa os alunos em turmas isoladas por nível.`,
+        p2: `Gera receio de errar, passividade receptora e desmotivação diante de conteúdos impostos sem vínculo com a realidade de quem aprende.`
+      },
+      academia: {
+        label: `Ponte entre Universidade e Mundo Real`,
+        p1: `Na graduação em Letras, Budnikar comprovou que suas intuições metodológicas já haviam sido pesquisadas academicamente — um «banho de humildade» que deu base estruturada à sua prática.`,
+        p2: `Ainda assim, manteve a crítica de que esse saber raramente sai das universidades. O Dojo transforma teoria linguística (prosódia, pragmática, didática) em treino vivo acessível.`
+      }
+    };
+
+    function setSenseiView(key) {
+      var tabs = {
+        dojo: document.getElementById('sensei-tab-dojo'),
+        convencional: document.getElementById('sensei-tab-conv'),
+        academia: document.getElementById('sensei-tab-academia')
+      };
+      for (var k in tabs) {
+        if (tabs[k]) tabs[k].classList.remove('is-active');
+      }
+      if (tabs[key]) tabs[key].classList.add('is-active');
+
+      var panel = document.getElementById('sensei-panel-content');
+      var data = senseiViews[key];
+      if (!panel || !data) return;
+      panel.innerHTML = `<span class="label">${data.label}</span><p style="margin: var(--space-xs) 0;">${data.p1}</p><p style="margin: 0;">${data.p2}</p>`;
+    }
+
+    // 5. Chapter 03: Dojo ritual steps and pair roles
+    var dojoSteps = [
+      {
+        label: `Etapa 1 · Saudação e Disposição`,
+        text: `Todos ingressam fazendo uma reverência diante do Sensei e de cada colega antes de treinar. No dojo virtual de espanhol, isso se traduz em escuta respeitosa, ausência de zombaria diante do erro e abandono da vaidade intelectual.`
+      },
+      {
+        label: `Etapa 2 · Demonstração do Sensei`,
+        text: `O Sensei chama um integrante e demonstra detalhadamente uma estrutura, variação prosódica ou estratégia comunicativa diante de uma situação real — oferecendo o modelo concreto antes da teorização.`
+      },
+      {
+        label: `Etapa 3 · Prática em Duplas e Não-Resistência`,
+        text: `Formam-se pares sem importar graduação, idade ou experiência, alternando os papéis de quem propõe e quem responde. A harmonização substitui o embate: o mais experiente adapta seu ritmo para que o colega execute a comunicação com sucesso.`
+      },
+      {
+        label: `Etapa 4 · Katas Coletivos e Rotação`,
+        text: `As sequências comuns são praticadas primeiro sob o ritmo do Sensei e depois com autonomia guiada pelos mais experientes, girando os parceiros continuamente para que o aprendiz absorva múltiplos sotaques e estilos.`
+      }
+    ];
+
+    function setDojoStep(index, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var out = document.getElementById('dojo-step-output');
+      var item = dojoSteps[index];
+      if (!out || !item) return;
+      out.innerHTML = `<span class="label">${item.label}</span><p style="margin: var(--space-xs) 0 0;">${item.text}</p>`;
+    }
+
+    var pairRoles = {
+      sempai: {
+        label: `Sempai · Quem já caminhou antes`,
+        text: `Não opõe resistência rígida nem desfecha «golpes linguísticos» desmedidos (como falar rápido demais para exibir fluência). Molda-se ao ritmo do kohai com o mínimo necessário de explicações teóricas, respondendo dúvidas pontuais com precisão e acompanhamento vivo.`
+      },
+      kohai: {
+        label: `Kohai · Quem está começando`,
+        text: `Entra imerso em espanhol desde o primeiro encontro, sem precisar «esperar terminar a gramática» para conversar. Faz perguntas pontuais ao sempai, observa e reproduz estruturas reais até desenvolver confiança própria.`
+      },
+      iguais: {
+        label: `Mesmo Nível · Alternância de Guia`,
+        text: `Quando ambos os integrantes da dupla possuem caminhada equivalente, alternam continuamente os papéis de guia e aprendiz — consolidando o domínio mútuo pela escuta atenta e pela correção cooperativa.`
+      }
+    };
+
+    function setPairRole(role, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active', 'btn-cinnabar');
+      }
+      if (btnEl) btnEl.classList.add('is-active', 'btn-cinnabar');
+
+      var out = document.getElementById('pair-role-output');
+      var item = pairRoles[role];
+      if (!out || !item) return;
+      out.innerHTML = `<span class="label">${item.label}</span><p style="margin: var(--space-xs) 0 0;">${item.text}</p>`;
+    }
+
+    // 6. Chapter 04: False cognates laboratory
+    var cognatesData = [
+      {
+        trap: `Parece «embaraçada» (envergonhada, constrangida).`,
+        safe: `Significa <strong>grávida</strong>. Para dizer «envergonhada», usa-se <em>avergonzada</em> ou <em>incómoda</em>.`,
+        risk: `Ambos os falantes seguem a conversa achando que falam da mesma situação — o equívoco só aparece tarde demais.`
+      },
+      {
+        trap: `Parece «esquisito» (estranho, bizarro, desagradável).`,
+        safe: `Significa <strong>delicioso, refinado, excelente</strong> (especialmente sobre comida ou gosto). «Estranho» é <em>raro</em> ou <em>extraño</em>.`,
+        risk: `Um elogio sincero a um prato em espanhol pode soar como ofensa para o ouvinte brasileiro desprevenido.`
+      },
+      {
+        trap: `Parece «propina» (suborno ilícito pago a alguém).`,
+        safe: `Significa <strong>gorjeta</strong> deixada em restaurantes ou serviços. «Suborno» é <em>soborno</em> ou <em>coima</em>.`,
+        risk: `Trocar o sentido transforma um hábito cotidiano de cortesia em acusação grave em contexto profissional ou turístico.`
+      },
+      {
+        trap: `Parece «oficina» (lugar de conserto mecânico ou artesanal).`,
+        safe: `Significa <strong>escritório</strong> (ambiente administrativo ou profissional). Oficina mecânica é <em>taller</em>.`,
+        risk: `Causa confusão imediata em endereços comerciais, reuniões corporativas e descrições de trabalho.`
+      },
+      {
+        trap: `Parece «apelido» (nome informal ou alcunha afetiva).`,
+        safe: `Significa <strong>sobrenome</strong> (nome de família). Já o «apelido» afetivo em espanhol é <em>apodo</em> ou <em>sobrenombre</em>.`,
+        risk: `Em cadastros, entrevistas e documentos formais, preencher o campo errado invalida registros oficiais.`
+      },
+      {
+        trap: `Parece «rato» (o roedor) ou intervalo indefinido.`,
+        safe: `Significa <strong>um momento, um instante, um pouco de tempo</strong> (<em>un rato</em>). O animal é <em>ratón</em> ou <em>rata</em>.`,
+        risk: `Frases simples como «espera un rato» geram estranhamento imediato quando interpretadas literalmente pelo português.`
+      }
+    ];
+
+    function selectCognate(index, btnEl) {
+      var btns = document.querySelectorAll('#cognate-grid .cognate-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var reveal = document.getElementById('cognate-reveal');
+      var item = cognatesData[index];
+      if (!reveal || !item) return;
+
+      reveal.innerHTML = `
+        <div class="comparison-pair">
+          <div class="pair-box trap">
+            <span class="label" style="color: var(--tertiary);">Armadilha do Portunhol</span>
+            <p style="margin: var(--space-xs) 0 0;">${item.trap}</p>
+          </div>
+          <div class="pair-box safe">
+            <span class="label">Sentido Real em Espanhol</span>
+            <p style="margin: var(--space-xs) 0 0;">${item.safe}</p>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--on-surface-variant);">
+          <strong>Risco comunicativo:</strong> ${item.risk}
+        </p>
+      `;
+    }
+
+    // 7. Chapter 05: Grice Maxims x Katas
+    var griceData = [
+      {
+        name: `Qualidade`,
+        prag: `Não afirmar o que se acredita falso nem aquilo para o qual faltam evidências; sustentar a veracidade da intenção comunicativa.`,
+        kata: `<strong>Autenticidade do gesto:</strong> cada defesa ou contra-ataque precisa ter intenção real e base física verdadeira — não pode ser uma coreografia vazia ou fingida.`
+      },
+      {
+        name: `Quantidade`,
+        prag: `Dar a contribuição tão informativa quanto requerida pelo propósito da conversa, sem excesso prolixo nem omissão que impeça o entendimento.`,
+        kata: `<strong>Economia de movimento:</strong> usar exatamente a energia e a amplitude necessárias ao combate simulado, sem gestos supérfluos nem incompletos.`
+      },
+      {
+        name: `Relevância`,
+        prag: `Dizer o que é pertinente ao momento e ao contexto compartilhado pelos interlocutores (ecoando também o princípio freiriano de significado vivo).`,
+        kata: `<strong>Oportunidade e distância (Maai):</strong> responder exatamente ao ângulo e ao tempo do ataque presente, mantendo conexão contínua com o adversário imaginário.`
+      },
+      {
+        name: `Modo`,
+        prag: `Ser claro, ordenado e evitar ambiguidade ou obscuridade desnecessária na maneira como a mensagem é enunciada.`,
+        kata: `<strong>Postura, eixo e expressividade:</strong> executar a sequência com equilíbrio, ritmo limpo e clareza técnica visível em cada transição.`
+      }
+    ];
+
+    function selectGrice(index, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var pair = document.getElementById('grice-pair');
+      var item = griceData[index];
+      if (!pair || !item) return;
+
+      pair.innerHTML = `
+        <div class="pair-box">
+          <span class="label">Na Pragmática (Máxima de Grice)</span>
+          <p style="margin: var(--space-xs) 0 0;"><strong>${item.name}:</strong> ${item.prag}</p>
+        </div>
+        <div class="pair-box safe">
+          <span class="label">No Dojo (Execução do Kata)</span>
+          <p style="margin: var(--space-xs) 0 0;">${item.kata}</p>
+        </div>
+      `;
+    }
+
+    var kataStages = [
+      `<strong>Imitação rítmica:</strong> tal como ler partituras e repetir escalas musicais, o aluno acompanha a contagem do Sensei, internalizando a forma sem depender de longas dissertações teóricas.`,
+      `<strong>Silêncio guiado pelo graduado:</strong> executa-se a sequência sem contagem vocal externa, mantendo sincronia coletiva e atenção mútua na fila do dojo.`,
+      `<strong>Expressão genuína da alma:</strong> após anos de prática, o aprendiz deixa de copiar mecanicamente e expressa seus próprios pensamentos e sentimentos no idioma com a naturalidade da língua materna.`
+    ];
+
+    function selectKataStage(index, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var desc = document.getElementById('kata-stage-desc');
+      if (desc && kataStages[index]) desc.innerHTML = kataStages[index];
+    }
+
+    // 8. Chapter 06: Prosody view & synthesized Web Audio contour
+    function setProsodyView(mode) {
+      var bComp = document.getElementById('prosody-btn-compare');
+      var bEs = document.getElementById('prosody-btn-es');
+      var bPt = document.getElementById('prosody-btn-pt');
+      var cEs = document.getElementById('curve-es');
+      var cPt = document.getElementById('curve-pt');
+      if (!cEs || !cPt) return;
+
+      if (bComp) bComp.classList.remove('is-active');
+      if (bEs) bEs.classList.remove('is-active');
+      if (bPt) bPt.classList.remove('is-active');
+
+      if (mode === 'es') {
+        if (bEs) bEs.classList.add('is-active');
+        cEs.style.opacity = '1';
+        cPt.style.opacity = '0.18';
+      } else if (mode === 'pt') {
+        if (bPt) bPt.classList.add('is-active');
+        cEs.style.opacity = '0.18';
+        cPt.style.opacity = '1';
+      } else {
+        if (bComp) bComp.classList.add('is-active');
+        cEs.style.opacity = '1';
+        cPt.style.opacity = '1';
+      }
+    }
+
+    var activeAudioCtx = null;
+    function playProsodyContour(lang) {
+      var status = document.getElementById('prosody-audio-status');
+      try {
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) {
+          if (status) status.textContent = `Áudio não suportado neste navegador — observe as curvas no gráfico acima.`;
+          return;
+        }
+        if (!activeAudioCtx) activeAudioCtx = new AudioCtx();
+        if (activeAudioCtx.state === 'suspended') activeAudioCtx.resume();
+
+        var now = activeAudioCtx.currentTime;
+        var osc = activeAudioCtx.createOscillator();
+        var gain = activeAudioCtx.createGain();
+        osc.type = 'sine';
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.exponentialRampToValueAtTime(0.12, now + 0.06);
+        gain.gain.setValueAtTime(0.12, now + 1.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
+
+        if (lang === 'es') {
+          // Initial sharp peak -> mid plateau -> final interrogative rise
+          osc.frequency.setValueAtTime(210, now);
+          osc.frequency.linearRampToValueAtTime(340, now + 0.18);
+          osc.frequency.linearRampToValueAtTime(220, now + 0.42);
+          osc.frequency.linearRampToValueAtTime(215, now + 0.85);
+          osc.frequency.linearRampToValueAtTime(360, now + 1.2);
+          if (status) status.textContent = `Reproduzindo contorno ES: pico agudo inicial + modulação + subida interrogativa final.`;
+        } else {
+          // Flatter contour transferred from Portuguese
+          osc.frequency.setValueAtTime(215, now);
+          osc.frequency.linearRampToValueAtTime(225, now + 0.35);
+          osc.frequency.linearRampToValueAtTime(210, now + 0.85);
+          osc.frequency.linearRampToValueAtTime(250, now + 1.2);
+          if (status) status.textContent = `Reproduzindo contorno plano (transferência PT): ausência do primeiro pico — soa como cortesia em espanhol.`;
+        }
+
+        osc.connect(gain);
+        gain.connect(activeAudioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 1.28);
+      } catch (err) {
+        if (status) status.textContent = `Não foi possível iniciar o áudio local; utilize a visualização gráfica acima.`;
+      }
+    }
+
+    // 9. Chapter 07: Pedagogy toggle
+    function setPedagogyFocus(mode, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var view = document.getElementById('pedagogy-view');
+      if (!view) return;
+
+      if (mode === 'freire') {
+        view.innerHTML = `
+          <div class="washi-card moss-spine" style="background: var(--background);">
+            <span class="label">Paulo Freire · O Conceito de Relevância (1961)</span>
+            <p style="margin: var(--space-xs) 0;">
+              Em 1961, Paulo Freire alfabetizou 300 trabalhadores de plantações de cana-de-açúcar em apenas 45 dias partindo de temas relevantes e conhecidos pelos estudantes (como ensinar pescadores pelo vocabulário do mar e de seus instrumentos de trabalho).
+            </p>
+            <p style="margin: 0; color: var(--secondary); font-weight: 500;">
+              Aplicação ao Dojo: projetos escolhidos democraticamente pelo grupo superam a apatia gerada quando um idioma estrangeiro é imposto como disciplina obrigatória.
+            </p>
+          </div>
+        `;
+      } else if (mode === 'comparativo') {
+        view.innerHTML = `
+          <div style="background: var(--background); padding: var(--space-md); border: var(--rule-linen);">
+            <table class="kiln-table">
+              <thead>
+                <tr>
+                  <th>Dimensão</th>
+                  <th>Ensino Tradicional</th>
+                  <th>Abordagem do Dojo (Jacotot &amp; Freire)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Função da Gramática</strong></td>
+                  <td>Ponto de partida normativo (tratada como causa da fala)</td>
+                  <td>Explicação posterior sobre <em>por que</em> falamos assim (consequência do uso)</td>
+                </tr>
+                <tr>
+                  <td><strong>Motor de Motivação</strong></td>
+                  <td>Ementa fixa e exercícios abstratos descontextualizados</td>
+                  <td>Relevância vivida: canções, viagens virtuais e temas negociados em espanhol</td>
+                </tr>
+                <tr>
+                  <td><strong>Papel do Estudante</strong></td>
+                  <td>Receptor que aguarda explicação completa para arriscar falar</td>
+                  <td>Sujeito emancipado que exercita a habilidade <em>a priori</em> em comunidade</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        view.innerHTML = `
+          <div class="washi-card moss-spine" style="background: var(--background);">
+            <span class="label">Joseph Jacotot &amp; Jacques Rancière (O Mestre Ignorante)</span>
+            <p style="margin: var(--space-xs) 0;">
+              Em 1818, o professor francês Joseph Jacotot precisou ensinar literatura francesa a estudantes que falavam apenas holandês. Sem explicar regras gramaticais, entregou-lhes uma edição bilíngue de um romance e desafiou-os a aprender pelo texto por conta própria. Os alunos aprenderam a falar e escrever em francês — experiência resgatada por Jacques Rancière em 1987 em <em>O Mestre Ignorante: Cinco Lições sobre a Emancipação Intelectual</em>.
+            </p>
+            <p style="margin: 0; color: var(--secondary); font-weight: 500;">
+              Aplicação ao Dojo: emancipar a inteligência do estudante pela imersão guiada e autonomia entre pares, superando a passividade de turmas massificadas.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // 10. Chapter 08: Collective publication formats
+    var pubFormats = [
+      {
+        badge: `Formato 01 · Paper / Caderno de Estudo`,
+        title: `Pesquisas Colaborativas em Espanhol`,
+        desc: `Investigação de campo conduzida em duplas sobre falsos cognatos, variações léxicas ibero-americanas ou prosódia, redigida diretamente em espanhol com revisão cooperativa do Sensei.`
+      },
+      {
+        badge: `Formato 02 · Edição Bilíngue Comentada`,
+        title: `Traduções Comentadas e Análise Literária`,
+        desc: `Leitura profunda de contos, canções e ensaios hispânicos — desarmando armadilhas do portunhol e registrando notas culturais e pragmáticas para livre consulta.`
+      },
+      {
+        badge: `Formato 03 · Relato de Imersão`,
+        title: `Crônicas de Viagens Virtuais`,
+        desc: `Percursos temáticos por cidades do mundo hispânico construídos democraticamente pelo grupo, transformando pesquisa histórica, geográfica e cotidiana em crônica publicada.`
+      },
+      {
+        badge: `Formato 04 · Caderno Metodológico`,
+        title: `Reflexões Linguísticas sobre Uso Real`,
+        desc: `Sistematização de dúvidas reais surgidas no tatame virtual — convertendo obstáculos de entonação, sintaxe ou semântica em material de estudo aberto à comunidade.`
+      }
+    ];
+
+    function selectPubFormat(index, btnEl) {
+      var group = btnEl ? btnEl.parentNode : null;
+      if (group) {
+        var btns = group.querySelectorAll('.btn');
+        for (var i = 0; i < btns.length; i++) btns[i].classList.remove('is-active');
+      }
+      if (btnEl) btnEl.classList.add('is-active');
+
+      var preview = document.getElementById('pub-preview');
+      var item = pubFormats[index];
+      if (!preview || !item) return;
+
+      preview.innerHTML = `
+        <span class="label">${item.badge}</span>
+        <strong style="font-family: var(--font-headline); font-size: 1.15rem;">${item.title}</strong>
+        <p style="margin: 0; font-size: 0.94rem;">${item.desc}</p>
+        <div style="border-top: var(--rule-linen); padding-top: var(--space-sm); margin-top: var(--space-xs);">
+          <span class="label-muted" style="display: block;">Assinatura Editorial:</span>
+          <span style="font-size: 0.88rem; color: var(--on-surface);">
+            <strong>La Escuela – Dojo de Español</strong> · Coautoria nominal de todos os membros participantes (Lista Pública de Membros · Acesso Aberto)
+          </span>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
