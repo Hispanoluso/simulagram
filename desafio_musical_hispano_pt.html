@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Escuela - Dojo de Español | Desafío Musical Hispano: 30 Canciones Icónicas</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            dojo: {
+              red: '#c81e2b',
+              redDark: '#991b1b',
+              black: '#14171a',
+              flame: '#f59e0b',
+              green: '#059669'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Efecto de desenfoque / spoiler */
+    .lyrics-hidden {
+      filter: blur(6px);
+      user-select: none;
+      transition: filter 0.25s ease-in-out;
+    }
+    .lyrics-visible {
+      filter: blur(0px);
+      user-select: text;
+      transition: filter 0.25s ease-in-out;
+    }
+    /* Animación para cuando el audio está activo */
+    @keyframes pulse-audio {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .speaking-active {
+      animation: pulse-audio 1.1s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen font-sans flex flex-col justify-between selection:bg-emerald-200">
+
+  <!-- Template oculto del Logo Vectorial Exacto (Fallback automático si no está la_escuela_dojo_logo.jpg) -->
+  <svg class="hidden" aria-hidden="true">
+    <symbol id="dojo-official-logo" viewBox="0 0 500 500">
+      <circle cx="250" cy="250" r="236" fill="#ffffff" stroke="#c51f2d" stroke-width="20"/>
+      <path d="M 245 78 C 145 82, 85 155, 92 248 C 98 320, 155 375, 222 380" fill="none" stroke="#16191d" stroke-width="34" stroke-linecap="round"/>
+      <path d="M 235 80 C 335 78, 398 152, 392 246 C 386 318, 332 368, 275 378" fill="none" stroke="#c51f2d" stroke-width="32" stroke-linecap="round" stroke-dasharray="420 30"/>
+      <path d="M 205 270 L 215 170 L 285 258 L 295 168" fill="none" stroke="#c51f2d" stroke-width="26" stroke-linecap="square" stroke-linejoin="miter"/>
+      <path d="M 218 135 C 232 115, 248 115, 260 128 C 272 140, 285 138, 296 122" fill="none" stroke="#c51f2d" stroke-width="18" stroke-linecap="round"/>
+      <path d="M 250 238 C 236 255, 235 275, 246 286 C 242 274, 248 264, 254 258 C 254 268, 262 274, 258 286 C 270 276, 268 254, 250 238 Z" fill="#f59e0b"/>
+      <path d="M 168 278 Q 250 315 332 278 L 328 302 Q 250 335 172 302 Z" fill="#16191d" stroke="#ffffff" stroke-width="4"/>
+      <path d="M 165 332 L 238 292 L 248 312 L 178 352 Z" fill="#16191d" stroke="#ffffff" stroke-width="4"/>
+      <path d="M 335 332 L 262 292 L 252 312 L 322 352 Z" fill="#16191d" stroke="#ffffff" stroke-width="4"/>
+      <rect x="236" y="286" width="28" height="32" rx="6" fill="#16191d" stroke="#ffffff" stroke-width="4"/>
+      <text x="250" y="415" text-anchor="middle" fill="#c51f2d" font-family="Montserrat, Inter, sans-serif" font-weight="900" font-size="37" letter-spacing="1">LA ESCUELA</text>
+      <text x="250" y="448" text-anchor="middle" fill="#16191d" font-family="Montserrat, Inter, sans-serif" font-weight="800" font-size="25" letter-spacing="0.8">DOJO DE ESPAÑOL</text>
+    </symbol>
+  </svg>
+
+  <!-- Header Superior con el Logo de La Escuela - Dojo de Español y Marcador Fijo -->
+  <header class="bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 text-white shadow-xl sticky top-0 z-40 border-b-4 border-emerald-600">
+    <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-col lg:flex-row items-center justify-between gap-4">
+      
+      <!-- Bloque de Marca con Logo Oficial -->
+      <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
+        <div class="relative flex-shrink-0">
+          <img 
+            src="la_escuela_dojo_logo.jpg" 
+            alt="La Escuela - Dojo de Español" 
+            class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover bg-white shadow-lg border-2 border-white"
+            onerror="this.style.display='none'; document.getElementById('svg-logo-header').classList.remove('hidden');"
+          />
+          <svg id="svg-logo-header" class="hidden w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white shadow-lg border-2 border-white">
+            <use href="#dojo-official-logo"></use>
+          </svg>
+        </div>
+
+        <div class="text-center sm:text-left">
+          <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span class="px-2.5 py-0.5 text-[11px] font-display font-black uppercase tracking-wider bg-emerald-600 text-white rounded-md shadow-xs">
+              LA ESCUELA • PORTUGUÊS PARA HISPANOS
+            </span>
+            <span class="text-sm sm:text-base">🇪🇸 🥋 🇧🇷</span>
+          </div>
+          <h1 class="text-lg sm:text-2xl font-display font-black tracking-tight mt-1 text-white">
+            Desafío Musical: 30 Clásicos Hispanos en Portugués
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300 mt-0.5">
+            Escucha o lee la traducción literal al portugués de Brasil y adivina el clásico original en español.
+          </p>
+        </div>
+      </div>
+
+      <!-- Placar / Estadísticas en tiempo real -->
+      <div class="flex items-center bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/15 gap-4 text-center shadow-inner">
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-emerald-300 font-bold">Aciertos</span>
+          <span id="score-hits" class="text-lg sm:text-xl font-black text-emerald-400">0</span>
+        </div>
+        <div class="h-7 w-px bg-white/20"></div>
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-slate-300 font-bold">Respondidas</span>
+          <span id="score-total" class="text-lg sm:text-xl font-bold text-white">0 / 30</span>
+        </div>
+        <div class="h-7 w-px bg-white/20"></div>
+        <div>
+          <span class="block text-[10px] uppercase tracking-wider text-amber-300 font-bold">Precisión</span>
+          <span id="score-accuracy" class="text-lg sm:text-xl font-black text-amber-400">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de progreso visual -->
+    <div class="w-full bg-slate-900 h-1.5">
+      <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 via-amber-400 to-dojo-red h-1.5 w-0 transition-all duration-300"></div>
+    </div>
+  </header>
+
+  <!-- Área Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1">
+    
+    <!-- Barra de Herramientas, Buscador y Controles Globales -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Buscador -->
+      <div class="relative w-full md:w-80">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 text-sm">
+          🔍
+        </span>
+        <input 
+          type="text" 
+          id="search-input" 
+          oninput="handleSearch()"
+          placeholder="Buscar canción, artista, género o verso..." 
+          class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 bg-slate-50 transition"
+        />
+      </div>
+
+      <!-- Controles Globales -->
+      <div class="flex items-center flex-wrap gap-2 w-full md:w-auto justify-end">
+        <button onclick="stopPortugueseAudio()" id="global-stop-btn" class="hidden text-xs sm:text-sm px-3.5 py-2 rounded-xl bg-dojo-red hover:bg-red-800 text-white font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+          ⏹️ Detener Audio Activo
+        </button>
+        <button onclick="toggleAllLyrics(true)" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 font-semibold transition flex items-center gap-1.5 text-slate-700 active:scale-95">
+          👁️ Mostrar Todas
+        </button>
+        <button onclick="toggleAllLyrics(false)" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 font-semibold transition flex items-center gap-1.5 text-slate-700 active:scale-95">
+          🙈 Ocultar Todas
+        </button>
+        <button onclick="resetQuiz()" class="text-xs sm:text-sm px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+          🔄 Reiniciar Quiz
+        </button>
+      </div>
+    </div>
+
+    <!-- Títulos de Columnas para Escritorio -->
+    <div class="hidden lg:grid lg:grid-cols-12 gap-5 pb-3 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <div class="col-span-4">1. Traducción al Portugués de Brasil (Con Audio 🔊)</div>
+      <div class="col-span-4">2. Estrofa Original en Español</div>
+      <div class="col-span-4">3. Título e Intérprete (Elige 1 de 3)</div>
+    </div>
+
+    <!-- Contenedor de las 30 Cartas -->
+    <div id="songs-container" class="space-y-4">
+      <!-- Generado dinámicamente con JS -->
+    </div>
+
+    <!-- Mensaje cuando la búsqueda no arroja resultados -->
+    <div id="no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200">
+      <p class="text-3xl mb-2">🔎</p>
+      <p class="text-slate-600 font-medium text-sm">No se encontraron canciones coincidentes con el término de búsqueda.</p>
+    </div>
+
+  </main>
+
+  <!-- Notificación Toast -->
+  <div id="feedback-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition duration-300 pointer-events-none max-w-sm w-full bg-slate-900 text-white rounded-2xl shadow-2xl p-4 border-l-4 border-emerald-500 flex items-center gap-3">
+    <span id="toast-icon" class="text-2xl">🥋</span>
+    <div>
+      <p id="toast-title" class="font-bold text-sm">Acierto</p>
+      <p id="toast-message" class="text-xs text-slate-300 mt-0.5">Mensaje motivador</p>
+    </div>
+  </div>
+
+  <!-- Pie de página con el Logo de La Escuela - Dojo de Español -->
+  <footer class="bg-white border-t-2 border-slate-200 py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <img 
+          src="la_escuela_dojo_logo.jpg" 
+          alt="Logo La Escuela - Dojo de Español" 
+          class="w-14 h-14 rounded-full object-cover shadow-sm border border-slate-200"
+          onerror="this.style.display='none'; document.getElementById('svg-logo-footer').classList.remove('hidden');"
+        />
+        <svg id="svg-logo-footer" class="hidden w-14 h-14 rounded-full shadow-sm border border-slate-200">
+          <use href="#dojo-official-logo"></use>
+        </svg>
+        <div>
+          <p class="font-display font-black text-dojo-red text-sm sm:text-base tracking-tight leading-none">
+            LA ESCUELA
+          </p>
+          <p class="font-display font-extrabold text-slate-900 text-xs tracking-wide mt-0.5">
+            DOJO DE ESPAÑOL
+          </p>
+          <p class="text-[11px] text-slate-500 mt-0.5">
+            Entrenamiento auditivo y léxico de portugués brasileño a través de 30 clásicos de la música en español.
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center sm:text-right text-xs text-slate-500">
+        © La Escuela - Dojo de Español • Material interactivo para alumnos hispanohablantes
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lógica, Síntesis de Voz en Portugués de Brasil y Base de Datos de las 30 Canciones -->
+  <script>
+    const songsData = [
+      {
+        id: 1,
+        genre: "Bolero Clásico",
+        ptLyrics: "Beija-me, beija-me muito,
+como se fosse esta noite a última vez.
+Beija-me, beija-me muito,
+que tenho medo de te perder, perder-te depois.",
+        esLyrics: "Bésame, bésame mucho,
+como si fuera esta noche la última vez.
+Bésame, bésame mucho,
+que tengo miedo a perderte, perderte después.",
+        options: [
+          { text: "Bésame Mucho — Consuelo Velázquez / Luis Miguel", correct: true },
+          { text: "Sabor a Mí — Álvaro Carrillo", correct: false },
+          { text: "Contigo Aprendí — Armando Manzanero", correct: false }
+        ]
+      },
+      {
+        id: 2,
+        genre: "Pop Urbano / Reguetón",
+        ptLyrics: "Devagarinho,
+quero respirar no teu pescoço devagarinho,
+deixa que eu te diga coisas no ouvido
+para que você se lembre se não estiver comigo.",
+        esLyrics: "Despacito,
+quiero respirar tu cuello despacito,
+deja que te diga cosas al oído
+para que te acuerdes si no estás conmigo.",
+        options: [
+          { text: "Bailando — Enrique Iglesias", correct: false },
+          { text: "Despacito — Luis Fonsi & Daddy Yankee", correct: true },
+          { text: "Vivir Mi Vida — Marc Anthony", correct: false }
+        ]
+      },
+      {
+        id: 3,
+        genre: "Son Jarocho / Rock",
+        ptLyrics: "Para dançar a bamba,
+para dançar a bamba precisa-se de um pouquinho de graça,
+um pouquinho de graça para mim, para ti, ai acima, ai acima.",
+        esLyrics: "Para bailar la bamba,
+para bailar la bamba se necesita una poca de gracia,
+una poca de gracia pa' mí, pa' ti, ay arriba, ay arriba.",
+        options: [
+          { text: "La Bamba — Ritchie Valens / Los Lobos", correct: true },
+          { text: "Guantanamera — Compay Segundo", correct: false },
+          { text: "Oye Cómo Va — Santana", correct: false }
+        ]
+      },
+      {
+        id: 4,
+        genre: "Tango Porteño",
+        ptLyrics: "Voltar, com a testa murcha,
+as neves do tempo pratearam minha têmpora;
+sentir que é um sopro a vida,
+que vinte anos não são nada.",
+        esLyrics: "Volver, con la frente marchita,
+las nieves del tiempo platearon mi sien;
+sentir que es un soplo la vida,
+que veinte años no es nada.",
+        options: [
+          { text: "El Día Que Me Quieras — Carlos Gardel", correct: false },
+          { text: "Cambalache — Enrique Santos Discépolo", correct: false },
+          { text: "Volver — Carlos Gardel & Alfredo Le Pera", correct: true }
+        ]
+      },
+      {
+        id: 5,
+        genre: "Nueva Canción / Folk",
+        ptLyrics: "Graças à vida que me deu tanto,
+deu-me dois luzeiros que, quando os abro,
+perfeito distingo o preto do branco,
+e no alto céu seu fundo estrelado.",
+        esLyrics: "Gracias a la vida que me ha dado tanto,
+me dio dos luceros que, cuando los abierto,
+perfecto distingo lo negro del blanco,
+y en el alto cielo su fondo estrellado.",
+        options: [
+          { text: "Gracias a la Vida — Violeta Parra / Mercedes Sosa", correct: true },
+          { text: "Todo Cambia — Mercedes Sosa", correct: false },
+          { text: "Alfonsina y el Mar — Mercedes Sosa", correct: false }
+        ]
+      },
+      {
+        id: 6,
+        genre: "Rock en Español",
+        ptLyrics: "De aquela música ligeira,
+nada nos livra, nada mais resta.
+Não enviarei cinzas de rosas,
+nem penso em evitar um atrito secreto.",
+        esLyrics: "De aquella música ligera,
+nada nos libra, nada más queda.
+No enviaré cenizas de rosas,
+ni pienso evitar un roce secreto.",
+        options: [
+          { text: "Persiana Americana — Soda Stereo", correct: false },
+          { text: "De Música Ligera — Soda Stereo", correct: true },
+          { text: "Lamento Boliviano — Los Enanitos Verdes", correct: false }
+        ]
+      },
+      {
+        id: 7,
+        genre: "Canción de Autor",
+        ptLyrics: "Caminhante, são tuas pegadas o caminho e nada mais;
+caminhante, não há caminho,
+faz-se caminho ao andar.",
+        esLyrics: "Caminante, son tus huellas el camino y nada más;
+caminante, no hay camino,
+se hace camino al andar.",
+        options: [
+          { text: "Cantares — Joan Manuel Serrat (poema de Antonio Machado)", correct: true },
+          { text: "Mediterráneo — Joan Manuel Serrat", correct: false },
+          { text: "Y Nos Dieron las Diez — Joaquín Sabina", correct: false }
+        ]
+      },
+      {
+        id: 8,
+        genre: "Salsa / Son Cubano",
+        ptLyrics: "De Alto Cedro vou para Marcané,
+chego a Cueto, vou para Mayarí.
+O carinho que eu tenho por você
+não posso negar, salta aos olhos.",
+        esLyrics: "De Alto Cedro voy para Marcané,
+llego a Cueto, voy para Mayarí.
+El cariño que te tengo
+no lo puedo negar, se me sale la baba.",
+        options: [
+          { text: "La Vida Es un Carnaval — Celia Cruz", correct: false },
+          { text: "Chan Chan — Buena Vista Social Club / Compay Segundo", correct: true },
+          { text: "Pedro Navaja — Rubén Blades", correct: false }
+        ]
+      },
+      {
+        id: 9,
+        genre: "Rock Mexicano / Pop",
+        ptLyrics: "Como gostaria de poder viver sem ar,
+como gostaria de poder viver sem água,
+eu adoraria ter um pouco de paciência
+e não morrer de amor por você.",
+        esLyrics: "Cómo quisiera poder vivir sin aire,
+cómo quisiera poder vivir sin agua,
+me encantaría quererte un poco menos
+y no morirme de amor por ti.",
+        options: [
+          { text: "Rayando el Sol — Maná", correct: false },
+          { text: "Vivir Sin Aire — Maná", correct: true },
+          { text: "Eres — Café Tacvba", correct: false }
+        ]
+      },
+      {
+        id: 10,
+        genre: "Pop Latino",
+        ptLyrics: "Tenho a camisa preta,
+hoje minha alma está de luto,
+hoje tenho na alma uma pena
+e é por culpa do teu embruxo.",
+        esLyrics: "Tengo la camisa negra,
+hoy mi alma está de luto,
+hoy tengo en el alma una pena
+y es por culpa de tu embrujo.",
+        options: [
+          { text: "La Camisa Negra — Juanes", correct: true },
+          { text: "A Dios le Pido — Juanes", correct: false },
+          { text: "Me Enamora — Juanes", correct: false }
+        ]
+      },
+      {
+        id: 11,
+        genre: "Pop Latino / Balada",
+        ptLyrics: "Sorte que meus seios sejam pequenos e humildes
+para que você não os confunda com montanhas;
+sorte que eu tenha nascido longe,
+para poder sentir falta do teu abraço.",
+        esLyrics: "Suerte que mis pechos sean pequeños y humildes
+para que no los confundas con montañas;
+suerte que haya nacido lejos,
+para poder extrañar tu abrazo.",
+        options: [
+          { text: "Ojos Así — Shakira", correct: false },
+          { text: "La Tortura — Shakira & Alejandro Sanz", correct: false },
+          { text: "Suerte (Whenever, Wherever) — Shakira", correct: true }
+        ]
+      },
+      {
+        id: 12,
+        genre: "Salsa Clásica",
+        ptLyrics: "Todo aquele que pense que a vida é desigual,
+tem que saber que não é assim,
+que a vida é uma formosura, há que vivê-la.",
+        esLyrics: "Todo aquel que piense que la vida es desigual,
+tiene que saber que no es así,
+que la vida es una hermosura, hay que vivirla.",
+        options: [
+          { text: "La Vida Es un Carnaval — Celia Cruz", correct: true },
+          { text: "Quimbara — Celia Cruz", correct: false },
+          { text: "Rebelión — Joe Arroyo", correct: false }
+        ]
+      },
+      {
+        id: 13,
+        genre: "Pop Balada",
+        ptLyrics: "E se ela não voltar,
+e se meu coração não aguentar,
+quem vai me entregar suas emoções?
+Quem vai me pedir para que nunca a abandone?",
+        esLyrics: "Y si ella no vuelve,
+y si mi corazón no aguanta,
+¿quién me va a entregar sus emociones?
+¿Quién me va a pedir que nunca la abandone?",
+        options: [
+          { text: "Amiga Mía — Alejandro Sanz", correct: false },
+          { text: "Corazón Partío — Alejandro Sanz", correct: true },
+          { text: "Cuando Nadie Me Ve — Alejandro Sanz", correct: false }
+        ]
+      },
+      {
+        id: 14,
+        genre: "Rock Argentino",
+        ptLyrics: "E hoje estou aqui,
+bêbado e louco,
+e meu coração idiota
+sempre brilhará por você.",
+        esLyrics: "Y hoy estoy aquí,
+borracho y loco,
+y mi corazón idiota
+siempre brillará por ti.",
+        options: [
+          { text: "La Muralla Verde — Los Enanitos Verdes", correct: false },
+          { text: "Flaca — Andrés Calamaro", correct: false },
+          { text: "Lamento Boliviano — Los Enanitos Verdes", correct: true }
+        ]
+      },
+      {
+        id: 15,
+        genre: "Bachata / Pop",
+        ptLyrics: "Tomara que chova café no campo,
+que caia um aguaceiro de mandioca e chá,
+do céu uma chuva de queijo branco
+e ao sul uma montanha de agrião e mel.",
+        esLyrics: "Ojalá que llueva café en el campo,
+que caiga un aguacero de yuca y té,
+del cielo una jarina de queso blanco
+y al sur una montaña de berro y miel.",
+        options: [
+          { text: "Ojalá Que Llueva Café — Juan Luis Guerra", correct: true },
+          { text: "Burbujas de Amor — Juan Luis Guerra", correct: false },
+          { text: "La Bilirrubina — Juan Luis Guerra", correct: false }
+        ]
+      },
+      {
+        id: 16,
+        genre: "Rock / Ska Latino",
+        ptLyrics: "Senhor Matador,
+o que estão dizendo sobre mim?
+Não sou de nenhum bando,
+nem tenho patrão, eu só sigo meu coração.",
+        esLyrics: "Señor Matador,
+¿qué están diciendo de mí?
+No soy de ningún bando,
+ni tengo patrón, yo solo sigo mi corazón.",
+        options: [
+          { text: "Vasos Vacíos — Los Fabulosos Cadillacs", correct: false },
+          { text: "Matador — Los Fabulosos Cadillacs", correct: true },
+          { text: "Mal Bicho — Los Fabulosos Cadillacs", correct: false }
+        ]
+      },
+      {
+        id: 17,
+        genre: "Nueva Trova Cubana",
+        ptLyrics: "Meu unicórnio azul ontem se perdeu,
+pastando deixou-se estar e desapareceu.
+Qualquer informação bem-vinda será,
+as flores que deixou não me quiseram falar.",
+        esLyrics: "Mi unicornio azul ayer se me perdió,
+pastando se dejó y desapareció.
+Cualquier información bien la voy a pagar,
+las flores que dejó no me han querido hablar.",
+        options: [
+          { text: "Unicornio — Silvio Rodríguez", correct: true },
+          { text: "Ojalá — Silvio Rodríguez", correct: false },
+          { text: "Yolanda — Pablo Milanés", correct: false }
+        ]
+      },
+      {
+        id: 18,
+        genre: "Pop Romántico",
+        ptLyrics: "Se você me disser 'vem', eu deixo tudo,
+se você me disser 'vem', será tudo para você.
+Meus momentos mais ocultos também te darei.",
+        esLyrics: "Si tú me dices ven, lo dejo todo,
+si tú me dices ven, será todo para ti.
+Mis momentos más ocultos también te los daré.",
+        options: [
+          { text: "La Barca — Luis Miguel", correct: false },
+          { text: "Si Tú Me Dices Ven — Los Panchos / Luis Miguel", correct: true },
+          { text: "Solamente Una Vez — Agustín Lara", correct: false }
+        ]
+      },
+      {
+        id: 19,
+        genre: "Rock Argentino",
+        ptLyrics: "Magrela, não me crave
+seus punhais pelas costas,
+tão profundo, não me machucam,
+não me fazem mal.",
+        esLyrics: "Flaca, no me claves
+tus puñales por la espalda,
+tan profundo, no me duelen,
+no me hacen mal.",
+        options: [
+          { text: "Mil Horas — Los Abuelos de la Nada", correct: false },
+          { text: "Flaca — Andrés Calamaro", correct: true },
+          { text: "Costumbres Argentinas — Los Abuelos de la Nada", correct: false }
+        ]
+      },
+      {
+        id: 20,
+        genre: "Bolero / Pop",
+        ptLyrics: "História de um amor como não há outro igual,
+que me fez compreender todo o bem, todo o mal,
+que deu luz à minha vida apagando-a depois.",
+        esLyrics: "Historia de un amor como no hay otro igual,
+que me hizo comprender todo el bien, todo el mal,
+que le dio luz a mi vida apagándola después.",
+        options: [
+          { text: "Historia de un Amor — Carlos Eleta Almarán / Luis Miguel", correct: true },
+          { text: "Reloj — Roberto Cantoral", correct: false },
+          { text: "Dos Gardenias — Isolina Carrillo", correct: false }
+        ]
+      },
+      {
+        id: 21,
+        genre: "Balada Clásica",
+        ptLyrics: "E como ele é?
+Em que lugar se apaixonou por você?
+De onde é?
+A que dedica o tempo livre?",
+        esLyrics: "¿Y cómo es él?
+¿En qué lugar se enamoró de ti?
+¿De dónde es?
+¿A qué dedica el tiempo libre?",
+        options: [
+          { text: "Un Velero Llamado Libertad — José Luis Perales", correct: false },
+          { text: "¿Y Cómo Es Él? — José Luis Perales", correct: true },
+          { text: "Procuro Olvidarte — Hernaldo Zúñiga", correct: false }
+        ]
+      },
+      {
+        id: 22,
+        genre: "Pop Mestizo / Reggae",
+        ptLyrics: "Gosto dos aviões, gosto de você.
+Gosto de viajar, gosto de você.
+Gosto da manhã, gosto de você.
+Gosto do vento, gosto de você.",
+        esLyrics: "Me gustan los aviones, me gustas tú.
+Me gusta viajar, me gustas tú.
+Me gusta la mañana, me gustas tú.
+Me gusta el viento, me gustas tú.",
+        options: [
+          { text: "Clandestino — Manu Chao", correct: false },
+          { text: "Me Gustas Tú — Manu Chao", correct: true },
+          { text: "Desaparecido — Manu Chao", correct: false }
+        ]
+      },
+      {
+        id: 23,
+        genre: "Ranchera / Mariachi",
+        ptLyrics: "Com dinheiro e sem dinheiro
+faço sempre o que quero
+e minha palavra é a lei.
+Não tenho trono nem rainha,
+nem ninguém que me compreenda,
+mas continuo sendo o rei.",
+        esLyrics: "Con dinero y sin dinero
+hago siempre lo que quiero
+y mi palabra es la ley.
+No tengo trono ni reina,
+ni nadie que me comprenda,
+pero sigo siendo el rey.",
+        options: [
+          { text: "El Rey — José Alfredo Jiménez / Vicente Fernández", correct: true },
+          { text: "Volver, Volver — Vicente Fernández", correct: false },
+          { text: "Cielito Lindo — Quirino Mendoza", correct: false }
+        ]
+      },
+      {
+        id: 24,
+        genre: "Tango Universal",
+        ptLyrics: "Por uma cabeça de um nobre potranco
+que justo na reta afrouxa ao chegar,
+e que ao regressar parece dizer:
+não esqueça, irmão, você sabe, não há que jogar.",
+        esLyrics: "Por una cabeza de un noble potrillo
+que justo en la raya afloja al llegar,
+y que al regresar parece decir:
+no olvides, hermano, vos sabés, no hay que jugar.",
+        options: [
+          { text: "La Cumparsita — Gerardo Matos Rodríguez", correct: false },
+          { text: "Por una Cabeza — Carlos Gardel & Alfredo Le Pera", correct: true },
+          { text: "Adiós Nonino — Astor Piazzolla", correct: false }
+        ]
+      },
+      {
+        id: 25,
+        genre: "Rock / Pop Español",
+        ptLyrics: "A magrela da minha cidade
+dorme de dia, diz que assim está mais gostosa.
+Ela é um vulcão em erupção,
+caminha pelo bairro provocando sensação.",
+        esLyrics: "La flaca de mi ciudad
+duerme de día, dice que así está más sabrosa.
+Ella es un volcán en erupción,
+camina por el barrio causando sensación.",
+        options: [
+          { text: "La Flaca — Jarabe de Palo", correct: true },
+          { text: "Depende — Jarabe de Palo", correct: false },
+          { text: "Bonito — Jarabe de Palo", correct: false }
+        ]
+      },
+      {
+        id: 26,
+        genre: "Pop / Balada Mexicana",
+        ptLyrics: "Amor eterno e inesquecível,
+tarde ou cedo estarei contigo
+para continuar nos amando.
+Como quisera que você vivesse,
+que seus olhinhos jamais tivessem se fechado.",
+        esLyrics: "Amor eterno e inolvidable,
+tarde o temprano estaré contigo
+para seguir amándonos.
+Cómo quisiera que tú vivieras,
+que tus ojitos jamás se hubieran cerrado.",
+        options: [
+          { text: "Querida — Juan Gabriel", correct: false },
+          { text: "Amor Eterno — Juan Gabriel / Rocío Dúrcal", correct: true },
+          { text: "Hasta Que Te Conocí — Juan Gabriel", correct: false }
+        ]
+      },
+      {
+        id: 27,
+        genre: "Vallenato / Pop Colombiano",
+        ptLyrics: "Leva-me na tua bicicleta,
+ô Carlos, leva-me na tua bicicleta,
+quero que percorramos juntos essa região
+desde Santa Marta até La Arenosa.",
+        esLyrics: "Llévame en tu bicicleta,
+oye Carlos, llévame en tu bicicleta,
+quiero que recorramos juntos esa zona
+desde Santa Marta hasta La Arenosa.",
+        options: [
+          { text: "La Gota Fría — Carlos Vives", correct: false },
+          { text: "La Bicicleta — Carlos Vives & Shakira", correct: true },
+          { text: "Robarte un Beso — Carlos Vives & Sebastián Yatra", correct: false }
+        ]
+      },
+      {
+        id: 28,
+        genre: "Pop Español",
+        ptLyrics: "Rosas para mim, rosas para você,
+porque hoje faz um ano que te vi pela primeira vez,
+e ainda espero sentada no banco da estação.",
+        esLyrics: "Rosas para mí, rosas para ti,
+porque hoy hace un año que te vi por primera vez,
+y aún espero sentada en el banco de la estación.",
+        options: [
+          { text: "Rosas — La Oreja de Van Gogh", correct: true },
+          { text: "Puedes Contar Conmigo — La Oreja de Van Gogh", correct: false },
+          { text: "La Playa — La Oreja de Van Gogh", correct: false }
+        ]
+      },
+      {
+        id: 29,
+        genre: "Rock Argentino",
+        ptLyrics: "Rasgue as minhas roupas, arranque minha pele,
+porque eu não quero voltar a te ver nunca mais.
+E leve embora toda a minha dor,
+que já não aguento mais viver assim.",
+        esLyrics: "Rasguña las piedras y hasta mí llegarás,
+si me escuchas, si me sientes,
+rasguña las piedras hasta mí llegarás.",
+        options: [
+          { text: "Canción Para Mi Muerte — Sui Generis", correct: false },
+          { text: "Rasguña las Piedras — Sui Generis (Charly García)", correct: true },
+          { text: "Seminare — Serú Girán", correct: false }
+        ]
+      },
+      {
+        id: 30,
+        genre: "Cumbia / Pop Latino",
+        ptLyrics: "Nunca é suficiente para mim,
+porque sempre quero mais de você.
+Eu quisera fazer você feliz,
+hoje amanhã sempre até o fim.",
+        esLyrics: "Nunca es suficiente para mí,
+porque siempre quiero más de ti.
+Yo quisiera hacerte feliz,
+hoy mañana siempre hasta el fin.",
+        options: [
+          { text: "Hasta la Raíz — Natalia Lafourcade", correct: false },
+          { text: "Nunca Es Suficiente — Natalia Lafourcade / Los Ángeles Azules", correct: true },
+          { text: "Tú Sí Sabes Quererme — Natalia Lafourcade", correct: false }
+        ]
+      }
+    ];
+
+    // Estados de la Aplicación
+    let userAnswers = {}; // { songId: { selectedIndex, isCorrect } }
+    let revealedLyrics = {}; // { songId: boolean }
+    let searchQuery = "";
+    let activeAudioSongId = null;
+
+    // Selección de voz en Portugués de Brasil para Web Speech API
+    function getBestPortugueseVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices();
+      return (
+        voices.find(v => v.lang.toLowerCase() === 'pt-br' && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Luciana') || v.name.includes('Francisca'))) ||
+        voices.find(v => v.lang.toLowerCase() === 'pt-br') ||
+        voices.find(v => v.lang.toLowerCase().startsWith('pt')) ||
+        null
+      );
+    }
+
+    // Reproducir el texto en portugués de Brasil de una canción
+    function playPortugueseAudio(songId) {
+      if (!('speechSynthesis' in window)) {
+        showToast("⚠️ Sin soporte de voz", "Tu navegador no admite síntesis de voz en portugués.", false);
+        return;
+      }
+
+      const song = songsData.find(s => s.id === songId);
+      if (!song) return;
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(song.ptLyrics);
+      const voice = getBestPortugueseVoice();
+      if (voice) {
+        utterance.voice = voice;
+      }
+      utterance.lang = 'pt-BR';
+      utterance.rate = 0.92; // Velocidad didáctica clara para hispanohablantes
+      utterance.pitch = 1.0;
+
+      activeAudioSongId = songId;
+      syncGlobalStopButton();
+      renderQuiz();
+
+      utterance.onend = () => {
+        if (activeAudioSongId === songId) {
+          activeAudioSongId = null;
+          syncGlobalStopButton();
+          renderQuiz();
+        }
+      };
+
+      utterance.onerror = () => {
+        if (activeAudioSongId === songId) {
+          activeAudioSongId = null;
+          syncGlobalStopButton();
+          renderQuiz();
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Detener inmediatamente la reproducción en portugués
+    function stopPortugueseAudio() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      activeAudioSongId = null;
+      syncGlobalStopButton();
+      renderQuiz();
+    }
+
+    function syncGlobalStopButton() {
+      const globalBtn = document.getElementById('global-stop-btn');
+      if (!globalBtn) return;
+      if (activeAudioSongId !== null) {
+        globalBtn.classList.remove('hidden');
+      } else {
+        globalBtn.classList.add('hidden');
+      }
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        getBestPortugueseVoice();
+      };
+    }
+
+    // Filtrar canciones según el buscador
+    function getFilteredSongs() {
+      if (!searchQuery.trim()) return songsData;
+      const q = searchQuery.toLowerCase();
+      return songsData.filter(s => {
+        return (
+          s.ptLyrics.toLowerCase().includes(q) ||
+          s.esLyrics.toLowerCase().includes(q) ||
+          s.genre.toLowerCase().includes(q) ||
+          s.options.some(opt => opt.text.toLowerCase().includes(q))
+        );
+      });
+    }
+
+    // Renderizar las tarjetas del desafío
+    function renderQuiz() {
+      const container = document.getElementById('songs-container');
+      const noResults = document.getElementById('no-results');
+      const filtered = getFilteredSongs();
+
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+
+      filtered.forEach((song) => {
+        const isRevealed = !!revealedLyrics[song.id];
+        const answerStatus = userAnswers[song.id];
+        const isSpeaking = activeAudioSongId === song.id;
+
+        const card = document.createElement('div');
+        card.className = `bg-white border ${isSpeaking ? 'border-emerald-600 ring-2 ring-emerald-600/20' : 'border-slate-200/90'} rounded-2xl p-4 sm:p-5 shadow-sm transition hover:shadow-md`;
+
+        card.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+            
+            <!-- Columna 1: Traducción al Portugués de Brasil + Botones Escuchar y Detener -->
+            <div class="lg:col-span-4 bg-emerald-50/50 border border-emerald-200/80 p-4 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2.5 flex-wrap">
+                  <div class="flex items-center gap-1.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-900 text-white">
+                      #${song.id}
+                    </span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-800">
+                      ${song.genre}
+                    </span>
+                  </div>
+
+                  <!-- Botones para Escuchar en Portugués (pt-BR) y Detener -->
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      onclick="playPortugueseAudio(${song.id})" 
+                      class="text-xs px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1 shadow-xs active:scale-95 ${
+                        isSpeaking 
+                          ? 'bg-amber-500 text-slate-950 speaking-active' 
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      }">
+                      <span>🔊</span>
+                      <span>${isSpeaking ? 'Ouvindo...' : 'Escuchar (PT)'}</span>
+                    </button>
+
+                    <button 
+                      onclick="stopPortugueseAudio()" 
+                      ${!isSpeaking ? 'disabled' : ''}
+                      class="text-xs px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1 shadow-xs ${
+                        isSpeaking 
+                          ? 'bg-slate-900 hover:bg-black text-white active:scale-95 cursor-pointer' 
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                      }">
+                      <span>⏹️</span>
+                      <span>Detener</span>
+                    </button>
+                  </div>
+                </div>
+
+                <blockquote class="italic text-xs sm:text-sm text-slate-800 whitespace-pre-line leading-relaxed font-serif border-l-2 border-emerald-600 pl-3 my-2">
+"${song.ptLyrics}"
+                </blockquote>
+              </div>
+              <div class="text-[11px] text-emerald-900 pt-2 border-t border-emerald-200/70 mt-2 flex items-center justify-between">
+                <span>🇧🇷 Escucha o lee la traducción al portugués</span>
+                ${isSpeaking ? '<span class="text-emerald-700 font-bold animate-pulse">● Reproduciendo</span>' : ''}
+              </div>
+            </div>
+
+            <!-- Columna 2: Español Original (Desenfocado / Spoiler) -->
+            <div class="lg:col-span-4 bg-red-50/40 border border-red-100 p-4 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-dojo-red text-white">
+                    🇪🇸 Estrofa Original en Español
+                  </span>
+                  <button 
+                    onclick="toggleLyric(${song.id})" 
+                    class="text-xs px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 border border-red-300 text-dojo-red transition font-semibold shadow-xs flex items-center gap-1 active:scale-95">
+                    ${isRevealed ? '🙈 Ocultar' : '👁️ Ver estrofa'}
+                  </button>
+                </div>
+
+                <div class="relative min-h-[5.5rem] flex items-center justify-center py-1">
+                  <p class="text-xs sm:text-sm font-medium text-slate-900 whitespace-pre-line leading-relaxed w-full ${isRevealed ? 'lyrics-visible' : 'lyrics-hidden'}">
+${song.esLyrics}
+                  </p>
+                  ${!isRevealed ? `
+                    <div onclick="toggleLyric(${song.id})" class="absolute inset-0 flex items-center justify-center cursor-pointer group bg-red-900/5 rounded-lg">
+                      <span class="text-xs bg-slate-900/85 group-hover:bg-slate-900 text-white font-semibold px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm transition">
+                        👁️ Revelar estrofa original
+                      </span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="mt-2 pt-2 border-t border-red-200/60 flex items-center justify-between text-[11px] text-dojo-red">
+                <span>Estrofa representativa</span>
+                <a href="https://www.google.com/search?q=${encodeURIComponent(song.options.find(o => o.correct).text + ' letra')}" target="_blank" rel="noopener noreferrer" class="hover:underline font-semibold flex items-center gap-0.5">
+                  Letra completa ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Columna 3: Tres Opciones de Título e Intérprete -->
+            <div class="lg:col-span-4 flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                  ¿Cuál es la canción y el intérprete?
+                </span>
+                <div class="space-y-2">
+                  ${song.options.map((opt, optIdx) => {
+                    let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-600 hover:bg-emerald-50/40";
+                    let disabledAttr = "";
+
+                    if (answerStatus) {
+                      disabledAttr = "disabled";
+                      if (opt.correct) {
+                        btnStyle = "bg-emerald-600 border-emerald-600 text-white font-bold shadow-sm";
+                      } else if (answerStatus.selectedIndex === optIdx && !opt.correct) {
+                        btnStyle = "bg-rose-600 border-rose-600 text-white font-medium line-through opacity-90";
+                      } else {
+                        btnStyle = "bg-slate-100 border-slate-200 text-slate-400 opacity-60";
+                      }
+                    }
+
+                    return `
+                      <button 
+                        ${disabledAttr}
+                        onclick="selectOption(${song.id}, ${optIdx})" 
+                        class="w-full text-left p-3 rounded-xl border text-xs sm:text-sm transition duration-150 flex items-center justify-between gap-2 ${btnStyle}">
+                        <span>${opt.text}</span>
+                        ${answerStatus && opt.correct ? '<span class="text-sm">✅</span>' : ''}
+                        ${answerStatus && answerStatus.selectedIndex === optIdx && !opt.correct ? '<span class="text-sm">❌</span>' : ''}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- Feedback por tarjeta -->
+              ${answerStatus ? `
+                <div class="mt-2.5 text-xs font-semibold px-3 py-1.5 rounded-lg ${answerStatus.isCorrect ? 'text-emerald-800 bg-emerald-100 border border-emerald-200' : 'text-rose-800 bg-rose-100 border border-rose-200'}">
+                  ${answerStatus.isCorrect ? '🎉 ¡Parabéns! ¡Acertaste el clásico!' : '⚠️ Incorrecto. La respuesta correcta está marcada en verde.'}
+                </div>
+              ` : `
+                <div class="mt-2.5 text-[11px] text-slate-400 text-right">
+                  Selecciona una opción para verificar
+                </div>
+              `}
+            </div>
+
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      updateScoreboard();
+    }
+
+    // Mostrar/ocultar estrofa individual
+    function toggleLyric(songId) {
+      revealedLyrics[songId] = !revealedLyrics[songId];
+      renderQuiz();
+    }
+
+    // Mostrar u ocultar todas las estrofas
+    function toggleAllLyrics(show) {
+      songsData.forEach(s => {
+        revealedLyrics[s.id] = show;
+      });
+      renderQuiz();
+      showToast(show ? "👁️ Estrofas Visibles" : "🙈 Estrofas Ocultas", show ? "Se muestran todas las estrofas originales en español." : "Todas las estrofas fueron desenfocadas.");
+    }
+
+    // Búsqueda en tiempo real
+    function handleSearch() {
+      const input = document.getElementById('search-input');
+      searchQuery = input.value;
+      renderQuiz();
+    }
+
+    // Seleccionar opción
+    function selectOption(songId, optionIndex) {
+      if (userAnswers[songId]) return;
+
+      const song = songsData.find(s => s.id === songId);
+      const isCorrect = song.options[optionIndex].correct;
+
+      userAnswers[songId] = {
+        selectedIndex: optionIndex,
+        isCorrect: isCorrect
+      };
+
+      if (isCorrect) {
+        showToast("¡Muito bem! 🥋", `Acertaste: ${song.options[optionIndex].text.split('—')[0].trim()}`, true);
+      } else {
+        showToast("¡Sigue entrenando! 💡", "Revisa la opción en verde para memorizarla.", false);
+      }
+
+      renderQuiz();
+    }
+
+    // Actualizar marcador superior
+    function updateScoreboard() {
+      const answeredKeys = Object.keys(userAnswers);
+      const totalAnswered = answeredKeys.length;
+      let hits = 0;
+
+      answeredKeys.forEach(k => {
+        if (userAnswers[k].isCorrect) hits++;
+      });
+
+      const accuracy = totalAnswered > 0 ? Math.round((hits / totalAnswered) * 100) : 0;
+      const progressPercent = Math.round((totalAnswered / songsData.length) * 100);
+
+      document.getElementById('score-hits').textContent = hits;
+      document.getElementById('score-total').textContent = `${totalAnswered} / ${songsData.length}`;
+      document.getElementById('score-accuracy').textContent = `${accuracy}%`;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    }
+
+    // Reiniciar todo el quiz
+    function resetQuiz() {
+      stopPortugueseAudio();
+      userAnswers = {};
+      revealedLyrics = {};
+      document.getElementById('search-input').value = "";
+      searchQuery = "";
+      renderQuiz();
+      showToast("🔄 Dojo Reiniciado", "Marcador y estrofas restaurados al inicio.");
+    }
+
+    // Notificación flotante
+    let toastTimeout;
+    function showToast(title, msg, isSuccess = true) {
+      const toast = document.getElementById('feedback-toast');
+      const icon = document.getElementById('toast-icon');
+      const tTitle = document.getElementById('toast-title');
+      const tMsg = document.getElementById('toast-message');
+
+      icon.textContent = isSuccess ? '🥋' : '📝';
+      tTitle.textContent = title;
+      tMsg.textContent = msg;
+
+      toast.classList.remove('opacity-0', 'translate-y-20');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-20');
+      }, 2500);
+    }
+
+    // Inicializar al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
